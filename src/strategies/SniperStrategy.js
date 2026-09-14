@@ -10,6 +10,8 @@ export class SniperStrategy extends BaseStrategy {
         this.reverseStopCount = config.reverseStopCount ?? 3; // 3rd reverse = stop (low risk)
         this.trailingStop = config.trailingStop ?? true;     // trailing when profitable
         this.trailingStepPct = config.trailingStepPct ?? 0.005;
+        this.hardStopPct = config.hardStopPct ?? 0;          // 0 = disabled. Set e.g. 0.005 for 0.5% hard stop
+        this.breakevenAfterPct = config.breakevenAfterPct ?? 0; // 0 = disabled. Set e.g. 0.003 to move stop to breakeven after 0.3% profit
         this._prevBar = null;
         this._barIndex = 0;
     }
@@ -92,6 +94,23 @@ export class SniperStrategy extends BaseStrategy {
     _manageTrade(bar, idx) {
         // Track best price reached (for runner/trailing logic)
         this._updateBestPrice(bar);
+
+        // 0. Hard stop loss — always active when configured, caps max loss
+        if (this.hardStopPct > 0 && !this.trailingActive) {
+            const stopLevel = this.entryDir === 'BUY'
+                ? this.entryPrice * (1 - this.hardStopPct)
+                : this.entryPrice * (1 + this.hardStopPct);
+            const stopHit = this.entryDir === 'BUY' ? bar.low <= stopLevel : bar.high >= stopLevel;
+            if (stopHit) {
+                this._closeTrade(stopLevel, 'HARD_STOP', bar.time); return;
+            }
+        }
+
+        // 0b. Breakeven stop — move stop to entry once we have enough profit
+        if (this.trailingStop && this.breakevenAfterPct > 0 && !this.trailingActive && this._profitPct(bar) >= this.breakevenAfterPct) {
+            this._activateBreakevenStop();
+        }
+
         // 1. Profit target
         if (this.profitMarker) {
             const hit = this.entryDir === 'SELL' ? bar.low <= this.profitMarker.value : bar.high >= this.profitMarker.value;
@@ -120,6 +139,22 @@ export class SniperStrategy extends BaseStrategy {
         if (this.trailingActive && !justHitStopCount) {
             const hit = this.entryDir === 'SELL' ? bar.high >= this.trailingLevel : bar.low <= this.trailingLevel;
             if (hit) { this._closeTrade(this.trailingLevel, 'TRAILING_STOP', bar.time); return; }
+        }
+    }
+
+    _profitPct(bar) {
+        const dir = this.entryDir === 'BUY' ? 1 : -1;
+        const price = this.entryDir === 'BUY' ? bar.high : bar.low;
+        return ((price - this.entryPrice) / this.entryPrice) * dir;
+    }
+
+    _activateBreakevenStop() {
+        // Move stop to entry price — lock in breakeven
+        this.trailingActive = true;
+        this.trailingLevel = this.entryPrice;
+        if (this.activeTrade) {
+            this.activeTrade.trailingActive = true;
+            this.activeTrade.trailingLevel = this.entryPrice;
         }
     }
 

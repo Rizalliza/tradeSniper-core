@@ -128,11 +128,11 @@ class FlowChart {
         this.strategyResult = strategyResult;
         this.config = {
             width: config.width || 480,
-            height: config.height || 220,
+            height: config.height || 260,
             padding: { top: 16, right: 60, bottom: 24, left: 10 },
             range: config.range || 30, // minutes to show
-            candleWidth: config.candleWidth || 3,
-            candleGap: config.candleGap || 1,
+            candleWidth: config.candleWidth || 4,
+            candleGap: config.candleGap || 2,
         };
         this.render();
     }
@@ -146,18 +146,23 @@ class FlowChart {
         const visibleBars = this.bars.slice(0, range);
         if (!visibleBars.length) return;
 
-        // Price range
+        // Price range — zoom to visible bars + nearby markers only
+        // (not all 8 markers, which compresses candles to flat lines)
         let minPrice = Infinity, maxPrice = -Infinity;
         for (const b of visibleBars) {
             minPrice = Math.min(minPrice, b.low);
             maxPrice = Math.max(maxPrice, b.high);
         }
-        // Include markers
+        // Include markers that are NEAR the visible range (within 2x the bar range)
+        const barRange = maxPrice - minPrice;
+        const padOut = barRange * 0.5;
         for (const m of this.markerList) {
-            minPrice = Math.min(minPrice, m.value);
-            maxPrice = Math.max(maxPrice, m.value);
+            if (m.value >= minPrice - padOut && m.value <= maxPrice + padOut) {
+                minPrice = Math.min(minPrice, m.value);
+                maxPrice = Math.max(maxPrice, m.value);
+            }
         }
-        const pricePad = (maxPrice - minPrice) * 0.1;
+        const pricePad = (maxPrice - minPrice) * 0.15;
         minPrice -= pricePad;
         maxPrice += pricePad;
 

@@ -11,6 +11,7 @@ import { DAILY_BARS } from '/src/data/historicalData.js';
 import { BacktestRunner } from '/src/backtest/BacktestRunner.js';
 import { NewsDigest } from '/src/news/NewsDigest.js';
 import { SAMPLE_NEWS } from '/src/data/sampleNews.js';
+import { BacktestLab } from '/js/backtest-lab.js';
 
 const BACKTEST_SNAPSHOT_URL = '/data/latest-massive-backtest.json';
 
@@ -361,6 +362,7 @@ class SniperApp {
         this.currentRange = 30;
         this.barsData = {}; // symbol → barsMap
         this.latestBacktest = null;
+        this.backtestLab = new BacktestLab();
         this.init();
     }
 
@@ -382,6 +384,7 @@ class SniperApp {
         this.renderSentiment();
         this.renderWatchlist();
         this.renderTradeLog();
+        this.initBacktestLab();
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
     }
@@ -974,6 +977,439 @@ class SniperApp {
         a.download = `${this.currentSymbol}_flow_study.svg`;
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    // ============================================
+    // BACKTEST LAB
+    // ============================================
+
+    initBacktestLab() {
+        // Tab switching
+        const tabs = document.querySelectorAll('.bt-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const tabId = tab.dataset.tab;
+                document.querySelectorAll('.bt-tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById(`btTab-${tabId}`).classList.add('active');
+            });
+        });
+
+        // Strategy selector
+        const stratSelect = document.getElementById('configStrategy');
+        if (stratSelect) {
+            stratSelect.addEventListener('change', (e) => {
+                this.backtestLab.currentStrategy = e.target.value;
+                this.renderStrategyParams();
+            });
+            this.renderStrategyParams();
+        }
+
+        // Month tabs
+        document.querySelectorAll('.month-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const monthKey = tab.dataset.month;
+                this.backtestLab.setMonth(monthKey);
+                const preset = BacktestLab.getMonthPresets().find(m => m.key === monthKey);
+                if (preset) {
+                    document.getElementById('configDateFrom').value = preset.days[0];
+                    document.getElementById('configDateTo').value = preset.days[1];
+                }
+            });
+        });
+
+        // Date inputs
+        const dateFrom = document.getElementById('configDateFrom');
+        const dateTo = document.getElementById('configDateTo');
+        if (dateFrom) dateFrom.addEventListener('change', (e) => this.backtestLab.dateFrom = e.target.value);
+        if (dateTo) dateTo.addEventListener('change', (e) => this.backtestLab.dateTo = e.target.value);
+
+        // Shares
+        const sharesInput = document.getElementById('configShares');
+        if (sharesInput) {
+            sharesInput.addEventListener('change', (e) => {
+                this.backtestLab.shares = parseInt(e.target.value, 10) || 100;
+            });
+        }
+
+        // Data source
+        const dataSource = document.getElementById('configDataSource');
+        if (dataSource) {
+            dataSource.addEventListener('change', (e) => {
+                this.backtestLab.dataSource = e.target.value;
+                document.getElementById('massiveKeyGroup').style.display =
+                    e.target.value === 'massive' ? 'block' : 'none';
+            });
+        }
+
+        // Symbol search
+        const symbolSearch = document.getElementById('symbolSearch');
+        if (symbolSearch) {
+            symbolSearch.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this._addSymbolFromInput();
+            });
+        }
+
+        // Add symbol button
+        const btnAdd = document.getElementById('btnAddSymbol');
+        if (btnAdd) btnAdd.addEventListener('click', () => this._addSymbolFromInput());
+
+        // Preset chips
+        document.querySelectorAll('.preset-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const symbols = chip.dataset.symbols.split(',');
+                symbols.forEach(s => this.backtestLab.addSymbol(s));
+                this.renderSymbolList();
+            });
+        });
+
+        // Clear symbols
+        const btnClear = document.getElementById('btnClearSymbols');
+        if (btnClear) {
+            btnClear.addEventListener('click', () => {
+                this.backtestLab.clearSymbols();
+                this.renderSymbolList();
+            });
+        }
+
+        // Run backtest button
+        const btnRun = document.getElementById('btnRunBacktest');
+        if (btnRun) {
+            btnRun.addEventListener('click', () => this.runBacktestLab());
+        }
+
+        // Initial renders
+        this.renderSymbolList();
+    }
+
+    renderStrategyParams() {
+        const container = document.getElementById('strategyParams');
+        if (!container) return;
+
+        const stratKey = this.backtestLab.currentStrategy;
+        const strat = BacktestLab.getStrategies()[stratKey];
+        if (!strat) return;
+
+        const params = strat.params;
+        const currentParams = this.backtestLab.getParams(stratKey);
+
+        let html = '';
+        for (const p of params) {
+            const val = currentParams[p.key] ?? p.default;
+            if (p.type === 'checkbox') {
+                html += `
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:8px;">
+                            <input type="checkbox" data-param="${p.key}" ${val ? 'checked' : ''} style="margin:0;">
+                            ${p.label}
+                        </label>
+                    </div>`;
+            } else if (p.type === 'time') {
+                html += `
+                    <div class="form-group">
+                        <label>${p.label}</label>
+                        <input type="time" class="form-input" data-param="${p.key}" value="${val}" step="1">
+                    </div>`;
+            } else if (p.type === 'number') {
+                const step = p.step ?? 1;
+                html += `
+                    <div class="form-group">
+                        <label>${p.label} <span style="color:var(--text-dim);float:right;" id="param-${p.key}-val">${typeof val === 'number' ? (val < 0.01 ? val.toFixed(4) : val.toFixed(2)) : val}</span></label>
+                        <input type="range" class="form-input" data-param="${p.key}"
+                            min="${p.min ?? 0}" max="${p.max ?? 100}" step="${step}" value="${val}"
+                            style="width:100%;padding:0;accent-color:var(--accent);">
+                    </div>`;
+            } else {
+                html += `
+                    <div class="form-group">
+                        <label>${p.label}</label>
+                        <input type="${p.type}" class="form-input" data-param="${p.key}" value="${val}">
+                    </div>`;
+            }
+        }
+        container.innerHTML = html;
+
+        // Bind change events
+        container.querySelectorAll('[data-param]').forEach(input => {
+            const key = input.dataset.param;
+            input.addEventListener('input', (e) => {
+                let val;
+                if (e.target.type === 'checkbox') val = e.target.checked;
+                else if (e.target.type === 'number' || e.target.type === 'range') val = parseFloat(e.target.value);
+                else val = e.target.value;
+                this.backtestLab.setParam(stratKey, key, val);
+                const valEl = document.getElementById(`param-${key}-val`);
+                if (valEl) {
+                    valEl.textContent = typeof val === 'number'
+                        ? (val < 0.01 ? val.toFixed(4) : val.toFixed(2))
+                        : val;
+                }
+            });
+        });
+    }
+
+    renderSymbolList() {
+        const list = document.getElementById('symbolList');
+        if (!list) return;
+
+        const countEl = document.getElementById('symbolCount');
+        if (countEl) countEl.textContent = `${this.backtestLab.symbols.length} symbols selected`;
+
+        if (this.backtestLab.symbols.length === 0) {
+            list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);font-size:12px;">No symbols selected. Add symbols or use quick presets above.</div>';
+            return;
+        }
+
+        list.innerHTML = this.backtestLab.symbols.map(sym => `
+            <div class="symbol-chip">
+                <span>${sym}</span>
+                <span class="remove" data-symbol="${sym}">×</span>
+            </div>
+        `).join('');
+
+        list.querySelectorAll('.remove').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const sym = e.target.dataset.symbol;
+                this.backtestLab.removeSymbol(sym);
+                this.renderSymbolList();
+            });
+        });
+    }
+
+    _addSymbolFromInput() {
+        const input = document.getElementById('symbolSearch');
+        if (!input) return;
+        const val = input.value.trim();
+        if (val) {
+            val.split(',').forEach(s => {
+                const cleaned = s.trim().toUpperCase();
+                if (cleaned) this.backtestLab.addSymbol(cleaned);
+            });
+            input.value = '';
+            this.renderSymbolList();
+        }
+    }
+
+    async runBacktestLab() {
+        const btn = document.getElementById('btnRunBacktest');
+        const progress = document.getElementById('btProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+
+        if (!btn || !progress) return;
+
+        if (this.backtestLab.symbols.length === 0) {
+            alert('Please select at least one symbol.');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        progress.style.display = 'block';
+        progressFill.style.width = '0%';
+        progressText.textContent = 'Preparing data...';
+
+        try {
+            // Simulated progress
+            let prog = 0;
+            const progInterval = setInterval(() => {
+                prog = Math.min(prog + Math.random() * 15, 90);
+                progressFill.style.width = prog + '%';
+                if (prog < 30) progressText.textContent = 'Loading bars...';
+                else if (prog < 60) progressText.textContent = 'Running strategy...';
+                else progressText.textContent = 'Calculating stats...';
+            }, 100);
+
+            const result = await this.backtestLab.run();
+
+            clearInterval(progInterval);
+            progressFill.style.width = '100%';
+            progressText.textContent = 'Complete!';
+
+            setTimeout(() => {
+                progress.style.display = 'none';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                // Switch to results tab
+                document.querySelectorAll('.bt-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.bt-tab[data-tab="results"]').classList.add('active');
+                document.querySelectorAll('.bt-tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById('btTab-results').classList.add('active');
+                this.renderBacktestResults(result);
+            }, 500);
+
+        } catch (err) {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            progress.style.display = 'none';
+            alert('Backtest failed: ' + err.message);
+        }
+    }
+
+    renderBacktestResults(result) {
+        const panel = document.getElementById('backtestPanel');
+        if (!panel) return;
+
+        const s = result.stats;
+        const stratName = BacktestLab.getStrategies()[this.backtestLab.currentStrategy]?.name || 'Strategy';
+
+        // Monthly breakdown
+        const monthly = this.backtestLab.getMonthlyBreakdown(result);
+        const monthlyHtml = Object.entries(monthly).map(([month, data]) => {
+            const pnlColor = data.pnl >= 0 ? 'positive' : 'negative';
+            return `
+                <div class="month-card">
+                    <div class="month-label">${month}</div>
+                    <div class="month-pnl ${pnlColor}">${data.pnl >= 0 ? '+' : ''}$${data.pnl.toFixed(0)}</div>
+                    <div class="month-trades">${data.taken} trades</div>
+                </div>
+            `;
+        }).join('');
+
+        const statsHtml = `
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Setups</div>
+                    <div class="stat-number">${s.total_setups}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Taken</div>
+                    <div class="stat-number">${s.taken}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-number" style="color:${s.win_rate >= 50 ? 'var(--positive)' : 'var(--negative)'}">${s.win_rate.toFixed(1)}%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Net P&L</div>
+                    <div class="stat-number" style="color:${s.net_pnl >= 0 ? 'var(--positive)' : 'var(--negative)'}">${s.net_pnl >= 0 ? '+' : ''}$${s.net_pnl.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Profit Factor</div>
+                    <div class="stat-number" style="color:${s.profit_factor >= 1 ? 'var(--positive)' : 'var(--negative)'}">${s.profit_factor === Infinity ? '∞' : s.profit_factor.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Max Drawdown</div>
+                    <div class="stat-number" style="color:var(--negative)">$${s.max_drawdown.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Win</div>
+                    <div class="stat-number" style="color:var(--positive)">$${s.avg_win?.toFixed(2) || '0.00'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Loss</div>
+                    <div class="stat-number" style="color:var(--negative)">$${s.avg_loss?.toFixed(2) || '0.00'}</div>
+                </div>
+            </div>
+
+            <div class="chart-title" style="margin:20px 0 10px;font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;">MONTHLY BREAKDOWN</div>
+            <div class="monthly-results">${monthlyHtml || '<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);">No monthly data</div>'}</div>
+
+            <div class="chart-title" style="margin:20px 0 10px;font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;">TRADE LOG · ${stratName.toUpperCase()}</div>
+            <div style="overflow-x:auto;">
+                <table class="trades-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Symbol</th>
+                            <th>Dir</th>
+                            <th>Entry</th>
+                            <th>Exit</th>
+                            <th>Reason</th>
+                            <th>P&L</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${result.setups.filter(s => ['WON', 'LOST'].includes(s.status)).slice(0, 50).map(t => `
+                            <tr>
+                                <td>${t.date}</td>
+                                <td><strong>${t.symbol}</strong></td>
+                                <td class="${t.bias?.toLowerCase() || ''}">${t.bias || '-'}</td>
+                                <td>${t.entry_price ? '$' + t.entry_price.toFixed(2) : '-'}</td>
+                                <td>${t.exit_price ? '$' + t.exit_price.toFixed(2) : '-'}</td>
+                                <td>${t.exit_reason || '-'}</td>
+                                <td class="${t.status === 'WON' ? 'won' : 'lost'}">${t.pnl >= 0 ? '+' : ''}$${t.pnl.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:16px;text-align:center;color:var(--text-dim);font-size:11px;">
+                Showing ${Math.min(50, result.setups.filter(s => ['WON','LOST'].includes(s.status)).length)} of ${s.taken} total trades
+            </div>
+        `;
+
+        panel.innerHTML = statsHtml;
+        panel.classList.add('backtest-results');
+
+        // Update top bar
+        const statusEl = document.querySelector('.status-text');
+        if (statusEl) {
+            statusEl.innerHTML = `BACKTEST · ${this.backtestLab.dateFrom} → ${this.backtestLab.dateTo} · <span id="tradeCount">${s.taken}</span> TRADES`;
+        }
+        const tc = document.getElementById('tradeCount');
+        if (tc) tc.textContent = s.taken;
+
+        // Update performance view too
+        this.lastBacktestResult = result;
+        this.renderEquityFromResult(result);
+    }
+
+    renderEquityFromResult(result) {
+        const panel = document.getElementById('perfPanel');
+        if (!panel) return;
+
+        const equity = result.stats.equity || [];
+        if (!equity.length) {
+            panel.innerHTML = '<div class="placeholder">No equity data</div>';
+            return;
+        }
+
+        // Simple SVG equity curve
+        const width = 800, height = 250, pad = 40;
+        const values = equity.map(e => e.cum);
+        const minV = Math.min(...values, 0);
+        const maxV = Math.max(...values, 0);
+        const range = maxV - minV || 1;
+
+        const points = equity.map((e, i) => {
+            const x = pad + (i / (equity.length - 1 || 1)) * (width - pad * 2);
+            const y = pad + (1 - (e.cum - minV) / range) * (height - pad * 2);
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+
+        const zeroY = pad + (1 - (0 - minV) / range) * (height - pad * 2);
+
+        panel.innerHTML = `
+            <div style="background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:16px;">
+                <h3 class="chart-title" style="margin:0 0 12px;font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;">EQUITY CURVE</h3>
+                <svg viewBox="0 0 ${width} ${height}" width="100%" style="max-height:300px;">
+                    <line x1="${pad}" y1="${zeroY}" x2="${width - pad}" y2="${zeroY}" stroke="var(--border)" stroke-dasharray="4,4"/>
+                    <polyline points="${points}" fill="none" stroke="var(--positive)" stroke-width="2"/>
+                    <text x="${pad}" y="${pad - 10}" fill="var(--text-dim)" font-size="10" font-family="monospace">$${maxV.toFixed(0)}</text>
+                    <text x="${pad}" y="${zeroY - 5}" fill="var(--text-dim)" font-size="10" font-family="monospace">$0</text>
+                    <text x="${pad}" y="${height - pad + 15}" fill="var(--text-dim)" font-size="10" font-family="monospace">$${minV.toFixed(0)}</text>
+                </svg>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px;">
+                ${result.stats.perSymbol?.map(ps => `
+                    <div style="background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:12px;">
+                        <div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;">${ps.symbol}</div>
+                        <div style="font-size:16px;font-weight:700;color:${ps.pnl >= 0 ? 'var(--positive)' : 'var(--negative)'};">
+                            ${ps.pnl >= 0 ? '+' : ''}$${ps.pnl.toFixed(2)}
+                        </div>
+                        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">
+                            ${ps.win_rate?.toFixed(1) || 0}% win · ${ps.taken} trades
+                        </div>
+                    </div>
+                `).join('') || ''}
+            </div>
+        `;
     }
 
     updateClock() {

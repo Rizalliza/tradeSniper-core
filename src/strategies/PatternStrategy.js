@@ -48,12 +48,16 @@ export class PatternStrategy extends BaseStrategy {
         this.markerList = markerList;
         this.entryPrice = null;
         this.entryDir = null;
+        this.crossDir = null;
+        this.crossMarker = null;
         this.entryBarIdx = -1;
         this.stopLoss = null;
         this.takeProfit = null;
         this.trailingActive = false;
         this.trailingLevel = null;
         this.activePattern = null;
+        this.entryMarker = null;
+        this.profitMarker = null;
         this._bars = [];
         this._prevBar = null;
         this._barIndex = 0;
@@ -120,8 +124,18 @@ export class PatternStrategy extends BaseStrategy {
             const stopLoss = entryPrice - stopDist * dirSign;
             const takeProfit = entryPrice + stopDist * this.riskReward * dirSign;
 
+            // Use nearest marker as entry marker for compatibility
+            let nearestMarker = null, nearestDist = Infinity;
+            for (const m of this.markerList) {
+                const dist = Math.abs(m.value - entryPrice);
+                if (dist < nearestDist) { nearestDist = dist; nearestMarker = m; }
+            }
+
+            this.crossDir = direction === 'bullish' ? 'UP' : 'DOWN';
+            this.crossMarker = nearestMarker;
+
             this._openTrade(direction === 'bullish' ? 'BUY' : 'SELL',
-                entryPrice, bar.time, idx, pattern, stopLoss, takeProfit);
+                entryPrice, bar.time, idx, pattern, stopLoss, takeProfit, nearestMarker);
             return;
         }
     }
@@ -152,17 +166,21 @@ export class PatternStrategy extends BaseStrategy {
         return null;
     }
 
-    _openTrade(direction, price, time, idx, pattern, stopLoss, takeProfit) {
+    _openTrade(direction, price, time, idx, pattern, stopLoss, takeProfit, entryMarker) {
         this.entryDir = direction;
         this.entryPrice = price;
         this.entryBarIdx = idx;
         this.stopLoss = stopLoss;
         this.takeProfit = takeProfit;
         this.activePattern = pattern.pattern;
+        this.entryMarker = entryMarker;
+        this.profitMarker = { value: takeProfit, type: 'target' };
         this.activeTrade = {
             direction,
             entryPrice: price,
             entryTime: time,
+            entryMarker,
+            profitMarker: this.profitMarker,
             exitPrice: null,
             exitReason: null,
             exitTime: null,
@@ -244,8 +262,8 @@ export class PatternStrategy extends BaseStrategy {
             this._closeTrade(lastBar.close,
                 favorable > 0 ? 'RUNNER' : 'EOD_UNFAVORABLE',
                 lastBar.time);
-        } else if (this.phase === 'IDLE') {
-            this.phase = 'NO_PATTERN';
+        } else if (this.phase === 'IDLE' || this.phase === 'NO_PATTERN') {
+            this.phase = 'NO_CROSS';
         }
         return this.getState();
     }

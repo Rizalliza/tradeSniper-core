@@ -1450,7 +1450,15 @@ class SniperApp {
         const symbol = symSelect?.value;
         if (!symbol || !DAILY_BARS[symbol]) return;
 
-        const bars = DAILY_BARS[symbol];
+        // Normalize bars from DAILY_BARS format (date/o/h/l/c/v) to standard format
+        const bars = DAILY_BARS[symbol].map((d, i) => ({
+            time: d.date || d.time || i,
+            open: d.o !== undefined ? d.o : d.open,
+            high: d.h !== undefined ? d.h : d.high,
+            low: d.l !== undefined ? d.l : d.low,
+            close: d.c !== undefined ? d.c : d.close,
+            volume: d.v !== undefined ? d.v : (d.volume || 1000000),
+        }));
 
         // Scan for patterns
         const patterns = PatternDetector.scan(bars, {

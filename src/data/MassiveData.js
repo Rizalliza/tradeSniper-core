@@ -119,13 +119,17 @@ export class MassiveData {
   /**
    * Convert Massive aggregate bar to standard format.
    * Massive returns Unix ms timestamps in 't' field.
+   * Converts to US/Eastern time for market-hours filtering.
    */
   _convertAggregate(symbol, agg, timespan) {
-    const date = new Date(agg.t);
-    // Adjust for ET timezone (UTC-5 or UTC-4 depending on DST)
-    // Simple approach: just use UTC time and let caller handle
-    const dateStr = date.toISOString().slice(0, 10);
-    const timeStr = date.toISOString().slice(11, 19);
+    const utcDate = new Date(agg.t);
+    // Convert to US/Eastern time
+    // US/Eastern: UTC-5 (EST) or UTC-4 (EDT, Mar-Nov)
+    const etOffsetMs = this._getEasternOffset(utcDate);
+    const etDate = new Date(utcDate.getTime() + etOffsetMs);
+
+    const dateStr = etDate.toISOString().slice(0, 10);
+    const timeStr = etDate.toISOString().slice(11, 19);
 
     return {
       symbol,
@@ -140,6 +144,44 @@ export class MassiveData {
       vwap: agg.vw,
       transactions: agg.n,
     };
+  }
+
+  /**
+   * Get US/Eastern timezone offset in milliseconds (negative = behind UTC).
+   * Handles DST: EDT = UTC-4, EST = UTC-5.
+   * DST in US: 2nd Sunday of March to 1st Sunday of November.
+   */
+  _getEasternOffset(date) {
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth(); // 0-11
+    const day = date.getUTCDate();
+    const hour = date.getUTCHours();
+
+    // November-Feb: EST (UTC-5)
+    if (month < 2 || month > 10) return 5 * 3600 * 1000;
+
+    // Find 2nd Sunday of March
+    const mar1 = new Date(Date.UTC(year, 2, 1));
+    const marDOW = mar1.getUTCDay(); // 0=Sun
+    const dstStart = 14 - marDOW; // 2nd Sunday
+    if (month === 2) { // March
+      if (day < dstStart) return 5 * 3600 * 1000; // EST
+      if (day === dstStart && hour < 7) return 5 * 3600 * 1000; // before 2am ET = 7am UTC
+      return 4 * 3600 * 1000; // EDT
+    }
+
+    // Find 1st Sunday of November
+    const nov1 = new Date(Date.UTC(year, 10, 1));
+    const novDOW = nov1.getUTCDay();
+    const dstEnd = novDOW === 0 ? 1 : 1 + (7 - novDOW);
+    if (month === 10) { // November
+      if (day < dstEnd) return 4 * 3600 * 1000; // EDT
+      if (day === dstEnd && hour < 6) return 4 * 3600 * 1000; // before 2am ET = 6am UTC
+      return 5 * 3600 * 1000; // EST
+    }
+
+    // April-October: EDT (UTC-4)
+    return 4 * 3600 * 1000;
   }
 
   /**
@@ -208,12 +250,14 @@ export class MassiveData {
     const timestamp = parseInt(get('window_start'), 10);
     // window_start is in nanoseconds for minute aggs
     const ms = timestamp > 1e15 ? Math.floor(timestamp / 1e6) : timestamp;
-    const date = new Date(ms);
+    const utcDate = new Date(ms);
+    const etOffsetMs = this._getEasternOffset(utcDate);
+    const etDate = new Date(utcDate.getTime() + etOffsetMs);
 
     return {
       symbol: ticker,
-      date: date.toISOString().slice(0, 10),
-      time: date.toISOString().slice(11, 19),
+      date: etDate.toISOString().slice(0, 10),
+      time: etDate.toISOString().slice(11, 19),
       open: parseFloat(get('open')),
       high: parseFloat(get('high')),
       low: parseFloat(get('low')),

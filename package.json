@@ -12,7 +12,8 @@
     "buffer:analyze": "node scripts/bufferAnalysis.js",
     "massive:backtest": "node -r dotenv/config scripts/massiveBacktest.js",
     "webapp:dev": "node scripts/serve.js --port 3000",
-    "start": "node scripts/serve.js"
+    "start": "node scripts/serve.js",
+    "sniper:live": "node scripts/sniper-live.js"
   },
   "license": "MIT",
   "dependencies": {},

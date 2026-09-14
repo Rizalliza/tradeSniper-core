@@ -13,6 +13,7 @@
 import { SniperStrategy } from '/src/strategies/SniperStrategy.js';
 import { MeanReversionStrategy } from '/src/strategies/MeanReversionStrategy.js';
 import { BreakoutStrategy } from '/src/strategies/BreakoutStrategy.js';
+import { PatternStrategy } from '/src/strategies/PatternStrategy.js';
 import { BacktestRunner } from '/src/backtest/BacktestRunner.js';
 import { MarkerService } from '/src/market/MarkerService.js';
 import { DAILY_BARS } from '/src/data/historicalData.js';
@@ -40,6 +41,11 @@ const STRATEGIES = {
         name: 'Breakout (Opening Range)',
         class: BreakoutStrategy,
         params: BreakoutStrategy.getConfig().params,
+    },
+    pattern: {
+        name: 'Pattern Recognition',
+        class: PatternStrategy,
+        params: PatternStrategy.getConfig().params,
     },
 };
 

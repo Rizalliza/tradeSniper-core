@@ -37,7 +37,11 @@
                 </a>
                 <a href="#backtest" class="nav-item" data-view="backtest">
                     <span class="nav-icon">⚗</span>
-                    <span>BACKTEST</span>
+                    <span>BACKTEST LAB</span>
+                </a>
+                <a href="#patterns" class="nav-item" data-view="patterns">
+                    <span class="nav-icon">⟁</span>
+                    <span>PATTERNS</span>
                 </a>
                 <a href="#verify" class="nav-item" data-view="verify">
                     <span class="nav-icon">⛨</span>
@@ -293,6 +297,48 @@
             <section id="view-tradelog" class="view">
                 <div class="view-header"><h1 class="view-title">TRADE LOG</h1></div>
                 <div class="placeholder">Complete trade history with annotations</div>
+            </section>
+            <section id="view-patterns" class="view">
+                <div class="view-header"><h1 class="view-title">PATTERN SCANNER</h1></div>
+                <div class="pattern-scanner-container">
+                    <div class="pattern-controls">
+                        <div class="control-group">
+                            <label>Symbol</label>
+                            <select id="pattern-symbol"></select>
+                        </div>
+                        <div class="control-group">
+                            <label>Timeframe</label>
+                            <select id="pattern-timeframe">
+                                <option value="daily">Daily</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Min Confidence: <span id="pattern-minconf-val">0.4</span></label>
+                            <input type="range" id="pattern-minconf" min="0.2" max="1" step="0.05" value="0.4">
+                        </div>
+                        <button id="btn-scan-patterns" class="btn btn-primary">SCAN PATTERNS</button>
+                    </div>
+                    <div class="pattern-sections">
+                        <div class="pattern-section">
+                            <h3>🎯 Detected Patterns</h3>
+                            <div id="pattern-list" class="pattern-list">
+                                <div class="empty-state">Select a symbol and click SCAN</div>
+                            </div>
+                        </div>
+                        <div class="pattern-section">
+                            <h3>💧 Order Flow Signals</h3>
+                            <div id="orderflow-list" class="orderflow-list">
+                                <div class="empty-state">No order flow data yet</div>
+                            </div>
+                        </div>
+                        <div class="pattern-section">
+                            <h3>📊 Volume Profile</h3>
+                            <div id="volume-profile" class="volume-profile">
+                                <div class="empty-state">Run a scan to see volume profile</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>

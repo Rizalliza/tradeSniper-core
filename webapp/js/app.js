@@ -12,6 +12,8 @@ import { BacktestRunner } from '/src/backtest/BacktestRunner.js';
 import { NewsDigest } from '/src/news/NewsDigest.js';
 import { SAMPLE_NEWS } from '/src/data/sampleNews.js';
 import { BacktestLab } from '/js/backtest-lab.js';
+import { PatternDetector } from '/src/analysis/PatternDetector.js';
+import { OrderFlow } from '/src/analysis/OrderFlow.js';
 
 const BACKTEST_SNAPSHOT_URL = '/data/latest-massive-backtest.json';
 
@@ -377,6 +379,7 @@ class SniperApp {
         this.initNewsDigest();
         this.setupNavigation();
         this.setupControls();
+        this.setupPatternScanner();
         this.renderFlowStudy();
         this.renderBacktest();
         this.renderPerformance();
@@ -1408,6 +1411,189 @@ class SniperApp {
                         </div>
                     </div>
                 `).join('') || ''}
+            </div>
+        `;
+    }
+
+    setupPatternScanner() {
+        const symSelect = document.getElementById('pattern-symbol');
+        if (!symSelect) return;
+
+        // Populate symbols from DAILY_BARS
+        const symbols = Object.keys(DAILY_BARS);
+        symbols.forEach(sym => {
+            const opt = document.createElement('option');
+            opt.value = sym;
+            opt.textContent = sym;
+            symSelect.appendChild(opt);
+        });
+
+        // Min confidence slider
+        const minConf = document.getElementById('pattern-minconf');
+        const minConfVal = document.getElementById('pattern-minconf-val');
+        if (minConf && minConfVal) {
+            minConf.addEventListener('input', () => {
+                minConfVal.textContent = minConf.value;
+            });
+        }
+
+        // Scan button
+        const scanBtn = document.getElementById('btn-scan-patterns');
+        if (scanBtn) {
+            scanBtn.addEventListener('click', () => this.runPatternScan());
+        }
+    }
+
+    runPatternScan() {
+        const symSelect = document.getElementById('pattern-symbol');
+        const minConf = parseFloat(document.getElementById('pattern-minconf')?.value || '0.4');
+        const symbol = symSelect?.value;
+        if (!symbol || !DAILY_BARS[symbol]) return;
+
+        const bars = DAILY_BARS[symbol];
+
+        // Scan for patterns
+        const patterns = PatternDetector.scan(bars, {
+            leftBars: 3,
+            rightBars: 2,
+            trendlineLookback: 30,
+        }).filter(p => (p.confidence || 0) >= minConf);
+
+        this.renderPatternList(patterns);
+
+        // Order flow analysis
+        const recentHigh = Math.max(...bars.slice(-50).map(b => b.high));
+        const recentLow = Math.min(...bars.slice(-50).map(b => b.low));
+        const pivotLevel = (recentHigh + recentLow) / 2;
+        const ofAnalysis = OrderFlow.analyze(bars, pivotLevel);
+        this.renderOrderFlow(ofAnalysis, pivotLevel);
+
+        // Volume profile
+        const profile = OrderFlow.calculateVolumeProfile(bars.slice(-100), 40);
+        this.renderVolumeProfile(profile);
+    }
+
+    renderPatternList(patterns) {
+        const list = document.getElementById('pattern-list');
+        if (!list) return;
+
+        if (!patterns.length) {
+            list.innerHTML = '<div class="empty-state">No patterns found above confidence threshold</div>';
+            return;
+        }
+
+        const patternNames = {
+            double_top: 'Double Top',
+            double_bottom: 'Double Bottom',
+            head_and_shoulders: 'Head & Shoulders',
+            inverse_head_and_shoulders: 'Inverse H&S',
+            cup_and_handle: 'Cup & Handle',
+            trendline_breakout: 'Trendline Breakout',
+            trendline_breakdown: 'Trendline Breakdown',
+            bullish_engulfing: 'Bullish Engulfing',
+            bearish_engulfing: 'Bearish Engulfing',
+            hammer: 'Hammer',
+            hanging_man: 'Hanging Man',
+            shooting_star: 'Shooting Star',
+            inverted_hammer: 'Inverted Hammer',
+            doji: 'Doji',
+        };
+
+        const directionClass = (p) => {
+            const bearish = ['double_top', 'head_and_shoulders', 'trendline_breakdown', 'bearish_engulfing', 'shooting_star', 'hanging_man'];
+            const bullish = ['double_bottom', 'inverse_head_and_shoulders', 'cup_and_handle', 'trendline_breakout', 'bullish_engulfing', 'hammer', 'inverted_hammer'];
+            if (bearish.includes(p.pattern)) return 'bearish';
+            if (bullish.includes(p.pattern)) return '';
+            return 'neutral';
+        };
+
+        list.innerHTML = patterns.slice(0, 15).map(p => {
+            const confPct = Math.round((p.confidence || 0) * 100);
+            const name = patternNames[p.pattern] || p.pattern;
+            const cls = directionClass(p);
+            const level = p.neckline || p.breakoutLevel || p.level || (p.peaks && p.peaks[0]?.price) || '-';
+            return `
+                <div class="pattern-item ${cls}">
+                    <div class="pattern-item-header">
+                        <span class="pattern-name">${name}</span>
+                        <span class="pattern-confidence">${confPct}%</span>
+                    </div>
+                    <div class="pattern-details">
+                        ${typeof level === 'number' ? `Level: $${level.toFixed(2)}` : ''}
+                        ${p.barIndex != null ? `· Bar ${p.barIndex}` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    renderOrderFlow(analysis, level) {
+        const list = document.getElementById('orderflow-list');
+        if (!list) return;
+
+        if (!analysis.signals.length) {
+            list.innerHTML = `<div class="empty-state">
+                No order flow signals detected<br>
+                <small>Overall bias: <strong>${analysis.overall.toUpperCase()}</strong><br>
+                Bullish: ${(analysis.bullishScore * 100).toFixed(0)}% · Bearish: ${(analysis.bearishScore * 100).toFixed(0)}%</small>
+            </div>`;
+            return;
+        }
+
+        const typeNames = {
+            false_breakout: 'False Breakout',
+            false_breakdown: 'False Breakdown',
+            liquidity_grab: 'Liquidity Grab',
+            volume_divergence: 'Volume Divergence',
+            absorption: 'Absorption',
+            climax: 'Climactic Volume',
+        };
+
+        list.innerHTML = analysis.signals.map(s => {
+            const confPct = Math.round((s.confidence || 0) * 100);
+            const name = typeNames[s.type] || s.type;
+            const cls = s.direction === 'bullish' ? '' : s.direction === 'bearish' ? 'bearish' : 'neutral';
+            const details = s.reasons ? s.reasons.join(' · ') : (s.volRatio ? `Volume: ${s.volRatio.toFixed(2)}x avg` : '');
+            return `
+                <div class="pattern-item ${cls}">
+                    <div class="pattern-item-header">
+                        <span class="pattern-name">${name}</span>
+                        <span class="pattern-confidence">${confPct}%</span>
+                    </div>
+                    <div class="pattern-details">${details}</div>
+                </div>
+            `;
+        }).join('') + `
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:rgba(255,255,255,0.6)">
+                Overall: <strong style="color:${analysis.overall === 'bullish' ? '#4caf50' : analysis.overall === 'bearish' ? '#f44336' : '#ff9800'}">${analysis.overall.toUpperCase()}</strong>
+                · Bull: ${(analysis.bullishScore * 100).toFixed(0)}% · Bear: ${(analysis.bearishScore * 100).toFixed(0)}%
+            </div>
+        `;
+    }
+
+    renderVolumeProfile(profile) {
+        const container = document.getElementById('volume-profile');
+        if (!container || !profile) return;
+
+        const maxVol = Math.max(...profile.profile.map(p => p.volume));
+        const pocPrice = profile.poc;
+        const vah = profile.valueAreaHigh;
+        const val = profile.valueAreaLow;
+
+        container.innerHTML = `
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:8px">
+                <span>POC: $${pocPrice.toFixed(2)}</span>
+                <span>Value Area: $${val.toFixed(2)} - $${vah.toFixed(2)}</span>
+                <span>HVN: ${profile.hvn.length} · LVN: ${profile.lvn.length}</span>
+            </div>
+            <div class="volume-profile">
+                ${profile.profile.map(p => {
+                    const h = maxVol > 0 ? (p.volume / maxVol * 100) : 0;
+                    const isPOC = Math.abs(p.price - pocPrice) < profile.binSize;
+                    const inVA = p.price >= val && p.price <= vah;
+                    const cls = isPOC ? 'vp-bar poc' : inVA ? 'vp-bar value-area' : 'vp-bar';
+                    return `<div class="${cls}" style="height:${h}%" title="$${p.price.toFixed(2)}: ${Math.round(p.volume)} vol"></div>`;
+                }).join('')}
             </div>
         `;
     }

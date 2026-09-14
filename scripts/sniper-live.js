@@ -87,10 +87,12 @@ async function main() {
 
     // Calculate date range
     const today = new Date();
-    const todayStr = today.toISOString().slice(0, 10);
-    const fromDate = new Date(today);
+    const todayET = _getEasternDateParts(today);
+    const todayStr = todayET.dateStr;
+    const fromDate = new Date();
     fromDate.setDate(fromDate.getDate() - opts.lookbackDays);
-    const fromStr = fromDate.toISOString().slice(0, 10);
+    const fromET = _getEasternDateParts(fromDate);
+    const fromStr = fromET.dateStr;
 
     console.log(`📅 Date: ${todayStr}`);
     console.log(`🔍 Loading ${opts.lookbackDays} days of daily data for markers...\n`);
@@ -165,13 +167,13 @@ async function main() {
 
     async function poll() {
         const now = new Date();
-        const nowET = new Date(now.getTime() + _getEasternOffset(now));
-        const timeStr = nowET.toISOString().slice(11, 19);
+        const et = _getEasternDateParts(now);
+        const timeStr = et.time;
 
         // Check if we're in the window
-        const h = nowET.getUTCHours();
-        const m = nowET.getUTCMinutes();
-        const s = nowET.getUTCSeconds();
+        const h = et.hour;
+        const m = et.minute;
+        const s = et.second;
         const isInWindow = h === 9 && m >= 30 && m < 30 + opts.window;
         const isMarketOpen = (h === 9 && m >= 30) || (h > 9 && h < 16) || (h === 16 && m === 0);
 
@@ -257,31 +259,27 @@ async function main() {
     poll();
 }
 
-function _getEasternOffset(date) {
-    const year = date.getUTCFullYear();
-    const month = date.getUTCMonth();
-    const day = date.getUTCDate();
-    const hour = date.getUTCHours();
-
-    if (month < 2 || month > 10) return 5 * 3600 * 1000; // EST
-
-    const mar1 = new Date(Date.UTC(year, 2, 1));
-    const dstStart = 14 - mar1.getUTCDay();
-    if (month === 2) {
-        if (day < dstStart) return 5 * 3600 * 1000;
-        if (day === dstStart && hour < 7) return 5 * 3600 * 1000;
-        return 4 * 3600 * 1000;
+function _formatEastern(date) {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false,
+    });
+    const parts = {};
+    for (const p of formatter.formatToParts(date)) {
+        parts[p.type] = p.value;
     }
+    return {
+        date: `${parts.year}-${parts.month}-${parts.day}`,
+        time: `${parts.hour}:${parts.minute}:${parts.second}`,
+    };
+}
 
-    const nov1 = new Date(Date.UTC(year, 10, 1));
-    const dstEnd = nov1.getUTCDay() === 0 ? 1 : 1 + (7 - nov1.getUTCDay());
-    if (month === 10) {
-        if (day < dstEnd) return 4 * 3600 * 1000;
-        if (day === dstEnd && hour < 6) return 4 * 3600 * 1000;
-        return 5 * 3600 * 1000;
-    }
-
-    return 4 * 3600 * 1000; // EDT
+function _getEasternDateParts(date) {
+    const fmt = _formatEastern(date);
+    const [h, m, s] = fmt.time.split(':').map(Number);
+    return { dateStr: fmt.date, hour: h, minute: m, second: s };
 }
 
 main().catch(err => {

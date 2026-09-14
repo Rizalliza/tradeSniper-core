@@ -8,8 +8,11 @@ echo "🚀 Deploying TradeSniper News Agent..."
 echo ""
 
 # Create the agent
+# Use the stable subcommand path: arkcli agent agent create
+# (some CLI versions use arkcli agent create, but agent agent create is the stable path)
 echo "📝 Creating agent from config..."
-RESULT=$(arkcli agent create agent/tradesniper-news-agent.yaml)
+RESULT=$(arkcli agent agent create --file agent/tradesniper-news-agent.yaml 2>&1) || \
+RESULT=$(arkcli agent create agent/tradesniper-news-agent.yaml 2>&1)
 echo "$RESULT"
 echo ""
 
@@ -19,7 +22,7 @@ if [ -n "$AGENT_ID" ]; then
     echo "✅ Agent created: $AGENT_ID"
     echo ""
     echo "📋 Next steps:"
-    echo "   1. Configure MCP API key in the BytePlus console"
+    echo "   1. Authorize the Massive MCP server (OAuth) via BytePlus console"
     echo "   2. Create an Environment for the agent"
     echo "   3. Create a Session to test"
     echo ""

@@ -12,6 +12,8 @@ import { BacktestRunner } from '../src/backtest/BacktestRunner.js';
 import { BacktestStats } from '../src/backtest/BacktestStats.js';
 import { BarLoader } from '../src/market/BarLoader.js';
 import { BufferSensitivity } from '../src/analysis/BufferSensitivity.js';
+import { NewsDigest } from '../src/news/NewsDigest.js';
+import { SAMPLE_NEWS } from '../src/data/sampleNews.js';
 
 // ============================================
 // DATA GENERATION (synthetic intraday bars)
@@ -332,10 +334,14 @@ class SniperApp {
 
         this.setupNavigation();
         this.setupControls();
+        this.initNewsDigest();
         this.renderFlowStudy();
         this.renderBacktest();
         this.renderPerformance();
         this.renderVerify();
+        this.renderSentiment();
+        this.renderWatchlist();
+        this.renderTradeLog();
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
     }
@@ -655,6 +661,395 @@ class SniperApp {
             </div>`;
         }
         panel.innerHTML = html;
+    }
+
+    initNewsDigest() {
+        this.newsDigest = new NewsDigest();
+        this.newsDigest.addArticles(SAMPLE_NEWS);
+        // Generate digests for all unique dates
+        const dates = [...new Set(SAMPLE_NEWS.map(a => a.publishedAt.slice(0, 10)))].sort();
+        this.newsDates = dates;
+        for (const d of dates) this.newsDigest.generateDailyDigest(d);
+    }
+
+    renderSentiment() {
+        const panel = document.getElementById('view-sentiment');
+        if (!panel) return;
+
+        if (!this.newsDigest) this.initNewsDigest();
+
+        const latestDate = this.newsDates[this.newsDates.length - 1];
+        const prevDate = this.newsDates[this.newsDates.length - 2] || latestDate;
+        const digest = this.newsDigest.generateDailyDigest(latestDate);
+        const comparison = this.newsDigest.compareDigests(latestDate, prevDate);
+
+        const sentColor = digest.overall_sentiment.label.includes('BULL') ? 'positive' :
+                         digest.overall_sentiment.label.includes('BEAR') ? 'negative' : 'neutral';
+        const trendIcon = comparison.score_change > 0.05 ? '↗' :
+                         comparison.score_change < -0.05 ? '↘' : '→';
+        const trendColor = comparison.score_change > 0.05 ? 'positive' :
+                          comparison.score_change < -0.05 ? 'negative' : 'neutral';
+
+        // Topic bars
+        let topicsHTML = '';
+        for (const t of digest.top_topics.slice(0, 6)) {
+            const pct = Math.min(100, (t.count / Math.max(1, digest.top_topics[0]?.count || 1)) * 100);
+            const barColor = t.direction === 'bullish' ? '#00ff88' :
+                            t.direction === 'bearish' ? '#ff3355' : '#888';
+            topicsHTML += `
+                <div class="topic-row">
+                    <div class="topic-name">${t.topic}</div>
+                    <div class="topic-bar-wrap">
+                        <div class="topic-bar" style="width:${pct}%; background:${barColor}; opacity:0.7;"></div>
+                    </div>
+                    <div class="topic-count">${t.count}</div>
+                    <div class="topic-sent ${t.direction === 'bullish' ? 'positive' : t.direction === 'bearish' ? 'negative' : ''}">
+                        ${t.avg_sentiment > 0 ? '+' : ''}${t.avg_sentiment.toFixed(2)}
+                    </div>
+                </div>`;
+        }
+
+        // Per-symbol sentiment
+        const allSymbols = [
+            ...digest.market_movers.bullish.slice(0, 3),
+            ...digest.market_movers.neutral.slice(0, 1),
+            ...digest.market_movers.bearish.slice(-3).reverse(),
+        ];
+        let symbolsHTML = '';
+        for (const s of allSymbols) {
+            const barWidth = Math.abs(s.sentiment) * 200;
+            const direction = s.sentiment > 0 ? 'right' : 'left';
+            const color = s.sentiment > 0.05 ? '#00ff88' : s.sentiment < -0.05 ? '#ff3355' : '#888';
+            symbolsHTML += `
+                <div class="sym-sent-row">
+                    <span class="sym-name">${s.symbol}</span>
+                    <div class="sym-sent-bar">
+                        <div class="sym-sent-fill" style="width:${barWidth}px; background:${color}; ${direction === 'right' ? 'margin-left:50%' : 'margin-left:calc(50% - ' + barWidth + 'px)'}"></div>
+                    </div>
+                    <span class="sym-sent-val" style="color:${color}">${s.sentiment > 0 ? '+' : ''}${s.sentiment.toFixed(2)}</span>
+                </div>`;
+        }
+
+        // Risk notes
+        let riskHTML = '';
+        for (const n of digest.risk_notes) {
+            const icon = n.level === 'warning' ? '⚠️' : n.level === 'caution' ? '⚡' : 'ℹ️';
+            const cls = n.level === 'warning' ? 'risk-warn' : n.level === 'caution' ? 'risk-caution' : 'risk-info';
+            riskHTML += `<div class="risk-note ${cls}"><span class="risk-icon">${icon}</span>${n.text}</div>`;
+        }
+
+        // Top articles
+        let articlesHTML = '';
+        for (const a of digest.top_articles.slice(0, 5)) {
+            const color = a.sentiment > 0.05 ? '#00ff88' : a.sentiment < -0.05 ? '#ff3355' : '#888';
+            const arrow = a.sentiment > 0.05 ? '▲' : a.sentiment < -0.05 ? '▼' : '▸';
+            articlesHTML += `
+                <div class="article-row">
+                    <span style="color:${color}; margin-right:8px;">${arrow}</span>
+                    <div class="article-body">
+                        <div class="article-title">${a.title}</div>
+                        <div class="article-meta">${a.source} · ${a.topics.join(', ') || 'General'}</div>
+                    </div>
+                </div>`;
+        }
+
+        panel.innerHTML = `
+            <div class="view-header">
+                <h1 class="view-title">SENTIMENT NET</h1>
+                <p class="view-subtitle">NEWS CONTEXT · PRICE ACTION FIRST · ${latestDate}</p>
+            </div>
+
+            <div class="sentiment-grid">
+                <!-- Left column: overall sentiment + trend -->
+                <div class="sent-col">
+                    <div class="panel-card">
+                        <div class="panel-title">OVERALL MARKET SENTIMENT</div>
+                        <div class="sent-score ${sentColor}">${digest.overall_sentiment.label}</div>
+                        <div class="sent-meter">
+                            <div class="sent-meter-fill" style="left:50%; width:50%;"></div>
+                            <div class="sent-meter-pointer" style="left:${50 + digest.overall_sentiment.score * 45}%;"></div>
+                            <span class="meter-label left">BEAR</span>
+                            <span class="meter-label center">NEUTRAL</span>
+                            <span class="meter-label right">BULL</span>
+                        </div>
+                        <div class="sent-stats">
+                            <div class="sent-stat">
+                                <span class="stat-k">Score</span>
+                                <span class="stat-v ${sentColor}">${digest.overall_sentiment.score.toFixed(3)}</span>
+                            </div>
+                            <div class="sent-stat">
+                                <span class="stat-k">Trend</span>
+                                <span class="stat-v ${trendColor}">${trendIcon} ${comparison.trend_acceleration.replace('_', ' ')}</span>
+                            </div>
+                            <div class="sent-stat">
+                                <span class="stat-k">Articles</span>
+                                <span class="stat-v">${digest.article_count}</span>
+                            </div>
+                            <div class="sent-stat">
+                                <span class="stat-k">Dispersion</span>
+                                <span class="stat-v">${digest.overall_sentiment.dispersion.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-title">DECISION CONTEXT</div>
+                        <div class="decision-row">
+                            <span class="decision-label">Confidence Multiplier</span>
+                            <span class="decision-value">${digest.decision_context.confidenceMult.toFixed(2)}x</span>
+                        </div>
+                        <div class="decision-row">
+                            <span class="decision-label">News Weight (max)</span>
+                            <span class="decision-value">${(digest.decision_context.weight * 100).toFixed(0)}%</span>
+                        </div>
+                        <div class="decision-row">
+                            <span class="decision-label">Price Action First</span>
+                            <span class="decision-value" style="color:#00ff88;">✓ ENFORCED</span>
+                        </div>
+                        <div class="decision-note">
+                            News sentiment adjusts position sizing within ±30%.
+                            It never generates a signal. Price action = entry/exit.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle column: topics + symbols -->
+                <div class="sent-col">
+                    <div class="panel-card">
+                        <div class="panel-title">TOPIC BREAKDOWN</div>
+                        <div class="topics-list">${topicsHTML}</div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-title">SYMBOL SENTIMENT</div>
+                        <div class="sym-sent-list">${symbolsHTML}</div>
+                    </div>
+                </div>
+
+                <!-- Right column: risk + articles -->
+                <div class="sent-col">
+                    <div class="panel-card">
+                        <div class="panel-title">RISK NOTES</div>
+                        <div class="risk-list">${riskHTML}</div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-title">TOP ARTICLES</div>
+                        <div class="articles-list">${articlesHTML}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical comparison strip -->
+            <div class="panel-card history-strip">
+                <div class="panel-title">HISTORICAL COMPARISON</div>
+                <div class="history-row">
+                    <div class="history-item">
+                        <span class="hist-label">vs Previous Period</span>
+                        <span class="hist-val ${comparison.score_change > 0 ? 'positive' : 'negative'}">
+                            ${comparison.score_change > 0 ? '+' : ''}${comparison.score_change.toFixed(3)}
+                        </span>
+                    </div>
+                    <div class="history-item">
+                        <span class="hist-label">Trend Acceleration</span>
+                        <span class="hist-val">${comparison.trend_acceleration.replace('_', ' ')}</span>
+                    </div>
+                    <div class="history-item">
+                        <span class="hist-label">Confidence Change</span>
+                        <span class="hist-val ${comparison.confidence_change >= 0 ? 'positive' : 'negative'}">
+                            ${comparison.confidence_change >= 0 ? '+' : ''}${comparison.confidence_change.toFixed(3)}
+                        </span>
+                    </div>
+                    <div class="history-item interpret">
+                        <span class="hist-label">Interpretation</span>
+                        <span class="hist-val">${comparison.interpretation}</span>
+                    </div>
+                </div>
+                <div class="history-chart" id="historyChart">
+                    <!-- Mini trend chart will be generated by JS -->
+                </div>
+            </div>
+        `;
+
+        // Render mini trend chart
+        this._renderHistoryChart(latestDate);
+    }
+
+    renderWatchlist() {
+        const panel = document.getElementById('view-watchlist');
+        if (!panel) return;
+
+        const daily = DAILY_BARS;
+        const symbols = Object.keys(daily);
+
+        let html = `
+            <div class="view-header">
+                <h1 class="view-title">WATCHLIST</h1>
+                <p class="view-subtitle">TRACKED SYMBOLS · MARKER LEVELS · SENTIMENT OVERLAY</p>
+            </div>
+            <div class="watchlist-grid">
+        `;
+
+        for (const sym of symbols) {
+            const bars = daily[sym] || [];
+            const latest = bars[bars.length - 1];
+            const prev = bars[bars.length - 2];
+            if (!latest || !prev) continue;
+
+            const markers = MarkerService.compute(bars, bars.length - 1);
+            const change = latest.c - prev.c;
+            const changePct = (change / prev.c) * 100;
+            const isUp = change >= 0;
+
+            // Get sentiment
+            const symSent = this.newsDigest?.getArticles({ symbol: sym });
+            const sentScore = symSent && symSent.length
+                ? symSent.reduce((s, a) => s + a.sentiment * a.sourceWeight, 0) /
+                  symSent.reduce((s, a) => s + a.sourceWeight, 0)
+                : 0;
+            const sentLabel = sentScore > 0.1 ? 'BULLISH' : sentScore < -0.1 ? 'BEARISH' : 'NEUTRAL';
+
+            html += `
+                <div class="watch-card">
+                    <div class="watch-head">
+                        <span class="watch-symbol">${sym}</span>
+                        <span class="watch-price ${isUp ? 'positive' : 'negative'}">
+                            $${latest.c.toFixed(2)}
+                            <span class="watch-change">${isUp ? '+' : ''}${change.toFixed(2)} (${changePct.toFixed(2)}%)</span>
+                        </span>
+                    </div>
+                    <div class="watch-markers">
+                        <div class="watch-marker res">
+                            <span class="mk-label">D-H</span>
+                            <span class="mk-val">${markers.daily_high.toFixed(2)}</span>
+                        </div>
+                        <div class="watch-marker neu">
+                            <span class="mk-label">PD-C</span>
+                            <span class="mk-val">${markers.prior_day_close.toFixed(2)}</span>
+                        </div>
+                        <div class="watch-marker sup">
+                            <span class="mk-label">D-L</span>
+                            <span class="mk-val">${markers.daily_low.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="watch-sentiment">
+                        <span class="sent-chip ${sentLabel.toLowerCase()}">NEWS: ${sentLabel}</span>
+                        <span class="sent-score">${sentScore > 0 ? '+' : ''}${sentScore.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
+        panel.innerHTML = html;
+    }
+
+    renderTradeLog() {
+        const panel = document.getElementById('view-tradelog');
+        if (!panel) return;
+
+        const daily = DAILY_BARS;
+        const symbols = Object.keys(daily);
+        const barsMap = {};
+        for (const sym of symbols) {
+            Object.assign(barsMap, this.barsData[sym] || {});
+        }
+
+        const runner = new BacktestRunner({
+            symbols, shares: 100, dailyBars: daily, barsMap,
+            monthFilter: '2026-02',
+            strategyFactory: (config = {}) => new SniperStrategy(config),
+        });
+        const result = runner.run();
+        const trades = result.setups.filter(s => ['WON', 'LOST', 'RUNNER', 'EOD_UNFAVORABLE'].includes(s.status))
+            .sort((a, b) => b.date.localeCompare(a.date));
+
+        let pnlRunning = 0;
+        let html = `
+            <div class="view-header">
+                <h1 class="view-title">TRADE LOG</h1>
+                <p class="view-subtitle">ALL TRADES · ${trades.length} TOTAL · FEBRUARY 2026</p>
+            </div>
+            <div class="tradelog-list">
+                <div class="tradelog-header">
+                    <span>DATE</span><span>SYM</span><span>DIR</span>
+                    <span>ENTRY</span><span>EXIT</span><span>REASON</span>
+                    <span>P&L</span><span>CUM</span>
+                </div>
+        `;
+
+        for (const t of trades) {
+            pnlRunning += t.pnl || 0;
+            const outcomeCls = t.pnl >= 0 ? 'won' : 'lost';
+            const dirCls = t.bias === 'BUY' ? 'buy' : 'sell';
+            const sign = (t.pnl || 0) >= 0 ? '+' : '';
+            html += `
+                <div class="tradelog-row">
+                    <span class="tl-date">${t.date}</span>
+                    <span class="tl-sym">${t.symbol}</span>
+                    <span class="tl-dir ${dirCls}">${t.bias || '-'}</span>
+                    <span class="tl-entry">$${t.entry_price?.toFixed(2) || '-'}</span>
+                    <span class="tl-exit">$${t.exit_price?.toFixed(2) || '-'}</span>
+                    <span class="tl-reason">${t.exit_reason || '-'}</span>
+                    <span class="tl-pnl ${outcomeCls}">${sign}$${(t.pnl || 0).toFixed(2)}</span>
+                    <span class="tl-cum ${pnlRunning >= 0 ? 'won' : 'lost'}">${pnlRunning >= 0 ? '+' : ''}$${pnlRunning.toFixed(2)}</span>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
+        panel.innerHTML = html;
+    }
+
+    _renderHistoryChart(latestDate) {
+        const chartEl = document.getElementById('historyChart');
+        if (!chartEl) return;
+
+        const dates = this.newsDates.slice(-7);
+        const scores = dates.map(d => {
+            const dig = this.newsDigest.generateDailyDigest(d);
+            return dig.overall_sentiment.score;
+        });
+
+        const w = chartEl.offsetWidth || 800;
+        const h = 80;
+        const pad = { l: 30, r: 10, t: 10, b: 20 };
+        const cw = w - pad.l - pad.r;
+        const ch = h - pad.t - pad.b;
+
+        const max = Math.max(0.5, ...scores.map(s => Math.abs(s)));
+        const midY = pad.t + ch / 2;
+
+        let path = '';
+        dates.forEach((d, i) => {
+            const x = pad.l + (i / Math.max(1, dates.length - 1)) * cw;
+            const y = midY - (scores[i] / max) * (ch / 2);
+            path += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+        });
+
+        let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:100%;height:${h}px;">`;
+        // Zero line
+        svg += `<line x1="${pad.l}" y1="${midY}" x2="${w - pad.r}" y2="${midY}" stroke="#333" stroke-width="1" stroke-dasharray="3,3"/>`;
+        // Labels
+        svg += `<text x="2" y="${pad.t + 4}" fill="#555" font-size="9" font-family="monospace">+${max.toFixed(1)}</text>`;
+        svg += `<text x="2" y="${midY + 3}" fill="#555" font-size="9" font-family="monospace">0</text>`;
+        svg += `<text x="2" y="${h - pad.b + 2}" fill="#555" font-size="9" font-family="monospace">-${max.toFixed(1)}</text>`;
+        // Date labels
+        dates.forEach((d, i) => {
+            const x = pad.l + (i / Math.max(1, dates.length - 1)) * cw;
+            svg += `<text x="${x}" y="${h - 4}" fill="#555" font-size="8" font-family="monospace" text-anchor="middle">${d.slice(5)}</text>`;
+        });
+        // Sentiment line
+        svg += `<path d="${path}" fill="none" stroke="#00ff88" stroke-width="1.5"/>`;
+        // Dots
+        dates.forEach((d, i) => {
+            const x = pad.l + (i / Math.max(1, dates.length - 1)) * cw;
+            const y = midY - (scores[i] / max) * (ch / 2);
+            const color = scores[i] > 0.05 ? '#00ff88' : scores[i] < -0.05 ? '#ff3355' : '#888';
+            svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2" fill="${color}"/>`;
+        });
+        svg += `</svg>`;
+        chartEl.innerHTML = svg;
     }
 
     exportSVG() {

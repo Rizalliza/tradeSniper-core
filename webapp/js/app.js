@@ -9,6 +9,8 @@ import { MarkerService } from '/src/market/MarkerService.js';
 import { SniperStrategy } from '/src/strategies/SniperStrategy.js';
 import { DAILY_BARS } from '/src/data/historicalData.js';
 import { BacktestRunner } from '/src/backtest/BacktestRunner.js';
+import { NewsDigest } from '/src/news/NewsDigest.js';
+import { SAMPLE_NEWS } from '/src/data/sampleNews.js';
 
 const BACKTEST_SNAPSHOT_URL = '/data/latest-massive-backtest.json';
 
@@ -146,23 +148,39 @@ class FlowChart {
         const visibleBars = this.bars.slice(0, range);
         if (!visibleBars.length) return;
 
-        // Price range — zoom to visible bars + nearby markers only
-        // (not all 8 markers, which compresses candles to flat lines)
+        // Price range — zoom to visible bars + nearby markers
+        // Always show support/resistance markers that frame the price action
         let minPrice = Infinity, maxPrice = -Infinity;
         for (const b of visibleBars) {
             minPrice = Math.min(minPrice, b.low);
             maxPrice = Math.max(maxPrice, b.high);
         }
-        // Include markers that are NEAR the visible range (within 2x the bar range)
+        // Find closest support and resistance markers to always show them
+        let closestSupport = null, closestResistance = null;
+        for (const m of this.markerList) {
+            if (m.type === 'support' && m.value <= maxPrice) {
+                if (!closestSupport || m.value > closestSupport.value) closestSupport = m;
+            }
+            if (m.type === 'resistance' && m.value >= minPrice) {
+                if (!closestResistance || m.value < closestResistance.value) closestResistance = m;
+            }
+        }
+        // Include markers within a reasonable range around the bars
         const barRange = maxPrice - minPrice;
-        const padOut = barRange * 0.5;
+        const minMarkers = barRange < 0.005 * minPrice; // second bars: very small range
+        const padOut = minMarkers ? barRange * 3 : barRange * 1.5;
+
         for (const m of this.markerList) {
             if (m.value >= minPrice - padOut && m.value <= maxPrice + padOut) {
                 minPrice = Math.min(minPrice, m.value);
                 maxPrice = Math.max(maxPrice, m.value);
             }
         }
-        const pricePad = (maxPrice - minPrice) * 0.15;
+        // Always include the nearest support and resistance
+        if (closestSupport) { minPrice = Math.min(minPrice, closestSupport.value); }
+        if (closestResistance) { maxPrice = Math.max(maxPrice, closestResistance.value); }
+
+        const pricePad = (maxPrice - minPrice) * 0.12;
         minPrice -= pricePad;
         maxPrice += pricePad;
 
@@ -354,12 +372,16 @@ class SniperApp {
         }
 
         this.latestBacktest = await this.loadLatestBacktest();
+        this.initNewsDigest();
         this.setupNavigation();
         this.setupControls();
         this.renderFlowStudy();
         this.renderBacktest();
         this.renderPerformance();
         this.renderVerify();
+        this.renderSentiment();
+        this.renderWatchlist();
+        this.renderTradeLog();
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
     }
@@ -708,6 +730,236 @@ class SniperApp {
                 </div>
             </div>`;
         }
+        panel.innerHTML = html;
+    }
+
+    initNewsDigest() {
+        this.newsDigest = new NewsDigest();
+        this.newsDigest.addArticles(SAMPLE_NEWS);
+        const dates = [...new Set(SAMPLE_NEWS.map(a => a.publishedAt.slice(0, 10)))].sort();
+        this.newsDates = dates;
+        for (const d of dates) this.newsDigest.generateDailyDigest(d);
+    }
+
+    renderSentiment() {
+        const panel = document.getElementById('view-sentiment');
+        if (!panel || !this.newsDigest) return;
+
+        const latestDate = this.newsDates[this.newsDates.length - 1];
+        const prevDate = this.newsDates[this.newsDates.length - 2] || latestDate;
+        const digest = this.newsDigest.generateDailyDigest(latestDate);
+        const comparison = this.newsDigest.compareDigests(latestDate, prevDate);
+
+        const sentColor = digest.overall_sentiment.label.includes('BULL') ? 'positive' :
+                         digest.overall_sentiment.label.includes('BEAR') ? 'negative' : 'neutral';
+        const trendColor = comparison.score_change > 0.05 ? 'positive' :
+                          comparison.score_change < -0.05 ? 'negative' : 'neutral';
+
+        let topicsHTML = '';
+        for (const t of digest.top_topics.slice(0, 6)) {
+            const pct = Math.min(100, (t.count / Math.max(1, digest.top_topics[0]?.count || 1)) * 100);
+            const barColor = t.direction === 'bullish' ? '#00ff88' :
+                            t.direction === 'bearish' ? '#ff3355' : '#888';
+            topicsHTML += `
+                <div class="topic-row">
+                    <div class="topic-name">${t.topic}</div>
+                    <div class="topic-bar-wrap"><div class="topic-bar" style="width:${pct}%; background:${barColor};"></div></div>
+                    <div class="topic-count">${t.count}</div>
+                    <div class="topic-sent ${t.direction === 'bullish' ? 'positive' : t.direction === 'bearish' ? 'negative' : ''}">
+                        ${t.avg_sentiment > 0 ? '+' : ''}${num(t.avg_sentiment, 2)}
+                    </div>
+                </div>`;
+        }
+
+        const allSymbols = [
+            ...digest.market_movers.bullish.slice(0, 3),
+            ...digest.market_movers.neutral.slice(0, 1),
+            ...digest.market_movers.bearish.slice(-3).reverse(),
+        ];
+        let symbolsHTML = '';
+        for (const s of allSymbols) {
+            const barWidth = Math.abs(s.sentiment) * 200;
+            const color = s.sentiment > 0.05 ? '#00ff88' : s.sentiment < -0.05 ? '#ff3355' : '#888';
+            const marginLeft = s.sentiment > 0 ? '50%' : `calc(50% - ${barWidth}px)`;
+            symbolsHTML += `
+                <div class="sym-sent-row">
+                    <span class="sym-name">${s.symbol}</span>
+                    <div class="sym-sent-bar">
+                        <div class="sym-sent-fill" style="width:${barWidth}px; background:${color}; margin-left:${marginLeft};"></div>
+                    </div>
+                    <span class="sym-sent-val" style="color:${color}">${s.sentiment > 0 ? '+' : ''}${num(s.sentiment, 2)}</span>
+                </div>`;
+        }
+
+        let riskHTML = '';
+        for (const n of digest.risk_notes) {
+            const icon = n.level === 'warning' ? '⚠️' : n.level === 'caution' ? '⚡' : 'ℹ️';
+            const cls = n.level === 'warning' ? 'risk-warn' : n.level === 'caution' ? 'risk-caution' : 'risk-info';
+            riskHTML += `<div class="risk-note ${cls}"><span class="risk-icon">${icon}</span>${n.text}</div>`;
+        }
+
+        let articlesHTML = '';
+        for (const a of digest.top_articles.slice(0, 5)) {
+            const color = a.sentiment > 0.05 ? '#00ff88' : a.sentiment < -0.05 ? '#ff3355' : '#888';
+            const arrow = a.sentiment > 0.05 ? '▲' : a.sentiment < -0.05 ? '▼' : '▸';
+            articlesHTML += `
+                <div class="article-row">
+                    <span style="color:${color}; margin-right:8px;">${arrow}</span>
+                    <div class="article-body">
+                        <div class="article-title">${a.title}</div>
+                        <div class="article-meta">${a.source} · ${a.topics.join(', ') || 'General'}</div>
+                    </div>
+                </div>`;
+        }
+
+        panel.innerHTML = `
+            <div class="view-header">
+                <h1 class="view-title">SENTIMENT NET</h1>
+                <p class="view-subtitle">NEWS CONTEXT · PRICE ACTION FIRST · ${latestDate}</p>
+            </div>
+            <div class="sentiment-grid">
+                <div class="sent-col">
+                    <div class="panel-card">
+                        <div class="panel-title">OVERALL MARKET SENTIMENT</div>
+                        <div class="sent-score ${sentColor}">${digest.overall_sentiment.label}</div>
+                        <div class="sent-meter">
+                            <div class="sent-meter-pointer" style="left:${50 + digest.overall_sentiment.score * 45}%;"></div>
+                            <span class="meter-label left">BEAR</span>
+                            <span class="meter-label center">NEUTRAL</span>
+                            <span class="meter-label right">BULL</span>
+                        </div>
+                        <div class="sent-stats">
+                            <div class="sent-stat"><span class="stat-k">Score</span><span class="stat-v ${sentColor}">${num(digest.overall_sentiment.score, 3)}</span></div>
+                            <div class="sent-stat"><span class="stat-k">Trend</span><span class="stat-v ${trendColor}">${comparison.trend_acceleration.replace('_', ' ')}</span></div>
+                            <div class="sent-stat"><span class="stat-k">Articles</span><span class="stat-v">${digest.article_count}</span></div>
+                            <div class="sent-stat"><span class="stat-k">Dispersion</span><span class="stat-v">${num(digest.overall_sentiment.dispersion, 2)}</span></div>
+                        </div>
+                    </div>
+                    <div class="panel-card">
+                        <div class="panel-title">DECISION CONTEXT</div>
+                        <div class="decision-row"><span class="decision-label">Confidence Multiplier</span><span class="decision-value">${num(digest.decision_context.confidenceMult, 2)}x</span></div>
+                        <div class="decision-row"><span class="decision-label">News Weight (max)</span><span class="decision-value">${num(digest.decision_context.weight * 100, 0)}%</span></div>
+                        <div class="decision-row"><span class="decision-label">Price Action First</span><span class="decision-value" style="color:#00ff88;">✓ ENFORCED</span></div>
+                        <div class="decision-note">News adjusts position sizing ±30% max. Never generates signals. Price action = entry/exit.</div>
+                    </div>
+                </div>
+                <div class="sent-col">
+                    <div class="panel-card"><div class="panel-title">TOPIC BREAKDOWN</div><div class="topics-list">${topicsHTML}</div></div>
+                    <div class="panel-card"><div class="panel-title">SYMBOL SENTIMENT</div><div class="sym-sent-list">${symbolsHTML}</div></div>
+                </div>
+                <div class="sent-col">
+                    <div class="panel-card"><div class="panel-title">RISK NOTES</div><div class="risk-list">${riskHTML}</div></div>
+                    <div class="panel-card"><div class="panel-title">TOP ARTICLES</div><div class="articles-list">${articlesHTML}</div></div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderWatchlist() {
+        const panel = document.getElementById('view-watchlist');
+        if (!panel) return;
+
+        const daily = DAILY_BARS;
+        const symbols = Object.keys(daily);
+
+        let html = `
+            <div class="view-header">
+                <h1 class="view-title">WATCHLIST</h1>
+                <p class="view-subtitle">TRACKED SYMBOLS · MARKER LEVELS · SENTIMENT OVERLAY</p>
+            </div>
+            <div class="watchlist-grid">
+        `;
+
+        for (const sym of symbols) {
+            const bars = daily[sym] || [];
+            const latest = bars[bars.length - 1];
+            const prev = bars[bars.length - 2];
+            if (!latest || !prev) continue;
+
+            const markers = MarkerService.compute(bars, bars.length - 1);
+            const change = latest.c - prev.c;
+            const changePct = (change / prev.c) * 100;
+            const isUp = change >= 0;
+
+            let sentScore = 0, sentLabel = 'NEUTRAL';
+            if (this.newsDigest) {
+                const symArticles = this.newsDigest.getArticles({ symbol: sym });
+                if (symArticles.length) {
+                    const totalWeight = symArticles.reduce((s, a) => s + a.sourceWeight, 0);
+                    sentScore = symArticles.reduce((s, a) => s + a.sentiment * a.sourceWeight, 0) / totalWeight;
+                    sentLabel = sentScore > 0.1 ? 'BULLISH' : sentScore < -0.1 ? 'BEARISH' : 'NEUTRAL';
+                }
+            }
+
+            html += `
+                <div class="watch-card">
+                    <div class="watch-head">
+                        <span class="watch-symbol">${sym}</span>
+                        <span class="watch-price ${isUp ? 'positive' : 'negative'}">
+                            $${num(latest.c)}
+                            <span class="watch-change">${isUp ? '+' : ''}${num(change, 2)} (${num(changePct, 2)}%)</span>
+                        </span>
+                    </div>
+                    <div class="watch-markers">
+                        <div class="watch-marker res"><span class="mk-label">D-H</span><span class="mk-val">${num(markers.daily_high)}</span></div>
+                        <div class="watch-marker neu"><span class="mk-label">PD-C</span><span class="mk-val">${num(markers.prior_day_close)}</span></div>
+                        <div class="watch-marker sup"><span class="mk-label">D-L</span><span class="mk-val">${num(markers.daily_low)}</span></div>
+                    </div>
+                    <div class="watch-sentiment">
+                        <span class="sent-chip ${sentLabel.toLowerCase()}">NEWS: ${sentLabel}</span>
+                        <span class="sent-score">${sentScore > 0 ? '+' : ''}${num(sentScore, 2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
+        panel.innerHTML = html;
+    }
+
+    renderTradeLog() {
+        const panel = document.getElementById('view-tradelog');
+        if (!panel) return;
+
+        const bt = this.latestBacktest;
+        const setups = bt?.setups || [];
+        const trades = setups.filter(s => ['WON', 'LOST', 'RUNNER', 'EOD_UNFAVORABLE'].includes(s.status))
+            .sort((a, b) => b.date.localeCompare(a.date));
+
+        let pnlRunning = 0;
+        let html = `
+            <div class="view-header">
+                <h1 class="view-title">TRADE LOG</h1>
+                <p class="view-subtitle">ALL TRADES · ${trades.length} TOTAL</p>
+            </div>
+            <div class="tradelog-list">
+                <div class="tradelog-header">
+                    <span>DATE</span><span>SYM</span><span>DIR</span>
+                    <span>ENTRY</span><span>EXIT</span><span>REASON</span>
+                    <span>P&L</span><span>CUM</span>
+                </div>
+        `;
+
+        for (const t of trades) {
+            pnlRunning += t.pnl || 0;
+            const outcomeCls = (t.pnl || 0) >= 0 ? 'won' : 'lost';
+            const dirCls = t.bias === 'BUY' ? 'buy' : 'sell';
+            const sign = (t.pnl || 0) >= 0 ? '+' : '';
+            html += `
+                <div class="tradelog-row">
+                    <span class="tl-date">${t.date}</span>
+                    <span class="tl-sym">${t.symbol}</span>
+                    <span class="tl-dir ${dirCls}">${t.bias || '-'}</span>
+                    <span class="tl-entry">$${num(t.entry_price)}</span>
+                    <span class="tl-exit">$${num(t.exit_price)}</span>
+                    <span class="tl-reason">${t.exit_reason || '-'}</span>
+                    <span class="tl-pnl ${outcomeCls}">${sign}$${num(t.pnl || 0)}</span>
+                    <span class="tl-cum ${pnlRunning >= 0 ? 'won' : 'lost'}">${pnlRunning >= 0 ? '+' : ''}$${num(pnlRunning)}</span>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
         panel.innerHTML = html;
     }
 

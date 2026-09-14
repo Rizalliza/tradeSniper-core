@@ -2,7 +2,7 @@
 /**
  * Simple HTTP server for the TradeSniper webapp.
  *
- * Usage: node scripts/serve.js [--port 3000]
+ * Usage: node scripts/serve.js [--port 3000] [--host 127.0.0.1]
  *
  * Serves the webapp from /webapp with source modules from /src.
  * All imports resolve relative to project root.
@@ -18,6 +18,8 @@ const projectRoot = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const portIdx = args.indexOf('--port');
 const port = portIdx >= 0 ? parseInt(args[portIdx + 1], 10) : 3000;
+const hostIdx = args.indexOf('--host');
+const host = hostIdx >= 0 ? args[hostIdx + 1] : '0.0.0.0';
 
 const MIME_TYPES = {
     '.html': 'text/html; charset=utf-8',
@@ -64,18 +66,18 @@ const server = http.createServer((req, res) => {
     try {
         const filePath = resolveUrl(req.url);
 
+        if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+            res.writeHead(404);
+            res.end('Not Found');
+            return;
+        }
+
         // Security: ensure file is within project root
         const realPath = fs.realpathSync(filePath);
         const realRoot = fs.realpathSync(projectRoot);
         if (!realPath.startsWith(realRoot)) {
             res.writeHead(403);
             res.end('Forbidden');
-            return;
-        }
-
-        if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
-            res.writeHead(404);
-            res.end('Not Found');
             return;
         }
 
@@ -90,11 +92,11 @@ const server = http.createServer((req, res) => {
     }
 });
 
-server.listen(port, () => {
+server.listen(port, host, () => {
     console.log(`\n╔══════════════════════════════════════════╗`);
     console.log(`║  SNIPER AI // TERMINAL                   ║`);
     console.log(`╠══════════════════════════════════════════╣`);
-    console.log(`║  Server running at http://localhost:${port}  ║`);
+    console.log(`║  Server running at http://${host}:${port}  ║`);
     console.log(`╚══════════════════════════════════════════╝\n`);
-    console.log(`Open http://localhost:${port} in your browser\n`);
+    console.log(`Open http://${host}:${port} in your browser\n`);
 });

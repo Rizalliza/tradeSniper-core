@@ -46,6 +46,10 @@ export class MeanReversionStrategy extends BaseStrategy {
         this._prevBar = null;
         this._barIndex = 0;
         this._reversalBar = null;
+        this.crossDir = null;
+        this.crossMarker = null;
+        this.entryMarker = null;
+        this.profitMarker = null;
     }
 
     _inWindow(bar) {
@@ -88,12 +92,16 @@ export class MeanReversionStrategy extends BaseStrategy {
             this.phase = 'WAITING_REVERSAL';
             this.setupDirection = 'BUY';
             this.setupLevel = bar.low;
+            this.crossDir = 'DOWN';
+            this.crossMarker = nearest.nearestSupport;
             return;
         }
         if (bar.close >= upperBand && nearResistance && bar.high > this._prevBar.high) {
             this.phase = 'WAITING_REVERSAL';
             this.setupDirection = 'SELL';
             this.setupLevel = bar.high;
+            this.crossDir = 'UP';
+            this.crossMarker = nearest.nearestResistance;
             return;
         }
     }
@@ -115,6 +123,11 @@ export class MeanReversionStrategy extends BaseStrategy {
         const dirSign = direction === 'BUY' ? 1 : -1;
         this.stopLoss = price * (1 - this.stopLossPct * dirSign);
         this.takeProfit = price * (1 + this.takeProfitPct * dirSign);
+        
+        // For runner compatibility: use nearest marker as entry marker
+        const nearest = MarkerService.classify(this.markerList, price);
+        this.entryMarker = direction === 'BUY' ? nearest.nearestSupport : nearest.nearestResistance;
+        this.profitMarker = { value: this.takeProfit, name: 'mean_target' };
         this.activeTrade = {
             direction, entryPrice: price, entryTime: time,
             exitPrice: null, exitReason: null, exitTime: null,
@@ -191,9 +204,9 @@ export class MeanReversionStrategy extends BaseStrategy {
                 (this.entryDir === 'BUY' ? 1 : -1);
             this._closeTrade(lastBar.close, favorable > 0 ? 'RUNNER' : 'EOD_UNFAVORABLE', lastBar.time);
         } else if (this.phase === 'WAITING_REVERSAL') {
-            this.phase = 'NO_ENTRY';
+            this.phase = 'NO_RETEST';
         } else if (this.phase === 'IDLE') {
-            this.phase = 'NO_SETUP';
+            this.phase = 'NO_CROSS';
         }
         return this.getState();
     }
@@ -210,6 +223,10 @@ export class MeanReversionStrategy extends BaseStrategy {
             trailingLevel: this.trailingLevel,
             setupDirection: this.setupDirection || null,
             setupLevel: this.setupLevel || null,
+            crossDir: this.crossDir || null,
+            crossMarker: this.crossMarker || null,
+            entryMarker: this.entryMarker || null,
+            profitMarker: this.profitMarker || null,
         };
     }
 

@@ -30,6 +30,8 @@ const STRATEGIES = {
             { key: 'reverseStopCount', label: 'Reverse Stop Count', type: 'number', min: 1, max: 10, step: 1, default: 3 },
             { key: 'trailingStop', label: 'Enable Trailing Stop', type: 'checkbox', default: true },
             { key: 'trailingStepPct', label: 'Trailing Step %', type: 'number', min: 0.001, max: 0.02, step: 0.001, default: 0.005 },
+            { key: 'hardStopPct', label: 'Hard Stop Loss %', type: 'number', min: 0, max: 0.05, step: 0.001, default: 0.005 },
+            { key: 'breakevenAfterPct', label: 'Breakeven After %', type: 'number', min: 0, max: 0.02, step: 0.001, default: 0.003 },
         ],
     },
     meanreversion: {

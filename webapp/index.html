@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNIPER — AI / TERMINAL</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 32 32" width="24" height="24">
+                        <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <line x1="16" y1="4" x2="16" y2="10" stroke="currentColor" stroke-width="2"/>
+                        <line x1="16" y1="22" x2="16" y2="28" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4" y1="16" x2="10" y2="16" stroke="currentColor" stroke-width="2"/>
+                        <line x1="22" y1="16" x2="28" y2="16" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">SNIPER</span>
+                    <span class="logo-sub">AI // TERMINAL</span>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <a href="#command" class="nav-item" data-view="command">
+                    <span class="nav-icon">▦</span>
+                    <span>COMMAND DECK</span>
+                </a>
+                <a href="#sniper" class="nav-item" data-view="sniper">
+                    <span class="nav-icon">◐</span>
+                    <span>SNIPER MODE</span>
+                </a>
+                <a href="#backtest" class="nav-item" data-view="backtest">
+                    <span class="nav-icon">⚗</span>
+                    <span>BACKTEST</span>
+                </a>
+                <a href="#verify" class="nav-item" data-view="verify">
+                    <span class="nav-icon">⛨</span>
+                    <span>VERIFY</span>
+                </a>
+                <a href="#flow" class="nav-item active" data-view="flow">
+                    <span class="nav-icon">⎇</span>
+                    <span>FLOW STUDY</span>
+                </a>
+                <a href="#performance" class="nav-item" data-view="performance">
+                    <span class="nav-icon">▣</span>
+                    <span>PERFORMANCE</span>
+                </a>
+                <a href="#sentiment" class="nav-item" data-view="sentiment">
+                    <span class="nav-icon">◎</span>
+                    <span>SENTIMENT NET</span>
+                </a>
+                <a href="#watchlist" class="nav-item" data-view="watchlist">
+                    <span class="nav-icon">◉</span>
+                    <span>WATCHLIST</span>
+                </a>
+                <a href="#tradelog" class="nav-item" data-view="tradelog">
+                    <span class="nav-icon">⎋</span>
+                    <span>TRADE LOG</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span class="version">v2.0</span>
+                <span class="mode">BACKTEST</span>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main">
+            <!-- Top bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <span class="status-dot"></span>
+                    <span class="status-text">BACKTEST · FEBRUARY 2026 · <span id="tradeCount">57</span> TRADES</span>
+                </div>
+                <div class="topbar-right">
+                    <span id="timeDisplay">21:45:48 ET</span>
+                    <span class="session-status"><span class="dot closed"></span> CLOSED · T-11:44:12</span>
+                </div>
+            </header>
+
+            <!-- Flow Study View -->
+            <section id="view-flow" class="view active">
+                <div class="view-header">
+                    <h1 class="view-title">FLOW STUDY</h1>
+                    <p class="view-subtitle">RAW 1-MIN BARS · PRIOR-DAY HIGH/LOW MARKERS · NO TARGET · NO STOP · DRAW YOUR ARROWS</p>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <div class="symbol-tabs">
+                        <button class="sym-btn active" data-symbol="AAPL">AAPL</button>
+                        <button class="sym-btn" data-symbol="TSLA">TSLA</button>
+                        <button class="sym-btn" data-symbol="NVDA">NVDA</button>
+                    </div>
+                    <div class="range-tabs">
+                        <button class="range-btn active" data-range="30">OPEN 30MIN</button>
+                        <button class="range-btn" data-range="390">FULL DAY</button>
+                    </div>
+                    <button class="export-btn" id="exportSvg">
+                        <span>↓</span> SVG
+                    </button>
+                </div>
+
+                <!-- Charts grid -->
+                <div class="charts-grid" id="chartsGrid">
+                    <!-- Charts will be generated by JS -->
+                </div>
+            </section>
+
+            <!-- Backtest View -->
+            <section id="view-backtest" class="view">
+                <div class="view-header">
+                    <h1 class="view-title">BACKTEST</h1>
+                    <p class="view-subtitle">SNIPER STRATEGY · MARKER-RETEST · 3 PHASE EXECUTION</p>
+                </div>
+                <div class="backtest-panel" id="backtestPanel">
+                    <!-- Generated by JS -->
+                </div>
+            </section>
+
+            <!-- Performance View -->
+            <section id="view-performance" class="view">
+                <div class="view-header">
+                    <h1 class="view-title">PERFORMANCE</h1>
+                    <p class="view-subtitle">EQUITY CURVE · DRAWDOWN · PER-SYMBOL BREAKDOWN</p>
+                </div>
+                <div class="perf-panel" id="perfPanel">
+                    <!-- Generated by JS -->
+                </div>
+            </section>
+
+            <!-- Verify View -->
+            <section id="view-verify" class="view">
+                <div class="view-header">
+                    <h1 class="view-title">VERIFY</h1>
+                    <p class="view-subtitle">TEST SUITE · <span id="testCount">128</span> TESTS PASSING</p>
+                </div>
+                <div class="verify-panel" id="verifyPanel">
+                    <!-- Generated by JS -->
+                </div>
+            </section>
+
+            <!-- Other views (placeholders) -->
+            <section id="view-command" class="view">
+                <div class="view-header"><h1 class="view-title">COMMAND DECK</h1></div>
+                <div class="placeholder">Live trading controls — activate in production mode</div>
+            </section>
+            <section id="view-sniper" class="view">
+                <div class="view-header"><h1 class="view-title">SNIPER MODE</h1></div>
+                <div class="placeholder">Real-time signal detection and execution</div>
+            </section>
+            <section id="view-sentiment" class="view">
+                <div class="view-header"><h1 class="view-title">SENTIMENT NET</h1></div>
+                <div class="placeholder">Market context: VIX, earnings, FOMC, index trend</div>
+            </section>
+            <section id="view-watchlist" class="view">
+                <div class="view-header"><h1 class="view-title">WATCHLIST</h1></div>
+                <div class="placeholder">Tracked symbols and marker levels</div>
+            </section>
+            <section id="view-tradelog" class="view">
+                <div class="view-header"><h1 class="view-title">TRADE LOG</h1></div>
+                <div class="placeholder">Complete trade history with annotations</div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "tradesniper-core",
+  "version": "2.0.0",
+  "engines": { "node": ">=18" },
+  "description": "TradeSniper marker-retest stock trading strategy engine",
+  "type": "module",
+  "main": "src/strategies/SniperStrategy.js",
+  "scripts": {
+    "test": "node --test tests/",
+    "backtest": "node scripts/runBacktest.js",
+    "backtest:gen": "node scripts/generateTestData.js && node scripts/runBacktest.js --bars data/test_minute_bars.csv",
+    "buffer:analyze": "node scripts/bufferAnalysis.js",
+    "massive:backtest": "node -r dotenv/config scripts/massiveBacktest.js",
+    "webapp:dev": "node scripts/serve.js --port 3000",
+    "start": "node scripts/serve.js"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "dotenv": "^16.4.0"
+  }
+}

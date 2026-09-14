@@ -9,7 +9,15 @@ name: TradeSniper News Analyst
 description: "Market news analysis with sentiment scoring, topic clustering, and decision context generation. Price-action-first: news is context, not a signal."
 
 model:
-  id: doubao-seed-2-1-turbo-260628
+  # Use the first model your account can access.
+  # Run: arkcli model list  (to see all available)
+  # Common BytePlus models:
+  #   - dola-seed-2-1-turbo-260628  (latest, best for agents)
+  #   - seed-2-0-pro-260328         (Seed 2.0 Pro)
+  #   - seed-2-0-lite-260428        (Seed 2.0 Lite, lower cost)
+  #   - seed-2-0-mini-260428        (Seed 2.0 Mini, fastest)
+  #   - ark-code-latest             (coding plan default)
+  id: seed-2-0-pro-260328
 
 system: |
   You are the TradeSniper News Analyst.

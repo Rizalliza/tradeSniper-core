@@ -59,6 +59,34 @@ function parseArgs() {
 
 const reverseStopMap = { high: 1, mid: 2, low: 3 };
 
+function addMinutes(time, minutes) {
+    const [hour, minute, second = '00'] = time.split(':').map(Number);
+    const date = new Date(Date.UTC(2000, 0, 1, hour, minute + minutes, second));
+    return date.toISOString().slice(11, 19);
+}
+
+function formatMarketDateTime(date) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+    }).formatToParts(date);
+    const get = (type) => parts.find((part) => part.type === type)?.value;
+
+    return {
+        date: `${get('year')}-${get('month')}-${get('day')}`,
+        time: `${get('hour')}:${get('minute')}:${get('second')}`,
+        hour: Number(get('hour')),
+        minute: Number(get('minute')),
+        second: Number(get('second')),
+    };
+}
+
 async function main() {
     const opts = parseArgs();
     const apiKey = process.env.MASSIVE_API_KEY;
@@ -87,12 +115,10 @@ async function main() {
 
     // Calculate date range
     const today = new Date();
-    const todayET = _getEasternDateParts(today);
-    const todayStr = todayET.dateStr;
-    const fromDate = new Date();
+    const todayStr = formatMarketDateTime(today).date;
+    const fromDate = new Date(today);
     fromDate.setDate(fromDate.getDate() - opts.lookbackDays);
-    const fromET = _getEasternDateParts(fromDate);
-    const fromStr = fromET.dateStr;
+    const fromStr = formatMarketDateTime(fromDate).date;
 
     console.log(`📅 Date: ${todayStr}`);
     console.log(`🔍 Loading ${opts.lookbackDays} days of daily data for markers...\n`);
@@ -108,8 +134,11 @@ async function main() {
                 continue;
             }
 
-            const lastIdx = dailyBars.length - 1;
-            const markers = MarkerService.compute(dailyBars, lastIdx);
+            const markerBars = dailyBars[dailyBars.length - 1]?.date === todayStr
+                ? dailyBars
+                : [...dailyBars, { ...dailyBars[dailyBars.length - 1], date: todayStr }];
+            const lastIdx = markerBars.length - 1;
+            const markers = MarkerService.compute(markerBars, lastIdx);
             const markerList = MarkerService.buildList(markers);
 
             symbolData[symbol] = {
@@ -136,7 +165,7 @@ async function main() {
         data.strategy = new SniperStrategy({
             bufferPct: opts.buffer,
             windowStart: '09:30:00',
-            windowEnd: `09:${(30 + opts.window).toString().padStart(2, '0')}:00`,
+            windowEnd: addMinutes('09:30:00', opts.window),
             reverseStopCount,
             trailingStop: opts.trailing,
             trailingStepPct: opts.trailingStep,
@@ -167,13 +196,13 @@ async function main() {
 
     async function poll() {
         const now = new Date();
-        const et = _getEasternDateParts(now);
-        const timeStr = et.time;
+        const nowET = formatMarketDateTime(now);
+        const timeStr = nowET.time;
 
         // Check if we're in the window
-        const h = et.hour;
-        const m = et.minute;
-        const s = et.second;
+        const h = nowET.hour;
+        const m = nowET.minute;
+        const s = nowET.second;
         const isInWindow = h === 9 && m >= 30 && m < 30 + opts.window;
         const isMarketOpen = (h === 9 && m >= 30) || (h > 9 && h < 16) || (h === 16 && m === 0);
 
@@ -208,13 +237,15 @@ async function main() {
                 if (state.phase === 'IN_TRADE' && !entryFired[sym]) {
                     entryFired[sym] = true;
                     const trade = state.trades[state.trades.length - 1] || state;
-                    const isBuy = trade.entryDir === 'BUY';
+                    const direction = trade.direction || state.entryDir;
+                    const entryPrice = trade.entryPrice ?? state.entryPrice;
+                    const isBuy = direction === 'BUY';
                     const color = isBuy ? '\x1b[32m' : '\x1b[31m';
                     const arrow = isBuy ? '▲' : '▼';
                     const marker = trade.entryMarker || state.entryMarker;
 
                     console.log(`\n${color}══════════ SIGNAL ══════════\x1b[0m`);
-                    console.log(`${color}  ${sym} ${arrow} ${trade.entryDir || state.entryDir} @ $${(trade.entryPrice || state.entryPrice).toFixed(2)}\x1b[0m`);
+                    console.log(`${color}  ${sym} ${arrow} ${direction} @ $${entryPrice.toFixed(2)}\x1b[0m`);
                     console.log(`  Marker: ${marker}`);
                     console.log(`  Time:   ${trade.entryTime || bar.time}`);
                     console.log(`  Buffer: ${(opts.buffer * 100).toFixed(2)}%`);
@@ -257,29 +288,6 @@ async function main() {
     }
 
     poll();
-}
-
-function _formatEastern(date) {
-    const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/New_York',
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false,
-    });
-    const parts = {};
-    for (const p of formatter.formatToParts(date)) {
-        parts[p.type] = p.value;
-    }
-    return {
-        date: `${parts.year}-${parts.month}-${parts.day}`,
-        time: `${parts.hour}:${parts.minute}:${parts.second}`,
-    };
-}
-
-function _getEasternDateParts(date) {
-    const fmt = _formatEastern(date);
-    const [h, m, s] = fmt.time.split(':').map(Number);
-    return { dateStr: fmt.date, hour: h, minute: m, second: s };
 }
 
 main().catch(err => {

@@ -6,7 +6,7 @@
   "type": "module",
   "main": "src/strategies/SniperStrategy.js",
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/**/*.test.js",
     "backtest": "node scripts/runBacktest.js",
     "backtest:gen": "node scripts/generateTestData.js && node scripts/runBacktest.js --bars data/test_minute_bars.csv",
     "buffer:analyze": "node scripts/bufferAnalysis.js",

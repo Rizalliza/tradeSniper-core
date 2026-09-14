@@ -18,6 +18,8 @@ import { SniperStrategy } from '../src/strategies/SniperStrategy.js';
 import { MarkerService } from '../src/market/MarkerService.js';
 import { BacktestStats } from '../src/backtest/BacktestStats.js';
 import { MassiveData } from '../src/data/MassiveData.js';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 // Parse CLI args
 function parseArgs() {
@@ -33,6 +35,7 @@ function parseArgs() {
         shares: 100,
         trailingStop: true,
         trailingStep: 0.005,
+        jsonOut: null,
     };
     for (let i = 0; i < args.length; i++) {
         switch (args[i]) {
@@ -46,12 +49,64 @@ function parseArgs() {
             case '--shares': opts.shares = parseInt(args[++i], 10); break;
             case '--no-trailing': opts.trailingStop = false; break;
             case '--trailing-step': opts.trailingStep = parseFloat(args[++i]); break;
+            case '--json-out': opts.jsonOut = args[++i]; break;
         }
     }
     return opts;
 }
 
 const reverseStopMap = { high: 1, mid: 2, low: 3 };
+
+function formatProfitFactor(value) {
+    return value === Infinity ? '∞' : value.toFixed(2);
+}
+
+function addMinutes(time, minutes) {
+    const [hour, minute, second = '00'] = time.split(':').map(Number);
+    const date = new Date(Date.UTC(2000, 0, 1, hour, minute + minutes, second));
+    return date.toISOString().slice(11, 19);
+}
+
+function isTimeInRange(time, start, end) {
+    return time >= start && time < end;
+}
+
+function groupBarsByDate(bars) {
+    const byDate = new Map();
+    for (const bar of bars) {
+        if (!byDate.has(bar.date)) byDate.set(bar.date, []);
+        byDate.get(bar.date).push(bar);
+    }
+    return byDate;
+}
+
+async function writeJsonSnapshot(outputPath, opts, stats, setups) {
+    const payload = {
+        source: 'Massive',
+        generated_at: new Date().toISOString(),
+        period: { from: opts.from, to: opts.to },
+        symbols: opts.symbols,
+        config: {
+            timespan: opts.timespan,
+            windowMinutes: opts.windowMinutes,
+            risk: opts.risk,
+            buffer: opts.buffer,
+            shares: opts.shares,
+            trailingStop: opts.trailingStop,
+            trailingStep: opts.trailingStep,
+        },
+        stats: {
+            ...stats,
+            profit_factor: stats.profit_factor === Infinity ? null : stats.profit_factor,
+            profit_factor_display: formatProfitFactor(stats.profit_factor),
+        },
+        setups,
+    };
+
+    await fs.mkdir(path.dirname(outputPath), { recursive: true });
+    await fs.writeFile(outputPath, JSON.stringify(payload, null, 2) + '\n');
+    console.log(`\n Wrote JSON snapshot: ${outputPath}`);
+}
 
 async function runBacktest(opts) {
     const apiKey = process.env.MASSIVE_API_KEY;
@@ -86,38 +141,32 @@ async function runBacktest(opts) {
         }
         dailyCache[symbol] = daily;
 
-        // For each trading day, fetch intraday bars and run strategy
+        // Fetch intraday bars once per symbol to avoid per-day API request bursts.
+        let intradayByDate;
+        try {
+            const intradayBars = opts.timespan === 'second'
+                ? await massive.fetchSecondBars(symbol, opts.from, opts.to)
+                : await massive.fetchMinuteBars(symbol, opts.from, opts.to);
+            intradayByDate = groupBarsByDate(intradayBars);
+        } catch (e) {
+            console.log(`  ⚠ Error fetching intraday bars for ${symbol}: ${e.message}`);
+            continue;
+        }
+
         const symbolSetups = [];
         for (let di = 1; di < daily.length; di++) {
             const day = daily[di];
             const dateStr = day.date;
-
-            // Fetch intraday bars for this day
-            let intraday;
-            try {
-                intraday = opts.timespan === 'second'
-                    ? await massive.fetchSecondBars(symbol, dateStr, dateStr)
-                    : await massive.fetchMinuteBars(symbol, dateStr, dateStr);
-            } catch (e) {
-                console.log(`  ⚠ Error fetching ${symbol} ${dateStr}: ${e.message}`);
-                continue;
-            }
+            const intraday = intradayByDate.get(dateStr) || [];
 
             if (!intraday || intraday.length < 2) continue;
 
             // Filter to market hours (9:30 AM - 4:00 PM ET is standard)
             // Use opening window for entry (first N minutes)
-            const windowEndMinute = 30 + opts.windowMinutes; // 09:30 + N min
-            const openingBars = intraday.filter(b => {
-                const h = parseInt(b.time.split(':')[0], 10);
-                const m = parseInt(b.time.split(':')[1], 10);
-                return h === 9 && m >= 30 && m < windowEndMinute;
-            });
-            const allDayBars = intraday.filter(b => {
-                const h = parseInt(b.time.split(':')[0], 10);
-                const m = parseInt(b.time.split(':')[1], 10);
-                return (h === 9 && m >= 30) || (h >= 10 && h < 16);
-            });
+            const windowStart = '09:30:00';
+            const windowEnd = addMinutes(windowStart, opts.windowMinutes);
+            const openingBars = intraday.filter(b => isTimeInRange(b.time, windowStart, windowEnd));
+            const allDayBars = intraday.filter(b => isTimeInRange(b.time, windowStart, '16:00:00'));
 
             if (openingBars.length < 2) continue;
 
@@ -128,8 +177,8 @@ async function runBacktest(opts) {
             // Run strategy
             const strategy = new SniperStrategy({
                 bufferPct: opts.buffer,
-                windowStart: '09:30:00',
-                windowEnd: `09:${windowEndMinute.toString().padStart(2, '0')}:00`,
+                windowStart,
+                windowEnd,
                 reverseStopCount,
                 trailingStop: opts.trailingStop,
                 trailingStepPct: opts.trailingStep,
@@ -177,7 +226,7 @@ async function runBacktest(opts) {
 
         allSetups.push(...symbolSetups);
         const symStats = BacktestStats.compute(symbolSetups);
-        console.log(`  ${symbol}: ${symbolSetups.length} setups, ${symStats.taken} trades, ${symStats.win_rate}% win, PnL $${symStats.total_pnl.toFixed(2)}`);
+        console.log(`  ${symbol}: ${symbolSetups.length} setups, ${symStats.taken} trades, ${symStats.win_rate.toFixed(1)}% win, PnL $${symStats.net_pnl.toFixed(2)}`);
     }
 
     // Overall stats
@@ -191,8 +240,8 @@ async function runBacktest(opts) {
     console.log(` Losses:          ${stats.losses}`);
     console.log(` Skipped:         ${stats.skipped}`);
     console.log(` Win rate:        ${stats.win_rate.toFixed(1)}%`);
-    console.log(` Net PnL:         $${stats.total_pnl.toFixed(2)}`);
-    console.log(` Profit factor:   ${stats.profit_factor.toFixed(2)}`);
+    console.log(` Net PnL:         $${stats.net_pnl.toFixed(2)}`);
+    console.log(` Profit factor:   ${formatProfitFactor(stats.profit_factor)}`);
     console.log(` Avg win:         $${stats.avg_win.toFixed(2)}`);
     console.log(` Avg loss:        $${Math.abs(stats.avg_loss).toFixed(2)}`);
     console.log(` Max drawdown:    $${Math.abs(stats.max_drawdown).toFixed(2)}`);
@@ -224,6 +273,10 @@ async function runBacktest(opts) {
             const marker = t.confirm_marker || '-';
             console.log(`   ${t.date} ${t.symbol.padEnd(5)} ${t.bias.padEnd(4)} ${marker.padEnd(18)} ${t.exit_reason?.padEnd(20) || ''} ${pnl}`);
         }
+    }
+
+    if (opts.jsonOut) {
+        await writeJsonSnapshot(opts.jsonOut, opts, stats, allSetups);
     }
     console.log('');
 }

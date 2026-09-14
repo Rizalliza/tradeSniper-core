@@ -18,6 +18,8 @@ import { BarLoader } from '../market/BarLoader.js';
 const MASSIVE_REST_BASE = 'https://api.massive.com/v2';
 const MASSIVE_S3_ENDPOINT = 'https://files.massive.com';
 const MASSIVE_S3_BUCKET = 'flatfiles';
+const MARKET_TIME_ZONE = 'America/New_York';
+const DEFAULT_RATE_LIMIT_RETRY_MS = 65000;
 
 export class MassiveData {
   constructor(config = {}) {
@@ -26,6 +28,9 @@ export class MassiveData {
     this.secretKey = config.secretKey || process.env.MASSIVE_SECRET_KEY || '';
     this.useS3 = config.useS3 !== false && !!this.accessKey && !!this.secretKey;
     this.cacheDir = config.cacheDir || './data/massive_cache';
+    this.rateLimitRetryMs = config.rateLimitRetryMs
+      || Number(process.env.MASSIVE_RATE_LIMIT_RETRY_MS)
+      || DEFAULT_RATE_LIMIT_RETRY_MS;
   }
 
   /**
@@ -47,21 +52,10 @@ export class MassiveData {
 
     do {
       const url = cursor
-        ? cursor
+        ? this._withApiKey(cursor)
         : `${MASSIVE_REST_BASE}/aggs/ticker/${symbol}/range/${multiplier}/${timespan}/${from}/${to}?adjusted=true&sort=asc&limit=${limit}&apiKey=${this.apiKey}`;
 
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (data.status === 'ERROR' || data.status === 'NOT_AUTHORIZED') {
-        // Rate limit or error - retry once after delay
-        if (round === 0) {
-          await new Promise(r => setTimeout(r, 1000));
-          round++;
-          continue;
-        }
-        throw new Error(`Massive API error: ${data.message || data.status}`);
-      }
+      const data = await this._fetchJsonWithRetry(url);
 
       if (data.results && data.results.length) {
         results.push(...data.results.map((r) => this._convertAggregate(symbol, r, timespan)));
@@ -72,6 +66,38 @@ export class MassiveData {
     } while (cursor && round < 10); // safety limit
 
     return results;
+  }
+
+  async _fetchJsonWithRetry(url, retries = 2) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      const res = await fetch(url);
+      const data = await res.json().catch(() => ({}));
+      const providerError = data.status === 'ERROR' || data.status === 'NOT_AUTHORIZED';
+
+      if (res.ok && !providerError) return data;
+
+      const message = data.message || data.error || `${res.status} ${res.statusText}`;
+      const retryable = res.status === 429 || res.status >= 500 || data.status === 'ERROR';
+      if (retryable && attempt < retries) {
+        const waitMs = this._isRateLimit(res, message)
+          ? this.rateLimitRetryMs
+          : 1000 * (attempt + 1);
+        await new Promise(r => setTimeout(r, waitMs));
+        continue;
+      }
+
+      throw new Error(`Massive API error: ${message}`);
+    }
+  }
+
+  _withApiKey(url) {
+    const parsed = new URL(url);
+    if (!parsed.searchParams.has('apiKey')) parsed.searchParams.set('apiKey', this.apiKey);
+    return parsed.toString();
+  }
+
+  _isRateLimit(res, message) {
+    return res.status === 429 || /rate limit|maximum requests per minute/i.test(message);
   }
 
   /**
@@ -122,13 +148,15 @@ export class MassiveData {
    * Converts to US/Eastern time for market-hours filtering.
    */
   _convertAggregate(symbol, agg, timespan) {
-    const utcDate = new Date(agg.t);
-    const etParts = this._formatEastern(utcDate);
+    const date = new Date(agg.t);
+    const { dateStr, timeStr } = timespan === 'day'
+      ? { dateStr: date.toISOString().slice(0, 10), timeStr: '00:00:00' }
+      : this._formatMarketDateTime(date);
 
     return {
       symbol,
-      date: etParts.date,
-      time: etParts.time,
+      date: dateStr,
+      time: timeStr,
       open: agg.o,
       high: agg.h,
       low: agg.l,
@@ -140,30 +168,22 @@ export class MassiveData {
     };
   }
 
-  /**
-   * Format a UTC Date as US/Eastern { date, time } strings.
-   * Uses Intl.DateTimeFormat for accurate DST handling.
-   */
-  _formatEastern(utcDate) {
-    if (!this._etFormatter) {
-      this._etFormatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/New_York',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-      });
-    }
-    const parts = {};
-    for (const p of this._etFormatter.formatToParts(utcDate)) {
-      parts[p.type] = p.value;
-    }
+  _formatMarketDateTime(date) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: MARKET_TIME_ZONE,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).formatToParts(date);
+    const get = (type) => parts.find((part) => part.type === type)?.value;
+
     return {
-      date: `${parts.year}-${parts.month}-${parts.day}`,
-      time: `${parts.hour}:${parts.minute}:${parts.second}`,
+      dateStr: `${get('year')}-${get('month')}-${get('day')}`,
+      timeStr: `${get('hour')}:${get('minute')}:${get('second')}`,
     };
   }
 
@@ -233,13 +253,12 @@ export class MassiveData {
     const timestamp = parseInt(get('window_start'), 10);
     // window_start is in nanoseconds for minute aggs
     const ms = timestamp > 1e15 ? Math.floor(timestamp / 1e6) : timestamp;
-    const utcDate = new Date(ms);
-    const etParts = this._formatEastern(utcDate);
+    const { dateStr, timeStr } = this._formatMarketDateTime(new Date(ms));
 
     return {
       symbol: ticker,
-      date: etParts.date,
-      time: etParts.time,
+      date: dateStr,
+      time: timeStr,
       open: parseFloat(get('open')),
       high: parseFloat(get('high')),
       low: parseFloat(get('low')),

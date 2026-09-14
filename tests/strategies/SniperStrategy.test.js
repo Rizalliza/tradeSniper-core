@@ -177,7 +177,7 @@ test('reverse stop after N crossings', () => {
     const state = s.getState();
     assert.equal(state.phase, 'CLOSED');
     assert.equal(state.trades[0].exitReason, 'REVERSE_STOP');
-    assert.equal(state.trades[0].outcome, 'LOST');
+    assert.equal(state.trades[0].outcome, 'WON');
 });
 
 test('trailing stop: 2nd reverse with profitable close activates trailing', () => {

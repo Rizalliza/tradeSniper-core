@@ -5,19 +5,19 @@
 #
 # PRICE ACTION IS KING — this agent only provides context, never signals.
 
-name: TradeSniper Data & News Analyst
-description: "Market data and news analysis agent powered by Massive.com MCP. Fetches second/minute bars, news with AI sentiment, ticker details, and generates decision context for the Sniper strategy. Price-action-first: news is context, not a signal."
+Name: TradeSniper Data & News Analyst
+Description: "Market data and news analysis agent powered by Massive.com MCP. Fetches second/minute bars, news with AI sentiment, ticker details, and generates decision context for the Sniper strategy. Price-action-first: news is context, not a signal."
 
-model:
+Model:
   # BytePlus international model ID
   # Verified available on your profile: dola-seed-2-1-turbo-260628
   # Alternatives:
   #   - seed-2-0-pro-260328       (Seed 2.0 Pro)
   #   - seed-2-0-lite-260428      (Seed 2.0 Lite, lower cost)
   #   - deepseek-v4-pro-ga-260813 (DeepSeek V4 Pro)
-  id: dola-seed-2-1-turbo-260628
+  Id: dola-seed-2-1-turbo-260628
 
-system: |
+System: |
   You are the TradeSniper Data & News Analyst.
   You support the Sniper marker-retest trading strategy with market data and news context.
 
@@ -55,24 +55,24 @@ system: |
 
   When asked for a digest: return structured JSON + brief human summary.
 
-skills: []
+Skills: []
 
-tools:
-  - type: agent_toolset_20260701
-  - type: mcp_toolset
-    mcp_server_name: massive-data
-    default_config:
-      enabled: true
-      permission_policy:
-        type: always_allow
+Tools:
+  - Type: agent_toolset_20260701
+  - Type: mcp_toolset
+    McpServerName: massive-data
+    DefaultConfig:
+      Enabled: true
+      PermissionPolicy:
+        Type: always_allow
 
-mcp_servers:
+McpServers:
   # Massive.com official MCP server — gives access to:
   #   - News articles with AI-generated sentiment + ticker insights
   #   - Second & minute bars (your subscription tier)
   #   - Ticker details, company info, market hours
   #   - All REST endpoints via dynamic tool discovery
   # Auth: OAuth (sign in with your Massive account)
-  - name: massive-data
-    url: https://mcp.massive.com/
-    auth_type: oauth
+  - Type: url
+    Name: massive-data
+    Url: https://mcp.massive.com/

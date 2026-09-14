@@ -69,7 +69,7 @@ test('reverse stop triggers at exactly reverseStopCount', () => {
     const state = s.getState();
     assert.equal(state.phase, 'CLOSED');
     assert.equal(state.trades[0].exitReason, 'REVERSE_STOP');
-    assert.equal(state.trades[0].outcome, 'LOST');
+    assert.equal(state.trades[0].outcome, 'WON');
 });
 
 test('reverseStopCount=1 stops at first reverse', () => {
@@ -81,7 +81,7 @@ test('reverseStopCount=1 stops at first reverse', () => {
     const state = s.getState();
     assert.equal(state.phase, 'CLOSED');
     assert.equal(state.trades[0].exitReason, 'REVERSE_STOP');
-    assert.equal(state.trades[0].outcome, 'LOST');
+    assert.equal(state.trades[0].outcome, 'WON');
 });
 
 test('trade stays open below reverseStopCount', () => {
@@ -130,7 +130,7 @@ test('trailing stop gets hit when price reverses past trailing level', () => {
     const state = s.getState();
     assert.equal(state.phase, 'CLOSED');
     assert.equal(state.trades[0].exitReason, 'TRAILING_STOP');
-    assert.equal(state.trades[0].outcome, 'LOST');
+    assert.equal(state.trades[0].outcome, 'WON');
     assert.equal(state.trades[0].exitPrice, 160);
     assert.equal(Math.abs(state.trades[0].pnl), 0);
 });
@@ -224,14 +224,14 @@ test('trade outcome is WON for profitable exit', () => {
     assert.equal(state.trades[0].exitReason, 'MARKER_PROFIT');
 });
 
-test('trade outcome is LOST for losing exit', () => {
+test('trade outcome is WON for breakeven exit', () => {
     const s = new SniperStrategy({ reverseStopCount: 1, trailingStop: false });
     s.reset(makeMarkers(), {});
     enterSell(s);
     s.evaluate(makeBar('09:30:03', 159.5, 0.3));
     s.evaluate(makeBar('09:30:04', 160.5, 0.3)); // 1st reverse → stop at 160
     const state = s.getState();
-    assert.equal(state.trades[0].outcome, 'LOST');
+    assert.equal(state.trades[0].outcome, 'WON');
     assert.equal(Math.abs(state.trades[0].pnl), 0);
 });
 

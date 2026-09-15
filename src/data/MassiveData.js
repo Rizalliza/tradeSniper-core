@@ -71,7 +71,7 @@ export class MassiveData {
 
       cursor = data.next_url || null;
       round++;
-    } while (cursor && round < 10);
+    } while (cursor && round < 20);
 
     return results;
   }
@@ -133,7 +133,7 @@ export class MassiveData {
 
       cursor = data.next_url || null;
       round++;
-    } while (cursor && round < 10);
+    } while (cursor && round < 20);
 
     return results;
   }

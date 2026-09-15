@@ -45,23 +45,50 @@
 - **Commit:** `0b51185`
 
 ### 🔄 Milestone 3b: Multi-Timeframe Analysis
-- **Status:** In progress — script rewritten, ready for full run
-- **Goal:** Find optimal bar timeframe for signal detection
-- **Hypothesis:** 1-second bars are too noisy; 15-second aggregation is the sweet spot
+- **Status:** In progress — AAPL + TSLA complete, NVDA running. 7-month (Feb–Aug 2026) analysis
+- **Goal:** Find optimal bar timeframe for signal detection across diverse market conditions
+- **Hypothesis:** 10–15 second aggregation is the sweet spot — confirmed for AAPL
 - **Approach:**
-  - `BarLoader.aggregate()` — rewritten with clock-based bucketing
-  - `scripts/timeframeCompare.js` — rewritten with proper per-date aggregation
+  - `BarLoader.aggregate()` — clock-based bucketing (periodSeconds, barType)
+  - `scripts/timeframeCompare.js` — v2: memory-efficient monthly chunking, stats accumulation
   - Compare: 5s, 10s, 15s, 30s, 1m (from secs), 1m_native, 5m, 15m
-  - Score across: win rate, net P&L, profit factor, avg win/loss, breakeven count, hard stop count, trailing stop count
-- **Bugs fixed before full run:**
+  - Score across: win rate, net P&L, profit factor, avg win/loss, breakeven count, hard stop count
+- **Bugs fixed:**
   1. ✅ Clock-based aggregation (not bar-count chunking)
   2. ✅ No day-boundary blending — aggregate per date
-  3. ✅ 5min/15min properly aggregated from minute bars
-  4. ✅ 1min built from seconds AND native minute bars as baseline
-  5. ✅ BREAKEVEN excluded from taken count in all reporting
-  6. ✅ Label typos fixed
-- **Current status:** Script validated with 2-day smoke test. Ready for full month run
-- **Next:** Run full comparison for all 3 symbols, entire month of Feb 2026
+  3. ✅ 1m (from seconds) matches 1m_native exactly (validation confirmed)
+  4. ✅ Memory: monthly chunking + loop-based push (no spread OOM)
+  5. ✅ Pagination: increased from 10 to 20 rounds (NVDA > 500K bars/month)
+  6. ✅ BREAKEVEN excluded from taken count in all reporting
+- **AAPL results (Feb–Aug 2026, 146 trading days):**
+  | Timeframe | Wins | Losses | BE | WR% | P&L | PF |
+  |-----------|------|--------|----|-----|-----|----|
+  | 5s | 42 | 26 | 50 | 61.8% | +$1,373 | 1.24 |
+  | **10s** | **50** | **25** | **41** | **66.7%** | **+$3,950** | **1.72** |
+  | 15s | 52 | 26 | 33 | 66.7% | +$3,216 | 1.55 |
+  | 30s | 41 | 35 | 27 | 53.9% | -$1,030 | 0.87 |
+  | 1m | 40 | 31 | 22 | 56.3% | -$1,093 | 0.84 |
+  | 5m | 22 | 17 | 4 | 56.4% | +$157 | 1.04 |
+  | 15m | 0 | 0 | 0 | — | $0 | — |
+- **TSLA results (Feb–Aug 2026, 146 trading days):**
+  | Timeframe | Wins | Losses | BE | WR% | P&L | PF |
+  |-----------|------|--------|----|-----|-----|----|
+  | 5s | 29 | 26 | 37 | 52.7% | +$1,114 | 1.14 |
+  | 10s | 33 | 28 | 30 | 54.1% | +$2,568 | 1.31 |
+  | 15s | 35 | 22 | 31 | 61.4% | +$4,209 | 1.64 |
+  | 30s | 38 | 30 | 19 | 55.9% | +$2,421 | 1.27 |
+  | 1m | 40 | 32 | 9 | 55.6% | +$3,212 | 1.33 |
+  | 1m_native | 41 | 35 | 12 | 53.9% | +$4,709 | 1.44 |
+  | 5m | 23 | 21 | 0 | 52.3% | +$5,657 | 1.89 |
+  | 15m | 0 | 0 | 0 | — | $0 | — |
+- **Key findings so far:**
+  - 10–15s is optimal for AAPL (66.7% WR, PF 1.55–1.72)
+  - TSLA shows different pattern: 15s best WR (61.4%), but 5m best P&L (+$5,657) due to larger moves
+  - 1m minute bars are LOSING money for AAPL, but WINNING for TSLA
+  - 15m has zero trades (too slow for 09:30–09:45 entry window)
+  - **Implication: per-symbol timeframe optimization is critical**
+- **Pending:** NVDA results
+- **Next:** Use findings to design M4 multi-timeframe engine (aggregate for signals, raw for execution)
 
 ### ⬜ Milestone 4: Multi-Timeframe Strategy
 - **Status:** Not started

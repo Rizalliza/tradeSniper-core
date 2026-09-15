@@ -107,8 +107,50 @@ A log of all key decisions and their rationale. When in doubt, check this file.
 5. Documentation updated if behavior changed
 6. This file updated if a new decision was made
 
+---
+
+## D007: Clock-Based Bar Aggregation (2026-09-15)
+
+**Decision:** Use clock-aligned bucketing for bar aggregation (periodSeconds + barType).
+
 **Rationale:**
-- Previous cycles had issues where code "worked in tests" but the app didn't run
-- "Works on my machine" / "works in unit tests" ≠ "works end-to-end"
-- Each push should be independently verifiable
+- Bar-count chunking ("every N bars") produces different boundaries depending on data gaps
+- Clock-aligned buckets (09:30:00–09:30:04 = 5s bar 0) are deterministic and reproducible
+- Matches how real trading platforms display multi-timeframe data
+- Per-date aggregation — never blends bars across day boundaries (overnight gap handling)
+
+**Implementation:** `BarLoader.aggregate(bars, periodSeconds, barType)` — groups by `Math.floor(secondsSince930 / periodSeconds)`
+
+**Validation:** 1m bars built from seconds match native 1-minute bars exactly.
+
+---
+
+## D008: Memory-Efficient Streaming Backtest (2026-09-15)
+
+**Decision:** Process data in monthly chunks, accumulating stats without holding all bars in memory.
+
+**Rationale:**
+- 7 months of NVDA second bars = ~4M+ bars, too large for Node's default heap (4GB RAM machine)
+- Strategy processes days independently — no need to hold all data at once
+- Monthly chunks fit easily in memory (~500K bars/month = ~80MB)
+- Pagination rounds increased from 10 to 20 to handle high-volume symbols like NVDA
+
+**Implementation:** timeframeCompare.js fetches one month at a time, runs all timeframes, accumulates per-timeframe stats, then frees the bars before moving to next month.
+
+**Impact:** Peak RAM ~700MB instead of 2.6GB+ (OOM). Can handle any date range length.
+
+---
+
+## D009: Per-Symbol Timeframe Optimization Required (2026-09-15)
+
+**Status:** Preliminary finding from AAPL + TSLA data
+
+**Observation:**
+- AAPL: optimal at 10–15s (66.7% WR, PF 1.55–1.72), 1m bars lose money
+- TSLA: best WR at 15s (61.4%), but best P&L at 5m (+$5,657, PF 1.89)
+- Different symbols have different optimal timeframes due to volatility characteristics
+
+**Implication:** M5 (per-symbol parameter optimization) must include timeframe selection, not just buffer/stop levels.
+
+**Reconsider when:** Full 3-symbol results are in
 

@@ -256,15 +256,17 @@ async function runBacktest(opts) {
     console.log(`\n Per-symbol:`);
     const perSym = {};
     for (const s of allSetups) {
-        if (!perSym[s.symbol]) perSym[s.symbol] = { setups: 0, taken: 0, wins: 0, pnl: 0 };
+        if (!perSym[s.symbol]) perSym[s.symbol] = { setups: 0, taken: 0, wins: 0, losses: 0, breakeven: 0, pnl: 0 };
         perSym[s.symbol].setups++;
-        if (s.status !== 'SKIPPED') perSym[s.symbol].taken++;
+        if (s.status === 'WON' || s.status === 'LOST') perSym[s.symbol].taken++;
         if (s.status === 'WON') perSym[s.symbol].wins++;
+        if (s.status === 'LOST') perSym[s.symbol].losses++;
+        if (s.status === 'BREAKEVEN') perSym[s.symbol].breakeven++;
         perSym[s.symbol].pnl += s.pnl;
     }
     for (const [sym, s] of Object.entries(perSym).sort()) {
         const wr = s.taken > 0 ? ((s.wins / s.taken) * 100).toFixed(1) : '0.0';
-        console.log(`   ${sym.padEnd(6)} setups=${String(s.setups).padStart(3)}  taken=${String(s.taken).padStart(3)}  win=${wr.padStart(5)}%  PnL=$${s.pnl.toFixed(2)}`);
+        console.log(`   ${sym.padEnd(6)} setups=${String(s.setups).padStart(3)}  taken=${String(s.taken).padStart(3)}  BE=${String(s.breakeven).padStart(2)}  win=${wr.padStart(5)}%  PnL=$${s.pnl.toFixed(2)}`);
     }
 
     // Recent trades

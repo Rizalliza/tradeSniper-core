@@ -10,7 +10,7 @@ export class SniperStrategy extends BaseStrategy {
         this.reverseStopCount = config.reverseStopCount ?? 3; // 3rd reverse = stop (low risk)
         this.trailingStop = config.trailingStop ?? true;     // trailing when profitable
         this.trailingStepPct = config.trailingStepPct ?? 0.005;
-        this.hardStopPct = config.hardStopPct ?? 0;          // 0 = disabled by default. Set 0.005 for 0.5% hard stop in live trading
+        this.hardStopPct = config.hardStopPct ?? 0.008;      // 0.8% default hard stop — caps max loss per trade
         this.breakevenAfterPct = config.breakevenAfterPct ?? 0; // 0 = disabled by default. Set 0.003 to move to breakeven after 0.3% profit
         this._prevBar = null;
         this._barIndex = 0;
@@ -95,8 +95,8 @@ export class SniperStrategy extends BaseStrategy {
         // Track best price reached (for runner/trailing logic)
         this._updateBestPrice(bar);
 
-        // 0. Hard stop loss — always active when configured, caps max loss
-        if (this.hardStopPct > 0 && !this.trailingActive) {
+        // 0. Hard stop loss — always active, caps max loss (ultimate safety net)
+        if (this.hardStopPct > 0) {
             const stopLevel = this.entryDir === 'BUY'
                 ? this.entryPrice * (1 - this.hardStopPct)
                 : this.entryPrice * (1 + this.hardStopPct);

@@ -116,7 +116,7 @@ test('trailing stop activates when profitable at reverse count', () => {
 });
 
 test('trailing stop gets hit when price reverses past trailing level', () => {
-    const s = new SniperStrategy({ reverseStopCount: 2, trailingStop: true, trailingStepPct: 0.005 });
+    const s = new SniperStrategy({ reverseStopCount: 2, trailingStop: true, trailingStepPct: 0.005, hardStopPct: 0 });
     s.reset(makeMarkers(), {});
     enterSell(s);
     s.evaluate(makeBar('09:30:03', 159.5, 0.3));
@@ -289,7 +289,7 @@ test('EOD RUNNER for profitable open trade', () => {
 });
 
 test('EOD EOD_UNFAVORABLE for losing open trade', () => {
-    const s = new SniperStrategy();
+    const s = new SniperStrategy({ hardStopPct: 0 });
     s.reset(makeMarkers(), {});
     enterSell(s);
     s.evaluate(makeBar('09:30:03', 161, 0.3)); // in loss (close 161 > 160)

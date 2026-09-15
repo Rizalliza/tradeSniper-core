@@ -219,7 +219,7 @@ test('EOD finalize: RUNNER for profitable open trade', () => {
 });
 
 test('EOD finalize: EOD_UNFAVORABLE for losing open trade', () => {
-    const s = new SniperStrategy();
+    const s = new SniperStrategy({ hardStopPct: 0 });
     s.reset(makeMarkers(), {});
     s.evaluate(makeBar('09:30:00', 170, 0.5));
     s.evaluate(makeBar('09:30:01', 158, 0.5));

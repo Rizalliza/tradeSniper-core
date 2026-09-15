@@ -36,6 +36,7 @@ function parseArgs() {
         trailingStop: true,
         trailingStep: 0.005,
         hardStop: 0.008,       // 0.8% default hard stop
+        lookbackDays: 45,      // daily bars before --from for marker computation
         jsonOut: null,
     };
     for (let i = 0; i < args.length; i++) {
@@ -52,6 +53,7 @@ function parseArgs() {
             case '--trailing-step': opts.trailingStep = parseFloat(args[++i]); break;
             case '--hard-stop': opts.hardStop = parseFloat(args[++i]); break;
             case '--no-hard-stop': opts.hardStop = 0; break;
+            case '--lookback-days': opts.lookbackDays = parseInt(args[++i], 10); break;
             case '--json-out': opts.jsonOut = args[++i]; break;
         }
     }
@@ -97,6 +99,8 @@ async function writeJsonSnapshot(outputPath, opts, stats, setups) {
             shares: opts.shares,
             trailingStop: opts.trailingStop,
             trailingStep: opts.trailingStep,
+            hardStop: opts.hardStop,
+            lookbackDays: opts.lookbackDays,
         },
         stats: {
             ...stats,
@@ -133,12 +137,15 @@ async function runBacktest(opts) {
 
     const allSetups = [];
     const dailyCache = {};
+    const markerFromDate = new Date(`${opts.from}T00:00:00Z`);
+    markerFromDate.setUTCDate(markerFromDate.getUTCDate() - opts.lookbackDays);
+    const markerFrom = markerFromDate.toISOString().slice(0, 10);
 
     for (const symbol of opts.symbols) {
         console.log(`Fetching ${symbol}...`);
 
         // Fetch daily bars for marker computation
-        const daily = await massive.fetchDailyForMarkers(symbol, opts.from, opts.to);
+        const daily = await massive.fetchDailyForMarkers(symbol, markerFrom, opts.to);
         if (daily.length < 2) {
             console.log(`  ⚠ Not enough daily data for ${symbol} (${daily.length} days)`);
             continue;

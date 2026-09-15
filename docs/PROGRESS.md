@@ -45,15 +45,22 @@
 - **Commit:** `0b51185`
 
 ### 🔄 Milestone 3b: Multi-Timeframe Analysis
-- **Status:** In progress
+- **Status:** In progress — script rewritten, ready for full run
 - **Goal:** Find optimal bar timeframe for signal detection
 - **Hypothesis:** 1-second bars are too noisy; 15-second aggregation is the sweet spot
 - **Approach:**
-  - `BarLoader.aggregate()` already exists
-  - `scripts/timeframeCompare.js` created
-  - Compare: 5s, 10s, 15s, 30s, 1min, 5min, 15min
-  - Score across: win rate, net P&L, profit factor, avg win/loss, breakeven count, hold time
-- **Current status:** Script works, need to run full month comparison
+  - `BarLoader.aggregate()` — rewritten with clock-based bucketing
+  - `scripts/timeframeCompare.js` — rewritten with proper per-date aggregation
+  - Compare: 5s, 10s, 15s, 30s, 1m (from secs), 1m_native, 5m, 15m
+  - Score across: win rate, net P&L, profit factor, avg win/loss, breakeven count, hard stop count, trailing stop count
+- **Bugs fixed before full run:**
+  1. ✅ Clock-based aggregation (not bar-count chunking)
+  2. ✅ No day-boundary blending — aggregate per date
+  3. ✅ 5min/15min properly aggregated from minute bars
+  4. ✅ 1min built from seconds AND native minute bars as baseline
+  5. ✅ BREAKEVEN excluded from taken count in all reporting
+  6. ✅ Label typos fixed
+- **Current status:** Script validated with 2-day smoke test. Ready for full month run
 - **Next:** Run full comparison for all 3 symbols, entire month of Feb 2026
 
 ### ⬜ Milestone 4: Multi-Timeframe Strategy

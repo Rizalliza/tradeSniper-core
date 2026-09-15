@@ -242,7 +242,13 @@ export class SniperStrategy extends BaseStrategy {
         this.activeTrade.exitTime = time;
         const dir = this.entryDir === 'BUY' ? 1 : -1;
         this.activeTrade.pnl = (price - this.entryPrice) * dir;
-        this.activeTrade.outcome = this.activeTrade.pnl >= 0 ? 'WON' : 'LOST';
+        if (this.activeTrade.pnl > 0) {
+            this.activeTrade.outcome = 'WON';
+        } else if (this.activeTrade.pnl < 0) {
+            this.activeTrade.outcome = 'LOST';
+        } else {
+            this.activeTrade.outcome = 'BREAKEVEN';
+        }
         this.trades.push({ ...this.activeTrade });
         this.activeTrade = null;
         this.trailingActive = false;

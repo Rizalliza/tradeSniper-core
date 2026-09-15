@@ -35,6 +35,7 @@ function parseArgs() {
         shares: 100,
         trailingStop: true,
         trailingStep: 0.005,
+        hardStop: 0.008,       // 0.8% default hard stop
         jsonOut: null,
     };
     for (let i = 0; i < args.length; i++) {
@@ -49,6 +50,8 @@ function parseArgs() {
             case '--shares': opts.shares = parseInt(args[++i], 10); break;
             case '--no-trailing': opts.trailingStop = false; break;
             case '--trailing-step': opts.trailingStep = parseFloat(args[++i]); break;
+            case '--hard-stop': opts.hardStop = parseFloat(args[++i]); break;
+            case '--no-hard-stop': opts.hardStop = 0; break;
             case '--json-out': opts.jsonOut = args[++i]; break;
         }
     }
@@ -124,6 +127,7 @@ async function runBacktest(opts) {
     console.log(`Timespan: ${opts.timespan} bars, window: first ${opts.windowMinutes} min`);
     console.log(`Config: risk=${opts.risk} (reverseStop=${reverseStopCount}), buffer=${(opts.buffer * 100).toFixed(2)}%`);
     console.log(`Trailing stop: ${opts.trailingStop ? 'ON' : 'OFF'} (step=${(opts.trailingStep * 100).toFixed(2)}%)`);
+    console.log(`Hard stop: ${opts.hardStop > 0 ? (opts.hardStop * 100).toFixed(1) + '%' : 'OFF'}`);
     console.log(`Shares: ${opts.shares}`);
     console.log('');
 
@@ -182,6 +186,7 @@ async function runBacktest(opts) {
                 reverseStopCount,
                 trailingStop: opts.trailingStop,
                 trailingStepPct: opts.trailingStep,
+                hardStopPct: opts.hardStop,
             });
             strategy.reset(markerList, { date: dateStr, symbol });
 

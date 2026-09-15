@@ -46,6 +46,11 @@ export class MassiveData {
   async fetchAggregates(symbol, multiplier, timespan, from, to, limit = 50000) {
     if (!this.apiKey) throw new Error('Massive API key required');
 
+    // For high-granularity data (seconds), split into monthly chunks to avoid 500k API limit
+    if (timespan === 'second') {
+      return this._fetchChunked(symbol, multiplier, timespan, from, to, limit, 30); // 30-day chunks
+    }
+
     const results = [];
     let cursor = null;
     let round = 0;
@@ -58,12 +63,77 @@ export class MassiveData {
       const data = await this._fetchJsonWithRetry(url);
 
       if (data.results && data.results.length) {
-        results.push(...data.results.map((r) => this._convertAggregate(symbol, r, timespan)));
+        const converted = data.results.map((r) => this._convertAggregate(symbol, r, timespan));
+        for (let i = 0; i < converted.length; i++) {
+          results.push(converted[i]);
+        }
       }
 
       cursor = data.next_url || null;
       round++;
-    } while (cursor && round < 10); // safety limit
+    } while (cursor && round < 10);
+
+    return results;
+  }
+
+  /**
+   * Fetch bars in date chunks to avoid API limits.
+   * @private
+   */
+  async _fetchChunked(symbol, multiplier, timespan, from, to, limit, chunkDays) {
+    const results = [];
+    const startDate = new Date(from);
+    const endDate = new Date(to);
+
+    let chunkStart = new Date(startDate);
+    while (chunkStart <= endDate) {
+      const chunkEnd = new Date(chunkStart);
+      chunkEnd.setDate(chunkEnd.getDate() + chunkDays - 1);
+      if (chunkEnd > endDate) chunkEnd.setTime(endDate.getTime());
+
+      const fromStr = chunkStart.toISOString().slice(0, 10);
+      const toStr = chunkEnd.toISOString().slice(0, 10);
+
+      const chunkResult = await this._fetchSinglePage(
+        symbol, multiplier, timespan, fromStr, toStr, limit
+      );
+      // Use push.apply with loop for large arrays to avoid stack overflow from spread operator
+      for (let i = 0; i < chunkResult.length; i++) {
+        results.push(chunkResult[i]);
+      }
+
+      chunkStart.setDate(chunkStart.getDate() + chunkDays);
+    }
+
+    return results;
+  }
+
+  /**
+   * Fetch a single page of results (with pagination within the page).
+   * @private
+   */
+  async _fetchSinglePage(symbol, multiplier, timespan, from, to, limit) {
+    const results = [];
+    let cursor = null;
+    let round = 0;
+
+    do {
+      const url = cursor
+        ? this._withApiKey(cursor)
+        : `${MASSIVE_REST_BASE}/aggs/ticker/${symbol}/range/${multiplier}/${timespan}/${from}/${to}?adjusted=true&sort=asc&limit=${limit}&apiKey=${this.apiKey}`;
+
+      const data = await this._fetchJsonWithRetry(url);
+
+      if (data.results && data.results.length) {
+        const converted = data.results.map((r) => this._convertAggregate(symbol, r, timespan));
+        for (let i = 0; i < converted.length; i++) {
+          results.push(converted[i]);
+        }
+      }
+
+      cursor = data.next_url || null;
+      round++;
+    } while (cursor && round < 10);
 
     return results;
   }

@@ -11,6 +11,7 @@
     "backtest:gen": "node scripts/generateTestData.js && node scripts/runBacktest.js --bars data/test_minute_bars.csv",
     "buffer:analyze": "node scripts/bufferAnalysis.js",
     "massive:backtest": "node -r dotenv/config scripts/massiveBacktest.js",
+    "massive:export-agents": "node -r dotenv/config scripts/exportAgentMassiveData.js",
     "webapp:dev": "node scripts/serve.js --port 3000",
     "start": "node scripts/serve.js",
     "sniper:live": "node scripts/sniper-live.js"

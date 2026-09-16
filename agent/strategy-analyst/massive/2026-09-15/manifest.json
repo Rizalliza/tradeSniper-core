@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-09-16T08:40:09.482Z",
+  "target_date": "2026-09-15",
+  "latest_completed_session": "2026-09-15",
+  "symbols": [
+    "AAPL",
+    "TSLA",
+    "NVDA"
+  ],
+  "source": "REAL_MASSIVE_REST",
+  "mcp_note": "Codex Massive MCP is configured, but REST dotenv export was used to avoid agent credential drift.",
+  "config": {
+    "date": "2026-09-15",
+    "symbols": [
+      "AAPL",
+      "TSLA",
+      "NVDA"
+    ],
+    "lookbackDays": 45,
+    "windowMinutes": 15,
+    "rawWindowMinutes": 30,
+    "aggregateSeconds": 15,
+    "buffer": 0.0015,
+    "risk": "low",
+    "shares": 100,
+    "newsLookbackDays": 3,
+    "newsLimit": 25
+  },
+  "files": {
+    "strategy": [
+      "strategy-market.json",
+      "strategy-market-compact.json",
+      "REPORT.md"
+    ],
+    "news": [
+      "news.json",
+      "news-digest.json",
+      "REPORT.md"
+    ],
+    "code_builder": [
+      "massive-api-validation.json",
+      "REPORT.md"
+    ]
+  }
+}

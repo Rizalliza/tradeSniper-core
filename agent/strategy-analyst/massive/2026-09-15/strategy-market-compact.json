@@ -1,0 +1,574 @@
+{
+  "manifest": {
+    "generated_at": "2026-09-16T08:40:09.482Z",
+    "target_date": "2026-09-15",
+    "latest_completed_session": "2026-09-15",
+    "symbols": [
+      "AAPL",
+      "TSLA",
+      "NVDA"
+    ],
+    "source": "REAL_MASSIVE_REST",
+    "mcp_note": "Codex Massive MCP is configured, but REST dotenv export was used to avoid agent credential drift.",
+    "config": {
+      "date": "2026-09-15",
+      "symbols": [
+        "AAPL",
+        "TSLA",
+        "NVDA"
+      ],
+      "lookbackDays": 45,
+      "windowMinutes": 15,
+      "rawWindowMinutes": 30,
+      "aggregateSeconds": 15,
+      "buffer": 0.0015,
+      "risk": "low",
+      "shares": 100,
+      "newsLookbackDays": 3,
+      "newsLimit": 25
+    },
+    "files": {
+      "strategy": [
+        "strategy-market.json",
+        "strategy-market-compact.json",
+        "REPORT.md"
+      ],
+      "news": [
+        "news.json",
+        "news-digest.json",
+        "REPORT.md"
+      ],
+      "code_builder": [
+        "massive-api-validation.json",
+        "REPORT.md"
+      ]
+    }
+  },
+  "symbols": [
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-15",
+      "daily": {
+        "lookback_from": "2026-08-01",
+        "count": 31,
+        "target_day": {
+          "date": "2026-09-15",
+          "o": 330.135,
+          "h": 331.78,
+          "l": 328.35,
+          "c": 331.34,
+          "v": 31748184.903722
+        },
+        "prior_day": {
+          "date": "2026-09-14",
+          "o": 334.79,
+          "h": 335.5,
+          "l": 331.34,
+          "c": 333.08,
+          "v": 39269147.943173
+        }
+      },
+      "markers": {
+        "prior_day_open": 334.79,
+        "prior_day_close": 333.08,
+        "daily_high": 335.5,
+        "daily_low": 331.34,
+        "weekly_high": 336.22,
+        "weekly_low": 309.9,
+        "monthly_high": 322.37,
+        "monthly_low": 300.57
+      },
+      "marker_list": [
+        {
+          "name": "weekly_high",
+          "value": 336.22,
+          "type": "resistance",
+          "tier": "weekly"
+        },
+        {
+          "name": "daily_high",
+          "value": 335.5,
+          "type": "resistance",
+          "tier": "daily"
+        },
+        {
+          "name": "prior_day_open",
+          "value": 334.79,
+          "type": "neutral",
+          "tier": "daily"
+        },
+        {
+          "name": "prior_day_close",
+          "value": 333.08,
+          "type": "neutral",
+          "tier": "daily"
+        },
+        {
+          "name": "daily_low",
+          "value": 331.34,
+          "type": "support",
+          "tier": "daily"
+        },
+        {
+          "name": "monthly_high",
+          "value": 322.37,
+          "type": "resistance",
+          "tier": "monthly"
+        },
+        {
+          "name": "weekly_low",
+          "value": 309.9,
+          "type": "support",
+          "tier": "weekly"
+        },
+        {
+          "name": "monthly_low",
+          "value": 300.57,
+          "type": "support",
+          "tier": "monthly"
+        }
+      ],
+      "opening": {
+        "raw_seconds_summary": {
+          "count": 1776,
+          "first_time": "09:30:00",
+          "last_time": "09:59:59",
+          "open": 330.135,
+          "close": 330.71,
+          "high": 331.59,
+          "low": 328.35,
+          "volume": 3713920.2149629984
+        },
+        "minute_summary": {
+          "count": 30,
+          "first_time": "09:30:00",
+          "last_time": "09:59:00",
+          "open": 330.135,
+          "close": 330.71,
+          "high": 331.59,
+          "low": 328.35,
+          "volume": 3715934.5346359992
+        },
+        "aggregated_summary": {
+          "count": 120,
+          "first_time": "09:30:00",
+          "last_time": "09:59:45",
+          "open": 330.135,
+          "close": 330.71,
+          "high": 331.59,
+          "low": 328.35,
+          "volume": 3713920.214962999
+        }
+      },
+      "strategy": {
+        "raw_1s": {
+          "label": "raw_1s",
+          "phase": "CLOSED",
+          "cross_marker": "daily_low",
+          "cross_direction": "UP",
+          "entry_marker": "daily_low",
+          "entry_direction": "BUY",
+          "trade": {
+            "direction": "BUY",
+            "entry_marker": "daily_low",
+            "entry_time": "09:31:03",
+            "entry_price": 331.34,
+            "exit_time": "09:39:55",
+            "exit_price": 331.34,
+            "exit_reason": "REVERSE_STOP",
+            "outcome": "BREAKEVEN",
+            "pnl": 0,
+            "pnl_per_share": 0,
+            "best_price": 331.47,
+            "reverse_crossings": [
+              {
+                "time": "09:38:31",
+                "level": 331.34
+              },
+              {
+                "time": "09:38:34",
+                "level": 331.34
+              },
+              {
+                "time": "09:39:55",
+                "level": 331.34
+              }
+            ],
+            "forward_crossings": []
+          }
+        },
+        "aggregated": {
+          "label": "15s_signal",
+          "phase": "CLOSED",
+          "cross_marker": "daily_low",
+          "cross_direction": "UP",
+          "entry_marker": "daily_low",
+          "entry_direction": "BUY",
+          "trade": {
+            "direction": "BUY",
+            "entry_marker": "daily_low",
+            "entry_time": "09:31:00",
+            "entry_price": 331.34,
+            "exit_time": "09:59:45",
+            "exit_price": 330.71,
+            "exit_reason": "EOD_UNFAVORABLE",
+            "outcome": "LOST",
+            "pnl": -62.999999999999545,
+            "pnl_per_share": -0.6299999999999955,
+            "best_price": 331.59,
+            "reverse_crossings": [],
+            "forward_crossings": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-15",
+      "daily": {
+        "lookback_from": "2026-08-01",
+        "count": 31,
+        "target_day": {
+          "date": "2026-09-15",
+          "o": 358.75,
+          "h": 362.39,
+          "l": 354.05,
+          "c": 356.58,
+          "v": 30321231.465748
+        },
+        "prior_day": {
+          "date": "2026-09-14",
+          "o": 359.78,
+          "h": 367.73,
+          "l": 357.04,
+          "c": 358.97,
+          "v": 32477181.828982
+        }
+      },
+      "markers": {
+        "prior_day_open": 359.78,
+        "prior_day_close": 358.97,
+        "daily_high": 367.73,
+        "daily_low": 357.04,
+        "weekly_high": 375.44,
+        "weekly_low": 355.75,
+        "monthly_high": 368.92,
+        "monthly_low": 310.425
+      },
+      "marker_list": [
+        {
+          "name": "weekly_high",
+          "value": 375.44,
+          "type": "resistance",
+          "tier": "weekly"
+        },
+        {
+          "name": "monthly_high",
+          "value": 368.92,
+          "type": "resistance",
+          "tier": "monthly"
+        },
+        {
+          "name": "daily_high",
+          "value": 367.73,
+          "type": "resistance",
+          "tier": "daily"
+        },
+        {
+          "name": "prior_day_open",
+          "value": 359.78,
+          "type": "neutral",
+          "tier": "daily"
+        },
+        {
+          "name": "prior_day_close",
+          "value": 358.97,
+          "type": "neutral",
+          "tier": "daily"
+        },
+        {
+          "name": "daily_low",
+          "value": 357.04,
+          "type": "support",
+          "tier": "daily"
+        },
+        {
+          "name": "weekly_low",
+          "value": 355.75,
+          "type": "support",
+          "tier": "weekly"
+        },
+        {
+          "name": "monthly_low",
+          "value": 310.425,
+          "type": "support",
+          "tier": "monthly"
+        }
+      ],
+      "opening": {
+        "raw_seconds_summary": {
+          "count": 1784,
+          "first_time": "09:30:00",
+          "last_time": "09:59:59",
+          "open": 358.75,
+          "close": 359.15,
+          "high": 362.11,
+          "low": 354.6313,
+          "volume": 5319738.637897978
+        },
+        "minute_summary": {
+          "count": 30,
+          "first_time": "09:30:00",
+          "last_time": "09:59:00",
+          "open": 358.75,
+          "close": 359.15,
+          "high": 362.11,
+          "low": 354.6313,
+          "volume": 5320589.158224998
+        },
+        "aggregated_summary": {
+          "count": 120,
+          "first_time": "09:30:00",
+          "last_time": "09:59:45",
+          "open": 358.75,
+          "close": 359.15,
+          "high": 362.11,
+          "low": 354.6313,
+          "volume": 5319738.637898
+        }
+      },
+      "strategy": {
+        "raw_1s": {
+          "label": "raw_1s",
+          "phase": "CLOSED",
+          "cross_marker": "prior_day_close",
+          "cross_direction": "UP",
+          "entry_marker": "prior_day_close",
+          "entry_direction": "BUY",
+          "trade": {
+            "direction": "BUY",
+            "entry_marker": "prior_day_close",
+            "entry_time": "09:30:03",
+            "entry_price": 358.97,
+            "exit_time": "09:30:23",
+            "exit_price": 358.97,
+            "exit_reason": "REVERSE_STOP",
+            "outcome": "BREAKEVEN",
+            "pnl": 0,
+            "pnl_per_share": 0,
+            "best_price": 359.69,
+            "reverse_crossings": [
+              {
+                "time": "09:30:11",
+                "level": 358.97
+              },
+              {
+                "time": "09:30:15",
+                "level": 358.97
+              },
+              {
+                "time": "09:30:23",
+                "level": 358.97
+              }
+            ],
+            "forward_crossings": []
+          }
+        },
+        "aggregated": {
+          "label": "15s_signal",
+          "phase": "CLOSED",
+          "cross_marker": "prior_day_open",
+          "cross_direction": "UP",
+          "entry_marker": "prior_day_open",
+          "entry_direction": "BUY",
+          "trade": {
+            "direction": "BUY",
+            "entry_marker": "prior_day_open",
+            "entry_time": "09:30:30",
+            "entry_price": 359.78,
+            "exit_time": "09:31:30",
+            "exit_price": 356.90175999999997,
+            "exit_reason": "HARD_STOP",
+            "outcome": "LOST",
+            "pnl": -287.8240000000005,
+            "pnl_per_share": -2.8782400000000052,
+            "best_price": 360.69,
+            "reverse_crossings": [],
+            "forward_crossings": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-15",
+      "daily": {
+        "lookback_from": "2026-08-01",
+        "count": 31,
+        "target_day": {
+          "date": "2026-09-15",
+          "o": 213.375,
+          "h": 213.94,
+          "l": 211.16,
+          "c": 212.17,
+          "v": 89573204.92862
+        },
+        "prior_day": {
+          "date": "2026-09-14",
+          "o": 211.24,
+          "h": 212.77,
+          "l": 208.93,
+          "c": 210.96,
+          "v": 132267244.620535
+        }
+      },
+      "markers": {
+        "prior_day_open": 211.24,
+        "prior_day_close": 210.96,
+        "daily_high": 212.77,
+        "daily_low": 208.93,
+        "weekly_high": 233.71,
+        "weekly_low": 208.93,
+        "monthly_high": 230.47,
+        "monthly_low": 196.85
+      },
+      "marker_list": [
+        {
+          "name": "weekly_high",
+          "value": 233.71,
+          "type": "resistance",
+          "tier": "weekly"
+        },
+        {
+          "name": "monthly_high",
+          "value": 230.47,
+          "type": "resistance",
+          "tier": "monthly"
+        },
+        {
+          "name": "daily_high",
+          "value": 212.77,
+          "type": "resistance",
+          "tier": "daily"
+        },
+        {
+          "name": "prior_day_open",
+          "value": 211.24,
+          "type": "neutral",
+          "tier": "daily"
+        },
+        {
+          "name": "prior_day_close",
+          "value": 210.96,
+          "type": "neutral",
+          "tier": "daily"
+        },
+        {
+          "name": "daily_low",
+          "value": 208.93,
+          "type": "support",
+          "tier": "daily"
+        },
+        {
+          "name": "monthly_low",
+          "value": 196.85,
+          "type": "support",
+          "tier": "monthly"
+        }
+      ],
+      "opening": {
+        "raw_seconds_summary": {
+          "count": 1794,
+          "first_time": "09:30:00",
+          "last_time": "09:59:59",
+          "open": 213.375,
+          "close": 213.26,
+          "high": 213.94,
+          "low": 212.5625,
+          "volume": 13514959.501122015
+        },
+        "minute_summary": {
+          "count": 30,
+          "first_time": "09:30:00",
+          "last_time": "09:59:00",
+          "open": 213.375,
+          "close": 213.26,
+          "high": 213.94,
+          "low": 212.5625,
+          "volume": 13518547.977971
+        },
+        "aggregated_summary": {
+          "count": 120,
+          "first_time": "09:30:00",
+          "last_time": "09:59:45",
+          "open": 213.375,
+          "close": 213.26,
+          "high": 213.94,
+          "low": 212.5625,
+          "volume": 13514959.501121996
+        }
+      },
+      "strategy": {
+        "raw_1s": {
+          "label": "raw_1s",
+          "phase": "CLOSED",
+          "cross_marker": "daily_high",
+          "cross_direction": "DOWN",
+          "entry_marker": "daily_high",
+          "entry_direction": "SELL",
+          "trade": {
+            "direction": "SELL",
+            "entry_marker": "daily_high",
+            "entry_time": "09:30:01",
+            "entry_price": 212.77,
+            "exit_time": "09:31:37",
+            "exit_price": 212.77,
+            "exit_reason": "REVERSE_STOP",
+            "outcome": "BREAKEVEN",
+            "pnl": 0,
+            "pnl_per_share": 0,
+            "best_price": 212.6,
+            "reverse_crossings": [
+              {
+                "time": "09:30:16",
+                "level": 212.77
+              },
+              {
+                "time": "09:31:15",
+                "level": 212.77
+              },
+              {
+                "time": "09:31:37",
+                "level": 212.77
+              }
+            ],
+            "forward_crossings": []
+          }
+        },
+        "aggregated": {
+          "label": "15s_signal",
+          "phase": "CLOSED",
+          "cross_marker": "daily_high",
+          "cross_direction": "DOWN",
+          "entry_marker": "daily_high",
+          "entry_direction": "SELL",
+          "trade": {
+            "direction": "SELL",
+            "entry_marker": "daily_high",
+            "entry_time": "09:31:00",
+            "entry_price": 212.77,
+            "exit_time": "09:59:45",
+            "exit_price": 213.26,
+            "exit_reason": "EOD_UNFAVORABLE",
+            "outcome": "LOST",
+            "pnl": -48.99999999999807,
+            "pnl_per_share": -0.4899999999999807,
+            "best_price": 212.5625,
+            "reverse_crossings": [],
+            "forward_crossings": []
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1381 @@
+{
+  "manifest": {
+    "generated_at": "2026-09-16T08:40:09.482Z",
+    "target_date": "2026-09-15",
+    "latest_completed_session": "2026-09-15",
+    "symbols": [
+      "AAPL",
+      "TSLA",
+      "NVDA"
+    ],
+    "source": "REAL_MASSIVE_REST",
+    "mcp_note": "Codex Massive MCP is configured, but REST dotenv export was used to avoid agent credential drift.",
+    "config": {
+      "date": "2026-09-15",
+      "symbols": [
+        "AAPL",
+        "TSLA",
+        "NVDA"
+      ],
+      "lookbackDays": 45,
+      "windowMinutes": 15,
+      "rawWindowMinutes": 30,
+      "aggregateSeconds": 15,
+      "buffer": 0.0015,
+      "risk": "low",
+      "shares": 100,
+      "newsLookbackDays": 3,
+      "newsLimit": 25
+    },
+    "files": {
+      "strategy": [
+        "strategy-market.json",
+        "strategy-market-compact.json",
+        "REPORT.md"
+      ],
+      "news": [
+        "news.json",
+        "news-digest.json",
+        "REPORT.md"
+      ],
+      "code_builder": [
+        "massive-api-validation.json",
+        "REPORT.md"
+      ]
+    }
+  },
+  "news_by_symbol": {
+    "AAPL": [
+      {
+        "symbol": "AAPL",
+        "title": "Chip Stocks Recovered Today and the Major Indexes Fell Anyway",
+        "summary": "Major stock indexes fell despite chip stocks recovering from Monday's AI-driven selloff. The Dow and Nasdaq Composite each dropped 0.7% while the S&P 500 fell 0.4%. Rising Treasury yields (10-year at 5.041%, highest since July 2007) and elevated oil prices drove market concerns. The Fed is expected to hike rates by a quarter-point on Wednesday, with future rate decisions dependent on energy costs and inflation pressures.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/chip-stocks-recovered-today-and-the-indexes-fell/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T18:26:52Z",
+        "tickers": [
+          "NVDA",
+          "QCOM",
+          "AMD",
+          "GS",
+          "GSpA",
+          "GSpC",
+          "GSpD",
+          "AMJB",
+          "JPM",
+          "JPMpC",
+          "JPMpD",
+          "JPMpJ",
+          "JPMpK",
+          "JPMpL",
+          "JPMpM",
+          "VYLD",
+          "AMZN",
+          "AAPL",
+          "CVX"
+        ],
+        "keywords": [
+          "chip stocks recovery",
+          "Treasury yields",
+          "interest rates",
+          "oil prices",
+          "Federal Reserve",
+          "market correction",
+          "AI concerns"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "This Is the No. 1 Reason I'm Buying and Holding the Vanguard Total Stock Market ETF (VTI) Right Now",
+        "summary": "Despite concerns about inflation and rising interest rates, the author recommends buying VTI due to resilient corporate earnings growth driven by AI investment. Strong second-quarter results and revised guidance from analysts suggest earnings will continue growing through 2027, with small-cap stocks now participating in the AI-driven growth. The author expects robust earnings growth across all company sizes to support stock price gains over the next several quarters.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/no-1-reason-buying-holding-vanguard-vti/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T16:05:00Z",
+        "tickers": [
+          "NVDA",
+          "AAPL",
+          "MSFT"
+        ],
+        "keywords": [
+          "VTI",
+          "corporate earnings",
+          "AI boom",
+          "S&P 500",
+          "small-cap stocks",
+          "earnings growth",
+          "stock valuations"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Is WisdomTree U.S. Multifactor ETF (USMF) a Strong ETF Right Now?",
+        "summary": "USMF is a smart beta ETF launched in 2017 that tracks 200 U.S. companies selected based on value, quality, momentum, and correlation factors. With $277.77 million in assets and a 0.28% expense ratio, it offers diversified exposure across sectors with heavy Information Technology allocation (30%). Year-to-date returns are 2.8%, though cheaper alternatives like ITOT and VTI with lower expense ratios (0.03%) may be more suitable for cost-conscious investors.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/stock/news/2989578/is-wisdomtree-u-s-multifactor-etf-usmf-a-strong-etf-right-now?cid=CS-ZC-FT-smart_beta_etf-2989578",
+        "publishedAt": "2026-09-15T10:20:02Z",
+        "tickers": [
+          "USMF",
+          "NVDA",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "AAPL",
+          "ITOT",
+          "VTI"
+        ],
+        "keywords": [
+          "smart beta ETF",
+          "multifactor investing",
+          "expense ratio",
+          "sector allocation",
+          "dividend yield",
+          "market performance"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Should You Invest in the iShares Expanded Tech Sector ETF (IGM)?",
+        "summary": "The iShares Expanded Tech Sector ETF (IGM) is a passively managed fund with $10.63 billion in assets, offering broad exposure to the technology sector with a low 0.37% expense ratio. The fund has gained 24.33% year-to-date and 31.31% over the past year, with top holdings including Microsoft (9.9%), Nvidia, and Apple. IGM carries a beta of 1.40 and holds a Zacks ETF Rank of 1 (Strong Buy), though alternatives like XLK and VGT offer lower expense ratios.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/stock/news/2989571/should-you-invest-in-the-ishares-expanded-tech-sector-etf-igm?cid=CS-ZC-FT-sector_etf-2989571",
+        "publishedAt": "2026-09-15T10:20:02Z",
+        "tickers": [
+          "IGM",
+          "MSFT",
+          "NVDA",
+          "AAPL",
+          "XLK",
+          "VGT"
+        ],
+        "keywords": [
+          "technology ETF",
+          "passive management",
+          "expense ratio",
+          "sector exposure",
+          "dividend yield",
+          "performance",
+          "risk assessment"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "If I Were in My 20s, I'd Buy This Unstoppable Vanguard ETF and Hold It Forever",
+        "summary": "The article recommends the Vanguard S&P 500 Growth ETF (VOOG) for young investors in their 20s as a long-term buy-and-hold investment. The ETF focuses on 148 growth stocks from the S&P 500, with over 51% in technology companies. It has delivered 16.9% compound annual returns since 2010, outpacing the S&P 500's 14.2%, and could potentially double retirement savings over 40 years due to compounding.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/if-in-my-20s-buy-vanguard-etf-voog-hold-forever/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T08:26:00Z",
+        "tickers": [
+          "VOOG",
+          "NVDA",
+          "MSFT",
+          "AAPL",
+          "AVGO",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "AMZN",
+          "META"
+        ],
+        "keywords": [
+          "S&P 500 Growth ETF",
+          "long-term investing",
+          "growth stocks",
+          "artificial intelligence",
+          "technology sector",
+          "compound returns",
+          "retirement planning"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "NowSecure Finds 1 in 4 Mobile Apps May Expose Functionality to AI Agents Ahead of iOS 27",
+        "summary": "NowSecure announced day-one support for Apple's iOS 27, which introduces agentic AI capabilities through Siri. The company's research shows 24% of mobile apps contain functionality exposed to Siri AI, creating new security risks. NowSecure Platform now identifies App Intents and provides testing capabilities to help organizations manage agentic workflow risks, addressing a gap in current mobile security practices.",
+        "source": "GlobeNewswire Inc.",
+        "url": "https://www.globenewswire.com/news-release/2026/09/14/3361568/0/en/nowsecure-finds-1-in-4-mobile-apps-may-expose-functionality-to-ai-agents-ahead-of-ios-27.html",
+        "publishedAt": "2026-09-14T20:52:00Z",
+        "tickers": [
+          "AAPL"
+        ],
+        "keywords": [
+          "iOS 27",
+          "agentic AI",
+          "Siri AI",
+          "mobile app security",
+          "App Intents",
+          "security testing",
+          "mobile risk management",
+          "OWASP Top 10 for Agentic Applications"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "OpenAI’s Sam Altman Says an IPO Won’t Happen This Year. Should This Make You Cautious About AI Stocks, or Is It Time to Pile Into Certain AI Bargains?",
+        "summary": "OpenAI CEO Sam Altman announced the company won't go public this year, citing safety concerns around AI models as the reason. While this may cause short-term volatility in AI stocks, the article argues it's a positive sign that industry leaders are prioritizing safety and represents a buying opportunity for quality AI stocks trading at reasonable valuations.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/openai-s-sam-altman-says-an-ipo-won-t-happen-this-year-should-this-make-you-cautious-about-ai-stocks-or-is-it-time-to-pile-into-certain-ai-bargains/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T16:05:01Z",
+        "tickers": [
+          "NVDA",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "AAPL",
+          "MSFT"
+        ],
+        "keywords": [
+          "OpenAI IPO",
+          "AI safety concerns",
+          "AI stocks",
+          "Sam Altman",
+          "Anthropic",
+          "AI investing",
+          "cyber breaches",
+          "valuations"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Walt Disney vs. Roblox: Which Media Stock Is a Better Buy in 2026?",
+        "summary": "The article compares Walt Disney and Roblox as investment options for 2026. Disney is recommended as the better choice due to its profitability, strong cash flows, and momentum across streaming, theme parks, and sports divisions. Roblox, while building an engaged gaming platform with 111.8 million daily active users, is currently unprofitable with a negative net margin of 21.8% and is guiding for a sharp decline in bookings, asking investors to wait for long-term returns.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/coverage/better-buy/2026/09/14/walt-disney-vs-roblox-which-media-stock-is-a-better-buy-in-2026/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T14:19:14Z",
+        "tickers": [
+          "DIS",
+          "RBLX",
+          "NFLX",
+          "AAPL",
+          "MSFT",
+          "AMZN"
+        ],
+        "keywords": [
+          "media stocks",
+          "streaming platforms",
+          "user-generated content",
+          "profitability",
+          "cash flow",
+          "valuation",
+          "investment comparison"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "The S&P 500 Is Trading at a Valuation Not Seen in a Generation. History Has 1 Very Specific Lesson for Investors.",
+        "summary": "The S&P 500 is trading at its highest valuation since the dot-com bubble, with a CAPE ratio of 40.7. While bear markets are inevitable and unpredictable, history shows they are typically shorter than bull markets. The key lesson for investors is to maintain consistent investment strategies rather than attempting to time the market, as this has proven more effective for long-term wealth building.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/the-sp-500-is-trading-at-a-valuation-not-seen-in-a/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T11:14:00Z",
+        "tickers": [
+          "AAPL",
+          "NVDA"
+        ],
+        "keywords": [
+          "S&P 500 valuation",
+          "CAPE ratio",
+          "bear market",
+          "dot-com bubble",
+          "artificial intelligence",
+          "market timing",
+          "investor strategy"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Should iShares S&P 100 ETF (OEF) Be on Your Investing Radar?",
+        "summary": "The iShares S&P 100 ETF (OEF) is a passively managed large-cap blend fund with $20.35 billion in assets and a low 0.2% expense ratio. The fund has gained 11.38% year-to-date and 17.25% over the past year, with heavy exposure to Information Technology (44%). Top holdings include Nvidia (11.33%), Apple, and Microsoft. With a Zacks ETF Rank of 3 (Hold) and beta of 1.03, it offers moderate risk diversification through 105 holdings.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/stock/news/2988851/should-ishares-s-p-100-etf-oef-be-on-your-investing-radar?cid=CS-ZC-FT-style_box_etf-2988851",
+        "publishedAt": "2026-09-14T10:20:02Z",
+        "tickers": [
+          "OEF",
+          "NVDA",
+          "AAPL",
+          "MSFT"
+        ],
+        "keywords": [
+          "large cap blend ETF",
+          "passive management",
+          "expense ratio",
+          "Information Technology sector",
+          "diversification",
+          "S&P 100 Index"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "4 Simple ETFs Built for Long-Term Buy-and-Hold Investors",
+        "summary": "The article recommends four ETFs for long-term buy-and-hold investors seeking diversified exposure to different market segments: VTI for broad market exposure across all caps, SCHD for dividend-paying stocks, VUG for growth stocks, and IWM for small-cap opportunities. Each ETF offers distinct risk-return profiles suited to different investment goals.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/4-simple-etfs-built-long-term-buy-hold-investors/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T10:15:00Z",
+        "tickers": [
+          "VTI",
+          "SCHD",
+          "VUG",
+          "IWM",
+          "NVDA",
+          "AAPL",
+          "MSFT"
+        ],
+        "keywords": [
+          "ETFs",
+          "long-term investing",
+          "diversification",
+          "buy-and-hold",
+          "growth stocks",
+          "dividend stocks",
+          "small-cap stocks"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "The Stock Market Is Repeating a Pattern Last Seen Decades Ago -- Here's What History Says Happens Next",
+        "summary": "The current bull market is characterized by narrow leadership, with a near-record number of S&P 500 companies exhibiting negative beta—a pattern last seen during the dot-com bubble. While a handful of AI stocks have driven gains, many companies have seen prices collapse. This concentration poses risks: if the bubble pops, diversification into quality and value stocks may be necessary, though it could reduce returns if the bull market continues.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/stock-market-repeating-pattern-history-bear-bull/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T08:30:00Z",
+        "tickers": [
+          "NVDA",
+          "AAPL",
+          "AMZN",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "META",
+          "MSFT",
+          "TSLA"
+        ],
+        "keywords": [
+          "narrow bull market",
+          "negative beta stocks",
+          "dot-com bubble comparison",
+          "AI stocks",
+          "market concentration",
+          "diversification",
+          "quality stocks",
+          "value stocks"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Berkshire Hathaway Has Nearly 14% of Its $359 Billion Portfolio Invested in This Winning Stock That's Doubled in 5 Years",
+        "summary": "American Express is Berkshire Hathaway's second-largest holding, representing nearly 14% of its $359 billion portfolio. The stock has doubled over the past five years and currently trades at a P/E ratio of 19.5, which analysts consider a compelling entry point. The company benefits from a strong economic moat, premium brand positioning targeting affluent customers, and tailwinds from the cashless economy, with management projecting 10% annual revenue growth and mid-teens earnings per share growth.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/13/berkshire-hathaway-has-nearly-14-of-its-portfolio/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-13T15:02:00Z",
+        "tickers": [
+          "AXP",
+          "BRK.A",
+          "BRK.B",
+          "AAPL",
+          "V",
+          "MA"
+        ],
+        "keywords": [
+          "American Express",
+          "Berkshire Hathaway",
+          "financial stocks",
+          "payments network",
+          "economic moat",
+          "premium brand",
+          "cashless economy",
+          "stock valuation",
+          "investment opportunity"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "3 Unstoppable Dow Stocks Worth Buying Right Now",
+        "summary": "The article recommends three Dow Jones stocks as strong buys: Nvidia, which expects 70% revenue growth next year and trades at an attractive 14x forward earnings; Alphabet, with 24% revenue growth and 82% Google Cloud growth, trading at 22x forward earnings; and American Express, showing 10% revenue growth and 14% EPS growth with a 15x forward earnings valuation. All three are positioned to benefit from AI investments and strong market demand despite recent market pullbacks.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/13/3-unstoppable-dow-stocks-worth-buying-right-now/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-13T08:02:00Z",
+        "tickers": [
+          "NVDA",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "AXP",
+          "AAPL",
+          "MSFT",
+          "AMZN",
+          "NKE",
+          "PG"
+        ],
+        "keywords": [
+          "Dow Jones stocks",
+          "artificial intelligence",
+          "revenue growth",
+          "valuation",
+          "investment recommendation"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Better Artificial Intelligence ETF: Roundhill's CHAT vs. State Street's XLK",
+        "summary": "The article compares two technology ETFs: Roundhill's CHAT, an actively managed AI-focused fund with 55.2% one-year returns but higher fees (0.75%) and volatility, versus State Street's XLK, a broader tech sector ETF with lower costs (0.08%) and steadier performance. The author recommends CHAT for AI-focused investors seeking exposure to the generative AI boom, while XLK suits conservative investors preferring diversification and lower expenses.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/coverage/etfs/2026/09/13/better-artificial-intelligence-etf-roundhill-s-chat-vs-state-street-s-xlk/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-13T06:17:28Z",
+        "tickers": [
+          "CHAT",
+          "XLK",
+          "NVDA",
+          "AAPL",
+          "MSFT",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN"
+        ],
+        "keywords": [
+          "AI ETF comparison",
+          "generative artificial intelligence",
+          "technology sector",
+          "active management",
+          "expense ratio",
+          "dividend yield",
+          "volatility",
+          "investment strategy"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Not Nvidia. Not Micron. This Dirt Cheap “Magnificent Seven” Stock Could Be the Biggest Winner of the Trillion-Dollar AI Race – Here’s the Case.",
+        "summary": "The article argues that Alphabet, trading at a cheap 15x forward earnings valuation, could be the biggest winner in the AI race compared to other Magnificent Seven stocks. Unlike chip makers Nvidia and Micron who only profit from selling products, Alphabet benefits from AI as both a provider and user of AI technology, positioning it for success regardless of which chip designer gains market share. The company's Google Search dominance (90%+ market share) generates $81 billion in ad revenue, while its Google Cloud AI business is experiencing explosive growth.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/12/not-nvidia-not-micron-this-dirt-cheap-magnificent-seven-stock-could-be-the-biggest-winner-of-the-trillion-dollar-ai-race-here-s-the-case/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-12T22:15:01Z",
+        "tickers": [
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "NVDA",
+          "MU",
+          "AMZN",
+          "AAPL",
+          "META",
+          "MSFT",
+          "TSLA"
+        ],
+        "keywords": [
+          "Alphabet",
+          "AI race",
+          "Magnificent Seven",
+          "valuation",
+          "Google Search",
+          "Google Cloud",
+          "Gemini",
+          "artificial intelligence",
+          "tech stocks"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Should You Ignore MP Materials and Buy This Rare-Earth Stock Instead?",
+        "summary": "MP Materials and USA Rare Earth represent different investment approaches to securing domestic rare-earth supply. MP Materials focuses on light rare-earth elements and is operationally advanced with existing magnet production and major customers. USA Rare Earth targets high-value heavy rare-earth elements with greater strategic importance but higher execution risk, as it's earlier in its production ramp. The article suggests a diversified approach holding both stocks may be optimal for rare-earth sector exposure.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/12/ignore-mp-materials-buy-rare-earth-stock/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-12T17:13:00Z",
+        "tickers": [
+          "MP",
+          "USAR",
+          "AAPL",
+          "GM"
+        ],
+        "keywords": [
+          "rare-earth elements",
+          "domestic supply",
+          "light rare-earth elements (LREE)",
+          "heavy rare-earth elements (HREE)",
+          "magnet production",
+          "national security",
+          "China dominance"
+        ]
+      },
+      {
+        "symbol": "AAPL",
+        "title": "Apple and Taiwan Semiconductor Manufacturing Just Announced a Cutting-Edge Chip. 1 Stock Offers Far Greater Upside.",
+        "summary": "Apple and TSMC partnered on the new A20 Pro chip using cutting-edge 2nm technology, but analyst argues TSMC is the better investment. TSMC is positioned to benefit from AI infrastructure buildout with expected 43% revenue growth in 2026, while Apple lags with 15% growth and has fallen behind in AI development. Despite stronger growth prospects, TSMC trades at a lower valuation than Apple, making it the more attractive buy.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/12/apple-and-taiwan-semiconductor-manufacturing-just/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-12T13:24:00Z",
+        "tickers": [
+          "TSM",
+          "AAPL",
+          "NVDA"
+        ],
+        "keywords": [
+          "semiconductor manufacturing",
+          "chip technology",
+          "AI infrastructure",
+          "stock valuation",
+          "revenue growth",
+          "data center GPUs",
+          "2-nanometer process"
+        ]
+      }
+    ],
+    "TSLA": [
+      {
+        "symbol": "TSLA",
+        "title": "Artificial Intelligence (AI) May Have a New Bear Thesis: Human Extinction",
+        "summary": "An AI researcher who worked at OpenAI and Anthropic warned that frontier AI developers are not acting responsibly and are gambling with human extinction risks. While some AI leaders have publicly acknowledged the need for safety measures and development slowdowns, the industry continues to increase capital expenditures. A potential slowdown in AI development could negatively impact stock prices of major AI infrastructure companies.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/16/artificial-intelligence-ai-may-have-a-new-bear-the/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-16T07:31:00Z",
+        "tickers": [
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "AMZN",
+          "MSFT",
+          "META",
+          "TSLA",
+          "ORCL",
+          "ORCLpD"
+        ],
+        "keywords": [
+          "AI safety",
+          "human extinction risk",
+          "AI development slowdown",
+          "capital expenditure",
+          "frontier AI models",
+          "AI infrastructure",
+          "whistleblower"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "Elon Musk Promised \"Over a Million Robotaxis\" by 2020. None Materialized, and a Dedicated Robotaxi Fleet Isn't Expected Until at Least 2027. Here's What That Track Record Means for Tesla's Valuation.",
+        "summary": "Elon Musk's history of overly optimistic predictions about Tesla's autonomous vehicle and robotics businesses raises concerns about the company's valuation. Musk promised over a million robotaxis by 2020, but Tesla has less than 500 registered in Texas as of now, with a dedicated fleet not expected until 2027. Tesla's high valuation (12.5x sales, 339x earnings) is primarily based on promises of physical AI revenue from robotaxis and humanoid robots, but the timeline and market potential remain highly uncertain.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/16/elon-musk-promised-over-a-million-robotaxis-by-202/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-16T06:37:00Z",
+        "tickers": [
+          "TSLA",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN"
+        ],
+        "keywords": [
+          "robotaxi",
+          "autonomous vehicles",
+          "Elon Musk",
+          "Tesla valuation",
+          "humanoid robots",
+          "Optimus",
+          "full self-driving",
+          "overly optimistic predictions",
+          "track record"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "Where Tesla's Robotaxi Rollout Stands Today and What Investors Should Know",
+        "summary": "Tesla launched its Cybercab robotaxi service in Austin on September 3, showcasing improvements in manufacturing efficiency with a 50% reduction in production line size and highlighting that vehicles require no rare-earth minerals. However, the event was less impressive than anticipated, with CEO Elon Musk absent and the stock pulling back following the announcement. The launch was also accompanied by NHTSA safety and regulatory compliance reviews, raising questions about the timeline for autonomous vehicle commercialization. With Tesla's EV business plateauing and Optimus robots years away from revenue generation, the Cybercab's success is critical to the company's growth narrative.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/where-teslas-robotaxi-rollout-stands-today-and-wha/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T22:05:00Z",
+        "tickers": [
+          "TSLA"
+        ],
+        "keywords": [
+          "robotaxi",
+          "Cybercab",
+          "autonomous vehicles",
+          "manufacturing efficiency",
+          "regulatory approval",
+          "NHTSA",
+          "rare-earth minerals",
+          "Tesla growth strategy"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "Elon Musk's $1 Trillion Pay Package Needs Tesla to Hit an $8.5 Trillion Market Cap. Here's What That Means for Shareholders.",
+        "summary": "Tesla shareholders approved a $1 trillion pay package for CEO Elon Musk in November, contingent on meeting 12 performance milestones over 10 years. The package requires Tesla to reach an $8.5 trillion market cap and achieve significant operational goals in robotics, FSD subscriptions, and robotaxis. While the best-case scenario of all milestones being met appears unlikely, even partial completion would significantly benefit shareholders and diversify Tesla's revenue streams beyond traditional auto sales.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/elon-musks-1-trillion-pay-package-tesla-market-cap/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T13:30:00Z",
+        "tickers": [
+          "TSLA"
+        ],
+        "keywords": [
+          "executive compensation",
+          "performance milestones",
+          "market cap targets",
+          "robotics",
+          "autonomous vehicles",
+          "FSD subscriptions",
+          "shareholder value",
+          "Tesla stock"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "3 AI Robotics Stocks Worth Owning Over Tesla Right Now",
+        "summary": "The article argues that Tesla's valuation is heavily dependent on uncertain humanoid robot commercialization timelines and lofty valuations, making it riskier than alternatives. Instead, investors should consider Nvidia (which supplies chips to all robotics companies), Alphabet (with Google Cloud and Waymo autonomous vehicles), and Zebra Technologies (providing foundational software for robots), all trading at more attractive valuations with more certain growth catalysts.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/3-ai-robotics-stocks-worth-owning-over-tesla-right/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T04:15:00Z",
+        "tickers": [
+          "TSLA",
+          "NVDA",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "ZBRA"
+        ],
+        "keywords": [
+          "AI robotics",
+          "humanoid robots",
+          "autonomous vehicles",
+          "AI chips",
+          "cloud computing",
+          "valuation",
+          "PEG ratio"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "Ford Motor vs. Tesla: Which Automotive Stock Is a Better Buy in 2026?",
+        "summary": "The article compares Ford Motor and Tesla as investment options for 2026. Ford offers stability with strong free cash flow ($3.5B), a dominant commercial vehicle business, and a low valuation (8.4x Forward P/E), despite a $8.2B net loss in FY2025. Tesla presents high growth potential in AI and autonomous robotics but faces concerning fundamentals: negative free cash flow, operating margins collapsed to 1%, and a premium valuation (191.9x Forward P/E). The author recommends Ford for investors seeking current automotive exposure over speculative future bets.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/coverage/better-buy/2026/09/14/ford-motor-vs-tesla-which-automotive-stock-is-a-better-buy-in-2026/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T10:17:56Z",
+        "tickers": [
+          "F",
+          "FpB",
+          "FpC",
+          "FpD",
+          "TSLA"
+        ],
+        "keywords": [
+          "automotive stocks",
+          "electric vehicles",
+          "autonomous driving",
+          "valuation comparison",
+          "free cash flow",
+          "commercial vehicles",
+          "AI and robotics"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "The Stock Market Is Repeating a Pattern Last Seen Decades Ago -- Here's What History Says Happens Next",
+        "summary": "The current bull market is characterized by narrow leadership, with a near-record number of S&P 500 companies exhibiting negative beta—a pattern last seen during the dot-com bubble. While a handful of AI stocks have driven gains, many companies have seen prices collapse. This concentration poses risks: if the bubble pops, diversification into quality and value stocks may be necessary, though it could reduce returns if the bull market continues.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/stock-market-repeating-pattern-history-bear-bull/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T08:30:00Z",
+        "tickers": [
+          "NVDA",
+          "AAPL",
+          "AMZN",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "META",
+          "MSFT",
+          "TSLA"
+        ],
+        "keywords": [
+          "narrow bull market",
+          "negative beta stocks",
+          "dot-com bubble comparison",
+          "AI stocks",
+          "market concentration",
+          "diversification",
+          "quality stocks",
+          "value stocks"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "$10,000 in Tesla When It Joined the S&P 500 Would Be About $15,700 Today. An Index Fund Would Have Done Better.",
+        "summary": "Tesla stock purchased at $695 when it joined the S&P 500 in December 2020 has returned 57% over nearly six years, translating to roughly 8% annually. However, an S&P 500 index fund investment would have grown the same $10,000 to approximately $20,500 (13% annually), significantly outperforming Tesla. Despite the company tripling its revenue and achieving profitability, most of its growth was already priced into the initial valuation, causing the stock's P/E ratio to compress from 900x to 330x earnings.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/12/usd10-000-in-tesla-when-it-joined-the-s-and-p-500-would-be-about-usd15-700-today-an-index-fund-would-have-done-better/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-12T22:18:01Z",
+        "tickers": [
+          "TSLA"
+        ],
+        "keywords": [
+          "Tesla stock performance",
+          "S&P 500 index fund comparison",
+          "valuation compression",
+          "electric vehicles",
+          "index fund outperformance",
+          "price-to-earnings ratio",
+          "autonomy investment",
+          "robotaxi"
+        ]
+      },
+      {
+        "symbol": "TSLA",
+        "title": "Not Nvidia. Not Micron. This Dirt Cheap “Magnificent Seven” Stock Could Be the Biggest Winner of the Trillion-Dollar AI Race – Here’s the Case.",
+        "summary": "The article argues that Alphabet, trading at a cheap 15x forward earnings valuation, could be the biggest winner in the AI race compared to other Magnificent Seven stocks. Unlike chip makers Nvidia and Micron who only profit from selling products, Alphabet benefits from AI as both a provider and user of AI technology, positioning it for success regardless of which chip designer gains market share. The company's Google Search dominance (90%+ market share) generates $81 billion in ad revenue, while its Google Cloud AI business is experiencing explosive growth.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/12/not-nvidia-not-micron-this-dirt-cheap-magnificent-seven-stock-could-be-the-biggest-winner-of-the-trillion-dollar-ai-race-here-s-the-case/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-12T22:15:01Z",
+        "tickers": [
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "NVDA",
+          "MU",
+          "AMZN",
+          "AAPL",
+          "META",
+          "MSFT",
+          "TSLA"
+        ],
+        "keywords": [
+          "Alphabet",
+          "AI race",
+          "Magnificent Seven",
+          "valuation",
+          "Google Search",
+          "Google Cloud",
+          "Gemini",
+          "artificial intelligence",
+          "tech stocks"
+        ]
+      }
+    ],
+    "NVDA": [
+      {
+        "symbol": "NVDA",
+        "title": "Michael Burry Just Said 7 Words Dismissing AI After Slowdown Fears: \"There Is Nothing AI to Slow Down.\" Should Investors Trust His Nvidia and Palantir Shorts?",
+        "summary": "Michael Burry, famous for predicting the 2008 financial crisis, has dismissed AI slowdown concerns, claiming there is nothing AI to slow down and that major AI companies' calls for development slowdowns are self-serving. He maintains short positions in Nvidia and Palantir, though he recently sold his Nvidia puts. Despite Burry's skepticism, Wall Street remains broadly bullish on both companies, and AI continues to demonstrate value to users.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/16/michael-burry-just-said-7-words-dismissing-ai-afte/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-16T05:35:00Z",
+        "tickers": [
+          "NVDA",
+          "PLTR"
+        ],
+        "keywords": [
+          "AI bubble",
+          "short positions",
+          "AI development slowdown",
+          "LLMs",
+          "AGI",
+          "AI regulation",
+          "tech stocks",
+          "market sentiment"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Want to Invest in Anthropic Before Its IPO? Here's How.",
+        "summary": "Anthropic submitted its confidential IPO filing in June with an expected S-1 release in late September and IPO around mid-October. Investors can gain limited exposure through the AGIX ETF, which holds only 1.19% in Anthropic shares. While the company shows impressive revenue growth (Q2: $11.5B vs Q1: $4.73B), profitability remains uncertain due to high operational costs. The author recommends waiting for the public debut rather than pursuing pre-IPO private market shares.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/16/want-to-invest-in-anthropic-before-its-ipo-heres-h/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-16T05:12:00Z",
+        "tickers": [
+          "AGIX",
+          "META",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "NVDA"
+        ],
+        "keywords": [
+          "Anthropic IPO",
+          "AI investment",
+          "pre-IPO exposure",
+          "revenue growth",
+          "ETF holdings",
+          "private markets"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Credo (CRDO) vs. Marvell (MRVL): Which AI Chip Stock Is the Better Buy?",
+        "summary": "Credo Technology and Marvell Technology are compared as AI chip investment options. Credo offers faster near-term growth (87% revenue growth projected for FY2027) with better valuation at 30X forward earnings, but faces concentration risk with 4 customers representing 84% of revenue. Marvell provides broader AI infrastructure exposure with stronger long-term earnings growth but trades at a premium 72X multiple. Both stocks receive a Zacks Rank #3 (Hold) rating.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/commentary/2990195/credo-crdo-vs-marvell-mrvl-which-ai-chip-stock-is-the-better-buy?cid=CS-ZC-FT-investment_ideas-2990195",
+        "publishedAt": "2026-09-15T22:11:00Z",
+        "tickers": [
+          "CRDO",
+          "MRVL",
+          "NVDA",
+          "AVGO",
+          "AMZN"
+        ],
+        "keywords": [
+          "AI chips",
+          "semiconductor stocks",
+          "Credo Technology",
+          "Marvell Technology",
+          "AI infrastructure",
+          "valuation comparison",
+          "earnings growth",
+          "data center"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Chip Stocks Recovered Today and the Major Indexes Fell Anyway",
+        "summary": "Major stock indexes fell despite chip stocks recovering from Monday's AI-driven selloff. The Dow and Nasdaq Composite each dropped 0.7% while the S&P 500 fell 0.4%. Rising Treasury yields (10-year at 5.041%, highest since July 2007) and elevated oil prices drove market concerns. The Fed is expected to hike rates by a quarter-point on Wednesday, with future rate decisions dependent on energy costs and inflation pressures.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/chip-stocks-recovered-today-and-the-indexes-fell/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T18:26:52Z",
+        "tickers": [
+          "NVDA",
+          "QCOM",
+          "AMD",
+          "GS",
+          "GSpA",
+          "GSpC",
+          "GSpD",
+          "AMJB",
+          "JPM",
+          "JPMpC",
+          "JPMpD",
+          "JPMpJ",
+          "JPMpK",
+          "JPMpL",
+          "JPMpM",
+          "VYLD",
+          "AMZN",
+          "AAPL",
+          "CVX"
+        ],
+        "keywords": [
+          "chip stocks recovery",
+          "Treasury yields",
+          "interest rates",
+          "oil prices",
+          "Federal Reserve",
+          "market correction",
+          "AI concerns"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Is Nvidia Stock a Buy in September 2026?",
+        "summary": "Nvidia has transformed into an AI infrastructure powerhouse with extraordinary growth (106% YoY revenue increase), expanding beyond GPUs into complete AI systems. While the company is well-positioned for the next phase of AI (inference and agents), the stock trades at a 29x P/E ratio with limited margin of safety. Investors should only buy if they have strong conviction on AI's sustainability and Nvidia's dominance, despite visible competitive risks from major customers developing proprietary chips.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/is-nvidia-stock-a-buy-in-september-2026/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T18:15:00Z",
+        "tickers": [
+          "NVDA",
+          "AMZN",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "MSFT",
+          "META"
+        ],
+        "keywords": [
+          "artificial intelligence",
+          "GPU",
+          "data center",
+          "AI infrastructure",
+          "inference",
+          "AI agents",
+          "valuation",
+          "competition",
+          "semiconductor"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Stock Market Midday, Sept. 15: Stocks Slide on AI and Bond Jitters",
+        "summary": "Major stock indexes declined on September 15, 2026, as concerns over AI scaling pressures and rising bond yields weighed on markets. The S&P 500 fell 0.45%, the Nasdaq dropped 0.73%, and the Dow declined 0.88%. The 10-year Treasury yield reached 4.99%, its highest level since 2007. While some semiconductor stocks like Nvidia, Intel, and Micron gained slightly as investors reassessed AI concerns, cryptocurrency stocks fell ahead of Senate legislation votes. High treasury yields and rising oil prices compounded market weakness.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/coverage/stock-market-today/2026/09/15/stock-market-midday-sept-15-stocks-slide-on-ai-and-bond-jitters/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T16:34:52Z",
+        "tickers": [
+          "NVDA",
+          "INTC",
+          "MU",
+          "COIN",
+          "HOOD"
+        ],
+        "keywords": [
+          "stock market decline",
+          "AI concerns",
+          "bond yields",
+          "treasury yield",
+          "semiconductor stocks",
+          "cryptocurrency stocks",
+          "interest rates",
+          "market correction"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "This Is the No. 1 Reason I'm Buying and Holding the Vanguard Total Stock Market ETF (VTI) Right Now",
+        "summary": "Despite concerns about inflation and rising interest rates, the author recommends buying VTI due to resilient corporate earnings growth driven by AI investment. Strong second-quarter results and revised guidance from analysts suggest earnings will continue growing through 2027, with small-cap stocks now participating in the AI-driven growth. The author expects robust earnings growth across all company sizes to support stock price gains over the next several quarters.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/no-1-reason-buying-holding-vanguard-vti/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T16:05:00Z",
+        "tickers": [
+          "NVDA",
+          "AAPL",
+          "MSFT"
+        ],
+        "keywords": [
+          "VTI",
+          "corporate earnings",
+          "AI boom",
+          "S&P 500",
+          "small-cap stocks",
+          "earnings growth",
+          "stock valuations"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Buy TI and NVIDIA for Exposure to Semiconductor Boom",
+        "summary": "The semiconductor industry is positioned for exceptional growth through 2026-2027, driven primarily by AI infrastructure demand and data-center expansion. Global semiconductor sales are expected to grow 89.9% in 2026 to $1.51 trillion, with memory and AI infrastructure as primary drivers. However, near-term challenges include geopolitical tensions, supply-chain constraints, elevated memory prices, and potential tariff impacts. NVIDIA and Texas Instruments are highlighted as top picks to benefit from this cycle.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/commentary/2989797/buy-ti-and-nvidia-for-exposure-to-semiconductor-boom?cid=CS-ZC-FT-industry_outlook-2989797",
+        "publishedAt": "2026-09-15T15:21:00Z",
+        "tickers": [
+          "NVDA",
+          "TXN",
+          "INTC",
+          "STM"
+        ],
+        "keywords": [
+          "semiconductor industry",
+          "AI infrastructure",
+          "data centers",
+          "memory demand",
+          "supply chain",
+          "geopolitical tensions",
+          "automotive semiconductors",
+          "industrial applications",
+          "CHIPS Act",
+          "manufacturing capacity"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Anthropic, OpenAI, and xAI Want to Slow Down Artificial Intelligence (AI) Development. These 2 Stocks Could Be the Biggest Losers.",
+        "summary": "Major AI companies Anthropic, OpenAI, and xAI have called for a slowdown in AI development due to safety concerns. This could negatively impact hardware suppliers and cybersecurity vendors that have benefited from rapid AI expansion. AMD and CrowdStrike are identified as particularly vulnerable due to their high valuations and dependence on AI-driven demand.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/anthropic-openai-slow-ai-development-2-stocks-lose/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T13:15:00Z",
+        "tickers": [
+          "AMD",
+          "CRWD",
+          "NVDA"
+        ],
+        "keywords": [
+          "AI development slowdown",
+          "artificial intelligence safety",
+          "GPU demand",
+          "cybersecurity",
+          "tech stocks",
+          "valuation risk"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Stock Market News for Sep 15, 2026",
+        "summary": "U.S. stock markets declined on Monday with all three major benchmarks ending in the red. The Dow fell 0.3%, Nasdaq dropped 0.6%, and S&P 500 lost 0.5%. AI stocks globally tumbled after leaders from Anthropic, OpenAI, and xAI warned about risks from rapid AI development. Treasury yields climbed sharply with the 10-year yield briefly breaching 5%, adding pressure to equities. Oil prices rose about 1% amid Middle East tensions threatening global supply.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/stock/news/2989710/stock-market-news-for-sep-15-2026?cid=CS-ZC-FT-market_news-2989710",
+        "publishedAt": "2026-09-15T13:14:00Z",
+        "tickers": [
+          "NVDA",
+          "AVGO"
+        ],
+        "keywords": [
+          "stock market decline",
+          "AI stocks selloff",
+          "Treasury yields",
+          "Middle East tensions",
+          "oil prices",
+          "Fed meeting",
+          "tech stocks"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Should You Buy Micron Stock Instead of Nvidia?",
+        "summary": "Both Micron and Nvidia are experiencing booming sales and profits driven by increasing data center demand in the AI infrastructure space. The article compares these two semiconductor companies to help investors decide which stock offers better investment potential.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/should-you-buy-micron-stock-instead-of-nvidia/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T12:15:00Z",
+        "tickers": [
+          "NVDA",
+          "MU"
+        ],
+        "keywords": [
+          "semiconductor stocks",
+          "AI infrastructure",
+          "data center demand",
+          "memory chips",
+          "investment comparison"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "3 AI Stocks Poised to Outperform Micron and Sandisk as the Next Infrastructure Bottleneck Builds",
+        "summary": "As AI infrastructure demands evolve beyond chips and memory, three companies are positioned to capitalize on emerging bottlenecks: Innodata provides data organization services with 58% revenue growth; Nebius offers neocloud services with expanding data center capacity and rising per-megawatt contract values; and Vertiv supplies critical liquid cooling solutions for AI infrastructure with 24% revenue growth and accelerating demand.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/x-ai-stock-poised-to-outperform-micron-and-sandisk/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T11:25:00Z",
+        "tickers": [
+          "INOD",
+          "NBIS",
+          "VRT",
+          "MU",
+          "SNDK",
+          "NVDA"
+        ],
+        "keywords": [
+          "AI infrastructure",
+          "data center capacity",
+          "liquid cooling",
+          "AI bottlenecks",
+          "hyperscalers",
+          "neocloud services",
+          "thermal management"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "The AI Company You Haven't Heard of -- But Should Keep on Your Radar",
+        "summary": "Bloom Energy, a fuel-cell technology company founded in 2001, is positioned to benefit significantly from AI infrastructure expansion. The company helps data centers obtain electricity faster by generating power on-site, addressing grid capacity constraints. After years of losses, Bloom Energy achieved profitability in early 2026 with 166% revenue growth in Q2, driven by major enterprise customers like Oracle. As data center power consumption is projected to reach 12% of U.S. electricity by 2030, Bloom Energy could become a standard supplier in the rapidly expanding data-center ecosystem.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/the-ai-company-you-havent-heard-of-but-should-keep/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T11:15:00Z",
+        "tickers": [
+          "BE",
+          "NVDA",
+          "AMZN",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "ORCL",
+          "ORCLpD"
+        ],
+        "keywords": [
+          "AI infrastructure",
+          "data centers",
+          "fuel-cell technology",
+          "power generation",
+          "grid capacity",
+          "commercial growth",
+          "profitability"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "2 Trillion-Dollar AI Infrastructure Stocks With Up to 136% Upside, According to Select Wall Street Analysts",
+        "summary": "Wall Street analysts highlight significant upside potential for two major AI infrastructure providers. Nvidia could reach $515 per share (136% upside) driven by triple-digit data center growth and potential supply expansion, while Micron Technology could reach $2,200 per share (126% upside) supported by strong demand for high-bandwidth memory and $100 billion in long-term customer agreements through 2030.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/2-trillion-dollar-ai-infrastructure-stocks-up-to-136-upside-according-to-wall-street-analysts/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T11:06:01Z",
+        "tickers": [
+          "NVDA",
+          "MU"
+        ],
+        "keywords": [
+          "AI infrastructure",
+          "artificial intelligence",
+          "data centers",
+          "GPUs",
+          "high-bandwidth memory",
+          "supply chain",
+          "pricing power",
+          "trillion-dollar opportunity"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Is WisdomTree U.S. Multifactor ETF (USMF) a Strong ETF Right Now?",
+        "summary": "USMF is a smart beta ETF launched in 2017 that tracks 200 U.S. companies selected based on value, quality, momentum, and correlation factors. With $277.77 million in assets and a 0.28% expense ratio, it offers diversified exposure across sectors with heavy Information Technology allocation (30%). Year-to-date returns are 2.8%, though cheaper alternatives like ITOT and VTI with lower expense ratios (0.03%) may be more suitable for cost-conscious investors.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/stock/news/2989578/is-wisdomtree-u-s-multifactor-etf-usmf-a-strong-etf-right-now?cid=CS-ZC-FT-smart_beta_etf-2989578",
+        "publishedAt": "2026-09-15T10:20:02Z",
+        "tickers": [
+          "USMF",
+          "NVDA",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "AAPL",
+          "ITOT",
+          "VTI"
+        ],
+        "keywords": [
+          "smart beta ETF",
+          "multifactor investing",
+          "expense ratio",
+          "sector allocation",
+          "dividend yield",
+          "market performance"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Should You Invest in the iShares Expanded Tech Sector ETF (IGM)?",
+        "summary": "The iShares Expanded Tech Sector ETF (IGM) is a passively managed fund with $10.63 billion in assets, offering broad exposure to the technology sector with a low 0.37% expense ratio. The fund has gained 24.33% year-to-date and 31.31% over the past year, with top holdings including Microsoft (9.9%), Nvidia, and Apple. IGM carries a beta of 1.40 and holds a Zacks ETF Rank of 1 (Strong Buy), though alternatives like XLK and VGT offer lower expense ratios.",
+        "source": "Zacks Investment Research",
+        "url": "https://www.zacks.com/stock/news/2989571/should-you-invest-in-the-ishares-expanded-tech-sector-etf-igm?cid=CS-ZC-FT-sector_etf-2989571",
+        "publishedAt": "2026-09-15T10:20:02Z",
+        "tickers": [
+          "IGM",
+          "MSFT",
+          "NVDA",
+          "AAPL",
+          "XLK",
+          "VGT"
+        ],
+        "keywords": [
+          "technology ETF",
+          "passive management",
+          "expense ratio",
+          "sector exposure",
+          "dividend yield",
+          "performance",
+          "risk assessment"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "If I Were in My 20s, I'd Buy This Unstoppable Vanguard ETF and Hold It Forever",
+        "summary": "The article recommends the Vanguard S&P 500 Growth ETF (VOOG) for young investors in their 20s as a long-term buy-and-hold investment. The ETF focuses on 148 growth stocks from the S&P 500, with over 51% in technology companies. It has delivered 16.9% compound annual returns since 2010, outpacing the S&P 500's 14.2%, and could potentially double retirement savings over 40 years due to compounding.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/if-in-my-20s-buy-vanguard-etf-voog-hold-forever/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T08:26:00Z",
+        "tickers": [
+          "VOOG",
+          "NVDA",
+          "MSFT",
+          "AAPL",
+          "AVGO",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "AMZN",
+          "META"
+        ],
+        "keywords": [
+          "S&P 500 Growth ETF",
+          "long-term investing",
+          "growth stocks",
+          "artificial intelligence",
+          "technology sector",
+          "compound returns",
+          "retirement planning"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "This Unassuming Stock is Trouncing Nvidia in 2026. Here’s Why It’s a No-Brainer Buy.",
+        "summary": "Target has climbed nearly 60% in 2026, outperforming Nvidia's 17% gain. Under new CEO Michael Fiddelke, Target is executing a turnaround strategy focused on employee training, store redesigns, and AI-driven shopping improvements. The retailer is showing early success with 3.6% traffic growth and strong performance in food, beverage, and beauty categories. As a Dividend King with 50+ consecutive years of dividend increases and $4.5 billion in free cash flow, Target offers both growth potential and passive income.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/this-unassuming-stock-is-trouncing-nvidia-in-2026-here-s-why-it-s-a-no-brainer-buy/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T08:12:01Z",
+        "tickers": [
+          "TGT",
+          "NVDA"
+        ],
+        "keywords": [
+          "retail turnaround",
+          "dividend growth",
+          "AI implementation",
+          "store expansion",
+          "consumer goods",
+          "stock performance comparison"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Is a Sandisk Stock Split Coming?",
+        "summary": "Sandisk's stock price has surged to $1,552, prompting speculation about a potential stock split. While no split has been announced, the article explains that a split would be purely cosmetic—it wouldn't change the company's fundamentals, revenue, profits, or shareholder value. The main practical impact would be on options traders and potentially on Sandisk's eligibility for the Dow Jones Industrial Average, which weights stocks by share price rather than market value.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/is-a-sandisk-stock-split-coming/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T07:11:01Z",
+        "tickers": [
+          "SNDK",
+          "MU",
+          "NVDA",
+          "WDC"
+        ],
+        "keywords": [
+          "stock split",
+          "share price",
+          "market capitalization",
+          "Dow Jones Industrial Average",
+          "options trading",
+          "memory prices",
+          "data center demand"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "3 AI Robotics Stocks Worth Owning Over Tesla Right Now",
+        "summary": "The article argues that Tesla's valuation is heavily dependent on uncertain humanoid robot commercialization timelines and lofty valuations, making it riskier than alternatives. Instead, investors should consider Nvidia (which supplies chips to all robotics companies), Alphabet (with Google Cloud and Waymo autonomous vehicles), and Zebra Technologies (providing foundational software for robots), all trading at more attractive valuations with more certain growth catalysts.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/15/3-ai-robotics-stocks-worth-owning-over-tesla-right/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T04:15:00Z",
+        "tickers": [
+          "TSLA",
+          "NVDA",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "ZBRA"
+        ],
+        "keywords": [
+          "AI robotics",
+          "humanoid robots",
+          "autonomous vehicles",
+          "AI chips",
+          "cloud computing",
+          "valuation",
+          "PEG ratio"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Why Micron, Intel, AMD, and Other Chip Stocks Fell Today",
+        "summary": "Chip stocks including Micron, Intel, AMD, and Nvidia declined following mounting concerns from AI researchers and industry leaders about unchecked AI advancement risks. Anthropic CEO Dario Amodei and other tech leaders are calling for slower AI development and stronger safety standards. A slowdown in AI capabilities advancement could reduce demand for memory chips and AI accelerators, pressuring these semiconductor companies' growth and pricing power.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/why-micron-intel-amd-chip-stocks-fell-today/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-15T03:08:22Z",
+        "tickers": [
+          "MU",
+          "INTC",
+          "AMD",
+          "NVDA"
+        ],
+        "keywords": [
+          "artificial intelligence",
+          "AI safety",
+          "chip stocks",
+          "semiconductor demand",
+          "AI regulation",
+          "memory chips",
+          "GPU accelerators"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Oklo Has Massive Potential Due to Artificial Intelligence, but the Stock Is Sinking. Here's What I'd Do",
+        "summary": "Oklo, a small energy company positioned to power AI data centers, has lost roughly half its value in 2026 after soaring 238% last year. While the company has significant long-term potential in the AI boom, it faces substantial risks including years before profitability, intensifying losses (now $153M annually), and execution uncertainty. The analyst recommends putting Oklo on a watch list rather than buying now, suggesting investors wait for more encouraging financial results before investing.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/oklo-has-massive-potential-due-to-artificial-intelligence-but-the-stock-is-sinking-here-s-what-i-d-do/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T21:12:01Z",
+        "tickers": [
+          "OKLO",
+          "NVDA",
+          "PLTR"
+        ],
+        "keywords": [
+          "artificial intelligence",
+          "energy stocks",
+          "data centers",
+          "nuclear power",
+          "small-cap stocks",
+          "speculative investments",
+          "stock volatility"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Nvidia Stock Could Get a Boost From CoreWeave's Latest Announcement",
+        "summary": "CoreWeave launched a new Physical AI Field Engineering service that sends specialized engineers to help manufacturing, aerospace, and robotics companies build AI applications for physical products. This expansion could benefit Nvidia, which owns 11.5% of CoreWeave and supplies its GPUs. The strategy could help Nvidia reach new industrial markets and drive adoption of its Omniverse platform.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/nvidia-stock-gets-a-boost-from-coreweaves-latest-a/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T19:30:00Z",
+        "tickers": [
+          "CRWV",
+          "NVDA",
+          "MSFT",
+          "AMZN",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN"
+        ],
+        "keywords": [
+          "Physical AI",
+          "AI infrastructure",
+          "GPU demand",
+          "Manufacturing AI",
+          "Data centers",
+          "Omniverse platform",
+          "CUDA platform"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "Netflix Stock Rose 4% While the AI Trade Sold Off on Monday. Its Capital Goes Into Shows, Not Silicon.",
+        "summary": "Netflix stock rose 4% on Monday as AI-related stocks sold off following calls from Anthropic and OpenAI leaders to slow AI development. Unlike major AI infrastructure spenders like Alphabet, Netflix invests primarily in content ($9.9B in H1 2026) rather than capital equipment ($415M), generating strong free cash flow of $12.5B expected for 2026. However, the stock remains down 36% from its 52-week high due to slowing revenue growth.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/netflix-stock-rose-4-while-the-ai-trade-sold-off-on-monday-its-capital-goes-into-shows-not-silicon/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T19:27:01Z",
+        "tickers": [
+          "NFLX",
+          "GOOG",
+          "GOOGL",
+          "GOOGM",
+          "GOOGN",
+          "MU",
+          "ARM",
+          "NVDA"
+        ],
+        "keywords": [
+          "Netflix",
+          "AI stocks",
+          "capital expenditure",
+          "free cash flow",
+          "content spending",
+          "revenue growth slowdown",
+          "stock buybacks"
+        ]
+      },
+      {
+        "symbol": "NVDA",
+        "title": "The 10-Year Treasury Yield Just Hit the Significant 5% Threshold. Here's What That Means for the Stock Market.",
+        "summary": "The 10-year Treasury yield reached 5% for the first time since 2007, driven by persistent inflation, elevated oil prices, and Fed policy signals. Higher yields typically push investors to rotate from stocks to bonds, particularly affecting dividend and growth stocks. However, the article suggests this shouldn't necessarily derail the bull market, as AI-focused companies with strong balance sheets like Nvidia can weather modestly higher rates.",
+        "source": "The Motley Fool",
+        "url": "https://www.fool.com/investing/2026/09/14/the-10-year-treasury-yield-just-hit-the-significant-5-threshold-heres-what-that-means-for-the-stock-market/?source=iedfolrf0000001",
+        "publishedAt": "2026-09-14T19:16:29Z",
+        "tickers": [
+          "NVDA"
+        ],
+        "keywords": [
+          "Treasury yield",
+          "interest rates",
+          "stock market",
+          "inflation",
+          "bond yields",
+          "dividend stocks",
+          "growth stocks",
+          "AI funding",
+          "Federal Reserve"
+        ]
+      }
+    ]
+  },
+  "all_news_count": 52
+}

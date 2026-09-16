@@ -1,0 +1,138 @@
+{
+  "generated_at": "2026-09-16T08:40:09.482Z",
+  "target_date": "2026-09-15",
+  "source": "REAL_MASSIVE_REST",
+  "endpoints": [
+    {
+      "name": "daily aggregates AAPL",
+      "status": "OK",
+      "count": 31
+    },
+    {
+      "name": "second aggregates AAPL",
+      "status": "OK",
+      "count": 1776
+    },
+    {
+      "name": "minute aggregates AAPL",
+      "status": "OK",
+      "count": 30
+    },
+    {
+      "name": "daily aggregates TSLA",
+      "status": "OK",
+      "count": 31
+    },
+    {
+      "name": "second aggregates TSLA",
+      "status": "OK",
+      "count": 1784
+    },
+    {
+      "name": "minute aggregates TSLA",
+      "status": "OK",
+      "count": 30
+    },
+    {
+      "name": "daily aggregates NVDA",
+      "status": "OK",
+      "count": 31
+    },
+    {
+      "name": "second aggregates NVDA",
+      "status": "OK",
+      "count": 1794
+    },
+    {
+      "name": "minute aggregates NVDA",
+      "status": "OK",
+      "count": 30
+    },
+    {
+      "name": "news AAPL",
+      "status": "OK",
+      "count": 18
+    },
+    {
+      "name": "news TSLA",
+      "status": "OK",
+      "count": 9
+    },
+    {
+      "name": "news NVDA",
+      "status": "OK",
+      "count": 25
+    }
+  ],
+  "response_shapes": {
+    "AAPL_second_bar": [
+      "symbol",
+      "date",
+      "time",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "timestamp",
+      "vwap",
+      "transactions"
+    ],
+    "AAPL_news_article": [
+      "symbol",
+      "title",
+      "summary",
+      "source",
+      "url",
+      "publishedAt",
+      "tickers",
+      "keywords"
+    ],
+    "TSLA_second_bar": [
+      "symbol",
+      "date",
+      "time",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "timestamp",
+      "vwap",
+      "transactions"
+    ],
+    "TSLA_news_article": [
+      "symbol",
+      "title",
+      "summary",
+      "source",
+      "url",
+      "publishedAt",
+      "tickers",
+      "keywords"
+    ],
+    "NVDA_second_bar": [
+      "symbol",
+      "date",
+      "time",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "timestamp",
+      "vwap",
+      "transactions"
+    ],
+    "NVDA_news_article": [
+      "symbol",
+      "title",
+      "summary",
+      "source",
+      "url",
+      "publishedAt",
+      "tickers",
+      "keywords"
+    ]
+  }
+}

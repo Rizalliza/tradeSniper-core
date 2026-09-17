@@ -9,8 +9,8 @@ test('OpeningSniperPaperTrader enters on first-window cross and retest', () => {
         first2Bars: [
             { time: '09:30:00', open: 100, high: 100.2, low: 99.8, close: 99.9 },
             { time: '09:30:02', open: 99.9, high: 100.5, low: 99.9, close: 100.4 },
-            { time: '09:30:04', open: 100.4, high: 100.45, low: 100.1, close: 100.18 },
-            { time: '09:30:06', open: 100.18, high: 100.3, low: 100.08, close: 100.25 },
+            { time: '09:30:04', open: 100.4, high: 100.45, low: 100.1, close: 100.22 },
+            { time: '09:30:06', open: 100.22, high: 100.3, low: 100.08, close: 100.25 },
         ],
         config: {
             zonePct: 0.001,
@@ -33,8 +33,8 @@ test('OpeningSniperPaperTrader exits at scalp target inside first two minutes', 
         first2Bars: [
             { time: '09:30:00', open: 100, high: 100.2, low: 99.8, close: 99.9 },
             { time: '09:30:02', open: 99.9, high: 100.5, low: 99.9, close: 100.4 },
-            { time: '09:30:04', open: 100.4, high: 100.45, low: 100.1, close: 100.18 },
-            { time: '09:30:06', open: 100.18, high: 100.9, low: 100.16, close: 100.3 },
+            { time: '09:30:04', open: 100.4, high: 100.45, low: 100.1, close: 100.22 },
+            { time: '09:30:06', open: 100.22, high: 100.9, low: 100.16, close: 100.3 },
         ],
         config: {
             zonePct: 0.001,
@@ -56,8 +56,8 @@ test('OpeningSniperPaperTrader arms runner and manages continuation bars', () =>
         first2Bars: [
             { time: '09:30:00', open: 100, high: 100.2, low: 99.8, close: 99.9 },
             { time: '09:30:02', open: 99.9, high: 100.5, low: 99.9, close: 100.4 },
-            { time: '09:30:04', open: 100.4, high: 100.45, low: 100.1, close: 100.18 },
-            { time: '09:30:06', open: 100.18, high: 100.9, low: 100.16, close: 100.75 },
+            { time: '09:30:04', open: 100.4, high: 100.45, low: 100.1, close: 100.22 },
+            { time: '09:30:06', open: 100.22, high: 100.9, low: 100.16, close: 100.75 },
         ],
         validationBars: [
             { time: '09:32:00', open: 100.75, high: 101.4, low: 100.7, close: 101.2 },

@@ -1,32 +1,35 @@
 {
-  "generated_at": "2026-09-17T13:18:28.895Z",
+  "generated_at": "2026-09-17T15:27:34.568Z",
   "input": "data/pressure-pilot-2026-09-09_2026-09-15.json",
   "limitation": "Historical 2-second/validation-bar paper replay. It verifies detection logic, not live broker fill quality or tick/NBBO ordering.",
   "config": {
     "zonePct": 0.0015,
+    "retestZonePct": 0.00025,
+    "retestCloseZoneMultiplier": 2,
     "scalpTargetPct": 0.001,
     "hardStopPct": 0.001,
     "runnerTriggerPct": 0.0015,
     "runnerTrailPct": 0.001,
+    "reclaimFlipBars": 2,
     "wrongSideGuard": true
   },
   "summary": {
     "sessions": 20,
-    "paperEntries": 18,
+    "paperEntries": 17,
     "noCross": 0,
     "noRetest": 0,
-    "blocked": 2,
-    "firstWindowEntries": 18,
-    "runners": 6,
-    "wins": 11,
-    "losses": 7,
+    "blocked": 3,
+    "firstWindowEntries": 17,
+    "runners": 4,
+    "wins": 12,
+    "losses": 5,
     "breakeven": 0,
-    "winRate": 0.6111111111111112,
-    "avgPnlPct": 0.0008394444444444445,
+    "winRate": 0.7058823529411765,
+    "avgPnlPct": 0.0009018235294117648,
     "exitReasons": {
-      "HARD_STOP": 7,
-      "SCALP_TARGET": 5,
-      "RUNNER_TRAIL": 6
+      "HARD_STOP": 5,
+      "SCALP_TARGET": 8,
+      "RUNNER_TRAIL": 4
     }
   },
   "results": [
@@ -150,32 +153,13 @@
       "symbol": "AAPL",
       "date": "2026-09-11",
       "pressure": "NEUTRAL",
-      "phase": "CLOSED",
+      "phase": "BLOCKED",
       "openingRange": {
         "high": 329.37,
         "low": 326.3,
         "midpoint": 327.835
       },
-      "trade": {
-        "symbol": "AAPL",
-        "date": "2026-09-11",
-        "direction": "SELL",
-        "entryPrice": 327.49,
-        "entryTime": "09:30:04",
-        "entryIndex": 2,
-        "entryReason": "RETEST_FROM_BELOW",
-        "crossTime": "09:30:02",
-        "crossLevel": "F2-M",
-        "bestPrice": 326.3,
-        "runner": true,
-        "runnerArmedTime": "09:30:06",
-        "trailingStop": 326.62629999999996,
-        "exitPrice": 326.6263,
-        "exitTime": "09:30:08",
-        "exitReason": "RUNNER_TRAIL",
-        "pnlPct": 0.002637,
-        "outcome": "WON"
-      },
+      "trade": null,
       "events": [
         {
           "type": "CROSS_DOWN",
@@ -186,28 +170,24 @@
           "close": 327.17
         },
         {
-          "type": "PAPER_ENTRY",
-          "direction": "SELL",
-          "level": "F2-M",
-          "entryPrice": 327.49,
-          "time": "09:30:04",
-          "retestType": "RETEST_FROM_BELOW"
+          "type": "RECLAIM_FLIP",
+          "from": "SELL",
+          "direction": "BUY",
+          "level": "RECLAIM-H",
+          "levelValue": 327.8,
+          "reclaimedLevel": "F2-M",
+          "time": "09:30:10",
+          "close": 327.59
         },
         {
-          "type": "SCALP_TARGET_RUNNER",
-          "direction": "SELL",
-          "time": "09:30:06",
-          "bestPrice": 326.3,
-          "trailingStop": 326.6263
-        },
-        {
-          "type": "PAPER_EXIT",
-          "direction": "SELL",
-          "reason": "RUNNER_TRAIL",
-          "time": "09:30:08",
-          "exitPrice": 326.6263,
-          "pnlPct": 0.002637,
-          "outcome": "WON"
+          "type": "PAPER_BLOCK",
+          "reason": "LOCAL_OPENING_BIAS_CONFLICT",
+          "direction": "BUY",
+          "localBias": "BEARISH",
+          "pendingLevel": "RECLAIM-H",
+          "pendingLevelValue": 327.8,
+          "time": "09:30:12",
+          "close": 327.89
         }
       ]
     },
@@ -290,14 +270,34 @@
           "close": 328.82
         },
         {
+          "type": "RECLAIM_FLIP",
+          "from": "BUY",
+          "direction": "SELL",
+          "level": "RECLAIM-L",
+          "levelValue": 328.36,
+          "reclaimedLevel": "F2-L",
+          "time": "09:30:06",
+          "close": 328.65
+        },
+        {
+          "type": "RECLAIM_FLIP",
+          "from": "SELL",
+          "direction": "BUY",
+          "level": "RECLAIM-H",
+          "levelValue": 329.79,
+          "reclaimedLevel": "RECLAIM-L",
+          "time": "09:30:10",
+          "close": 329.68
+        },
+        {
           "type": "PAPER_BLOCK",
           "reason": "LOCAL_OPENING_BIAS_CONFLICT",
           "direction": "BUY",
           "localBias": "BEARISH",
-          "pendingLevel": "F2-L",
-          "pendingLevelValue": 329.21,
-          "time": "09:30:08",
-          "close": 329.46
+          "pendingLevel": "RECLAIM-H",
+          "pendingLevelValue": 329.79,
+          "time": "09:30:16",
+          "close": 329.85
         }
       ]
     },
@@ -316,19 +316,19 @@
         "date": "2026-09-09",
         "direction": "SELL",
         "entryPrice": 493.75,
-        "entryTime": "09:30:04",
-        "entryIndex": 2,
+        "entryTime": "09:30:42",
+        "entryIndex": 21,
         "entryReason": "RETEST_FROM_BELOW",
         "crossTime": "09:30:02",
         "crossLevel": "F2-H",
-        "bestPrice": 492.2,
-        "runner": true,
-        "runnerArmedTime": "09:30:06",
-        "trailingStop": 492.69219999999996,
-        "exitPrice": 492.6922,
-        "exitTime": "09:30:10",
-        "exitReason": "RUNNER_TRAIL",
-        "pnlPct": 0.002142,
+        "bestPrice": 493.2,
+        "runner": false,
+        "runnerArmedTime": null,
+        "trailingStop": null,
+        "exitPrice": 493.25625,
+        "exitTime": "09:30:56",
+        "exitReason": "SCALP_TARGET",
+        "pnlPct": 0.001,
         "outcome": "WON"
       },
       "events": [
@@ -345,23 +345,16 @@
           "direction": "SELL",
           "level": "F2-H",
           "entryPrice": 493.75,
-          "time": "09:30:04",
+          "time": "09:30:42",
           "retestType": "RETEST_FROM_BELOW"
-        },
-        {
-          "type": "SCALP_TARGET_RUNNER",
-          "direction": "SELL",
-          "time": "09:30:06",
-          "bestPrice": 492.34,
-          "trailingStop": 492.83234
         },
         {
           "type": "PAPER_EXIT",
           "direction": "SELL",
-          "reason": "RUNNER_TRAIL",
-          "time": "09:30:10",
-          "exitPrice": 492.6922,
-          "pnlPct": 0.002142,
+          "reason": "SCALP_TARGET",
+          "time": "09:30:56",
+          "exitPrice": 493.25625,
+          "pnlPct": 0.001,
           "outcome": "WON"
         }
       ]
@@ -527,22 +520,22 @@
       "trade": {
         "symbol": "MSFT",
         "date": "2026-09-15",
-        "direction": "SELL",
-        "entryPrice": 500.475,
-        "entryTime": "09:30:04",
-        "entryIndex": 2,
-        "entryReason": "RETEST_FROM_BELOW",
-        "crossTime": "09:30:02",
-        "crossLevel": "F2-M",
-        "bestPrice": 499.25,
+        "direction": "BUY",
+        "entryPrice": 501.6,
+        "entryTime": "09:30:14",
+        "entryIndex": 7,
+        "entryReason": "RETEST_FROM_ABOVE",
+        "crossTime": "09:30:08",
+        "crossLevel": "RECLAIM-H",
+        "bestPrice": 502.31,
         "runner": false,
         "runnerArmedTime": null,
         "trailingStop": null,
-        "exitPrice": 500.975475,
-        "exitTime": "09:30:08",
-        "exitReason": "HARD_STOP",
-        "pnlPct": -0.001,
-        "outcome": "LOST"
+        "exitPrice": 502.1016,
+        "exitTime": "09:30:16",
+        "exitReason": "SCALP_TARGET",
+        "pnlPct": 0.001,
+        "outcome": "WON"
       },
       "events": [
         {
@@ -554,21 +547,31 @@
           "close": 499.63
         },
         {
+          "type": "RECLAIM_FLIP",
+          "from": "SELL",
+          "direction": "BUY",
+          "level": "RECLAIM-H",
+          "levelValue": 501.6,
+          "reclaimedLevel": "F2-M",
+          "time": "09:30:08",
+          "close": 501.34
+        },
+        {
           "type": "PAPER_ENTRY",
-          "direction": "SELL",
-          "level": "F2-M",
-          "entryPrice": 500.475,
-          "time": "09:30:04",
-          "retestType": "RETEST_FROM_BELOW"
+          "direction": "BUY",
+          "level": "RECLAIM-H",
+          "entryPrice": 501.6,
+          "time": "09:30:14",
+          "retestType": "RETEST_FROM_ABOVE"
         },
         {
           "type": "PAPER_EXIT",
-          "direction": "SELL",
-          "reason": "HARD_STOP",
-          "time": "09:30:08",
-          "exitPrice": 500.975475,
-          "pnlPct": -0.001,
-          "outcome": "LOST"
+          "direction": "BUY",
+          "reason": "SCALP_TARGET",
+          "time": "09:30:16",
+          "exitPrice": 502.1016,
+          "pnlPct": 0.001,
+          "outcome": "WON"
         }
       ]
     },
@@ -709,18 +712,18 @@
         "symbol": "NVDA",
         "date": "2026-09-11",
         "direction": "BUY",
-        "entryPrice": 220.984,
-        "entryTime": "09:30:04",
-        "entryIndex": 2,
+        "entryPrice": 220.6,
+        "entryTime": "09:30:24",
+        "entryIndex": 12,
         "entryReason": "RETEST_FROM_ABOVE",
-        "crossTime": "09:30:02",
-        "crossLevel": "F2-M",
-        "bestPrice": 221.21,
+        "crossTime": "09:30:22",
+        "crossLevel": "RECLAIM-H",
+        "bestPrice": 220.8,
         "runner": false,
         "runnerArmedTime": null,
         "trailingStop": null,
-        "exitPrice": 220.763016,
-        "exitTime": "09:30:06",
+        "exitPrice": 220.3794,
+        "exitTime": "09:30:30",
         "exitReason": "HARD_STOP",
         "pnlPct": -0.001,
         "outcome": "LOST"
@@ -735,19 +738,59 @@
           "close": 221.34
         },
         {
+          "type": "RECLAIM_FLIP",
+          "from": "BUY",
+          "direction": "SELL",
+          "level": "RECLAIM-L",
+          "levelValue": 220.5,
+          "reclaimedLevel": "F2-M",
+          "time": "09:30:06",
+          "close": 220.6612
+        },
+        {
+          "type": "RECLAIM_FLIP",
+          "from": "SELL",
+          "direction": "BUY",
+          "level": "RECLAIM-H",
+          "levelValue": 220.85,
+          "reclaimedLevel": "RECLAIM-L",
+          "time": "09:30:10",
+          "close": 220.82
+        },
+        {
+          "type": "RECLAIM_FLIP",
+          "from": "BUY",
+          "direction": "SELL",
+          "level": "RECLAIM-L",
+          "levelValue": 220.535,
+          "reclaimedLevel": "RECLAIM-H",
+          "time": "09:30:14",
+          "close": 220.61
+        },
+        {
+          "type": "RECLAIM_FLIP",
+          "from": "SELL",
+          "direction": "BUY",
+          "level": "RECLAIM-H",
+          "levelValue": 220.6,
+          "reclaimedLevel": "RECLAIM-L",
+          "time": "09:30:22",
+          "close": 220.55
+        },
+        {
           "type": "PAPER_ENTRY",
           "direction": "BUY",
-          "level": "F2-M",
-          "entryPrice": 220.984,
-          "time": "09:30:04",
+          "level": "RECLAIM-H",
+          "entryPrice": 220.6,
+          "time": "09:30:24",
           "retestType": "RETEST_FROM_ABOVE"
         },
         {
           "type": "PAPER_EXIT",
           "direction": "BUY",
           "reason": "HARD_STOP",
-          "time": "09:30:06",
-          "exitPrice": 220.763016,
+          "time": "09:30:30",
+          "exitPrice": 220.3794,
           "pnlPct": -0.001,
           "outcome": "LOST"
         }
@@ -826,20 +869,20 @@
         "date": "2026-09-15",
         "direction": "BUY",
         "entryPrice": 213.055,
-        "entryTime": "09:30:04",
-        "entryIndex": 2,
+        "entryTime": "09:30:06",
+        "entryIndex": 3,
         "entryReason": "RETEST_FROM_ABOVE",
         "crossTime": "09:30:02",
         "crossLevel": "F2-M",
-        "bestPrice": 213.47,
+        "bestPrice": 213.415,
         "runner": false,
         "runnerArmedTime": null,
         "trailingStop": null,
-        "exitPrice": 212.841945,
-        "exitTime": "09:30:06",
-        "exitReason": "HARD_STOP",
-        "pnlPct": -0.001,
-        "outcome": "LOST"
+        "exitPrice": 213.268055,
+        "exitTime": "09:30:08",
+        "exitReason": "SCALP_TARGET",
+        "pnlPct": 0.001,
+        "outcome": "WON"
       },
       "events": [
         {
@@ -855,17 +898,17 @@
           "direction": "BUY",
           "level": "F2-M",
           "entryPrice": 213.055,
-          "time": "09:30:04",
+          "time": "09:30:06",
           "retestType": "RETEST_FROM_ABOVE"
         },
         {
           "type": "PAPER_EXIT",
           "direction": "BUY",
-          "reason": "HARD_STOP",
-          "time": "09:30:06",
-          "exitPrice": 212.841945,
-          "pnlPct": -0.001,
-          "outcome": "LOST"
+          "reason": "SCALP_TARGET",
+          "time": "09:30:08",
+          "exitPrice": 213.268055,
+          "pnlPct": 0.001,
+          "outcome": "WON"
         }
       ]
     },

@@ -3,24 +3,30 @@ export class OpeningSniperPaperTrader {
         symbol,
         date,
         zonePct = 0.0015,
+        retestZonePct = 0.00025,
+        retestCloseZoneMultiplier = 2,
         scalpTargetPct = 0.001,
         hardStopPct = 0.001,
         runnerTriggerPct = 0.0015,
         runnerTrailPct = 0.001,
         entryWindowEnd = '09:32:00',
         wrongSideGuard = true,
+        reclaimFlipBars = 2,
     } = {}) {
         if (!symbol) throw new Error('OpeningSniperPaperTrader requires symbol');
         if (!date) throw new Error('OpeningSniperPaperTrader requires date');
         this.symbol = symbol;
         this.date = date;
         this.zonePct = zonePct;
+        this.retestZonePct = retestZonePct;
+        this.retestCloseZoneMultiplier = retestCloseZoneMultiplier;
         this.scalpTargetPct = scalpTargetPct;
         this.hardStopPct = hardStopPct;
         this.runnerTriggerPct = runnerTriggerPct;
         this.runnerTrailPct = runnerTrailPct;
         this.entryWindowEnd = entryWindowEnd;
         this.wrongSideGuard = wrongSideGuard;
+        this.reclaimFlipBars = reclaimFlipBars;
         this.reset();
     }
 
@@ -131,14 +137,22 @@ export class OpeningSniperPaperTrader {
 
     _detectRetest(bar) {
         if (!this.pending || bar.index === this.pending.crossIndex) return;
-        const zone = this.pending.levelValue * this.zonePct;
+        if (this._maybeFlipReclaim(bar)) return;
+        const zone = this.pending.levelValue * this.retestZonePct;
+        const closeZone = zone * this.retestCloseZoneMultiplier;
         if (this.pending.direction === 'BUY') {
-            const retested = bar.low <= this.pending.levelValue + zone && bar.close >= this.pending.levelValue - zone;
+            const retested =
+                bar.low <= this.pending.levelValue + zone &&
+                bar.close > this.pending.levelValue &&
+                (!this.pending.fromReclaim || bar.close <= this.pending.levelValue + closeZone);
             if (retested) this._tryOpenTrade(bar, 'RETEST_FROM_ABOVE');
             return;
         }
 
-        const retested = bar.high >= this.pending.levelValue - zone && bar.close <= this.pending.levelValue + zone;
+        const retested =
+            bar.high >= this.pending.levelValue - zone &&
+            bar.close < this.pending.levelValue &&
+            (!this.pending.fromReclaim || bar.close >= this.pending.levelValue - closeZone);
         if (retested) this._tryOpenTrade(bar, 'RETEST_FROM_BELOW');
     }
 
@@ -185,6 +199,8 @@ export class OpeningSniperPaperTrader {
             levelValue: round(level.value),
             crossTime: bar.time,
             crossIndex: this.openingBarsSeen,
+            reclaimCount: 0,
+            fromReclaim: false,
         };
         this.phase = 'PENDING_RETEST';
         this.events.push({
@@ -195,6 +211,49 @@ export class OpeningSniperPaperTrader {
             time: bar.time,
             close: round(bar.close),
         });
+    }
+
+    _maybeFlipReclaim(bar) {
+        const reclaimed =
+            (this.pending.direction === 'SELL' && bar.close > this.pending.levelValue) ||
+            (this.pending.direction === 'BUY' && bar.close < this.pending.levelValue);
+        if (!reclaimed) {
+            this.pending.reclaimCount = 0;
+            return false;
+        }
+
+        this.pending.reclaimCount += 1;
+        if (this.pending.reclaimCount < this.reclaimFlipBars) return true;
+
+        const oldDirection = this.pending.direction;
+        const newDirection = oldDirection === 'SELL' ? 'BUY' : 'SELL';
+        const reclaimLevel = this._reclaimLevel(newDirection, bar);
+        this.pending.direction = newDirection;
+        this.pending.level = reclaimLevel.name;
+        this.pending.levelValue = round(reclaimLevel.value);
+        this.pending.crossTime = bar.time;
+        this.pending.crossIndex = this.openingBarsSeen;
+        this.pending.reclaimCount = 0;
+        this.pending.fromReclaim = true;
+        this.phase = 'PENDING_RETEST';
+        this.events.push({
+            type: 'RECLAIM_FLIP',
+            from: oldDirection,
+            direction: this.pending.direction,
+            level: this.pending.level,
+            levelValue: this.pending.levelValue,
+            reclaimedLevel: reclaimLevel.from,
+            time: bar.time,
+            close: round(bar.close),
+        });
+        return true;
+    }
+
+    _reclaimLevel(direction, bar) {
+        if (direction === 'BUY') {
+            return { name: 'RECLAIM-H', value: bar.high, from: this.pending.level };
+        }
+        return { name: 'RECLAIM-L', value: bar.low, from: this.pending.level };
     }
 
     _tryOpenTrade(bar, retestType) {

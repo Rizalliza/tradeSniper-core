@@ -25,10 +25,13 @@ function parseArgs() {
         until: '09:45:00',
         periodSeconds: 2,
         zonePct: 0.0015,
+        retestZonePct: 0.00025,
+        retestCloseZoneMultiplier: 2,
         scalpTargetPct: 0.001,
         hardStopPct: 0.001,
         runnerTriggerPct: 0.0015,
         runnerTrailPct: 0.001,
+        reclaimFlipBars: 2,
         noQuotes: false,
         channels: ['A'],
         transport: 'ws',
@@ -44,10 +47,13 @@ function parseArgs() {
             case '--until': opts.until = args[++i]; break;
             case '--period-seconds': opts.periodSeconds = Number(args[++i]); break;
             case '--zone-pct': opts.zonePct = Number(args[++i]); break;
+            case '--retest-zone-pct': opts.retestZonePct = Number(args[++i]); break;
+            case '--retest-close-zone-multiplier': opts.retestCloseZoneMultiplier = Number(args[++i]); break;
             case '--scalp-target-pct': opts.scalpTargetPct = Number(args[++i]); break;
             case '--hard-stop-pct': opts.hardStopPct = Number(args[++i]); break;
             case '--runner-trigger-pct': opts.runnerTriggerPct = Number(args[++i]); break;
             case '--runner-trail-pct': opts.runnerTrailPct = Number(args[++i]); break;
+            case '--reclaim-flip-bars': opts.reclaimFlipBars = Number(args[++i]); break;
             case '--no-quotes': opts.noQuotes = true; break;
             case '--channels': opts.channels = args[++i].split(',').map(s => s.trim().toUpperCase()).filter(Boolean); break;
             case '--transport': opts.transport = args[++i]; break;
@@ -291,10 +297,13 @@ async function main() {
             symbol,
             date: session,
             zonePct: opts.zonePct,
+            retestZonePct: opts.retestZonePct,
+            retestCloseZoneMultiplier: opts.retestCloseZoneMultiplier,
             scalpTargetPct: opts.scalpTargetPct,
             hardStopPct: opts.hardStopPct,
             runnerTriggerPct: opts.runnerTriggerPct,
             runnerTrailPct: opts.runnerTrailPct,
+            reclaimFlipBars: opts.reclaimFlipBars,
         });
         builders[symbol] = new LiveBarBuilder({
             symbol,

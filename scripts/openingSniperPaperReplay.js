@@ -22,10 +22,13 @@ function parseArgs() {
         input: 'data/pressure-pilot-2026-09-09_2026-09-15.json',
         out: null,
         zonePct: 0.0015,
+        retestZonePct: 0.00025,
+        retestCloseZoneMultiplier: 2,
         scalpTargetPct: 0.001,
         hardStopPct: 0.001,
         runnerTriggerPct: 0.0015,
         runnerTrailPct: 0.001,
+        reclaimFlipBars: 2,
         wrongSideGuard: true,
     };
 
@@ -34,10 +37,13 @@ function parseArgs() {
             case '--input': opts.input = args[++i]; break;
             case '--out': opts.out = args[++i]; break;
             case '--zone-pct': opts.zonePct = Number(args[++i]); break;
+            case '--retest-zone-pct': opts.retestZonePct = Number(args[++i]); break;
+            case '--retest-close-zone-multiplier': opts.retestCloseZoneMultiplier = Number(args[++i]); break;
             case '--scalp-target-pct': opts.scalpTargetPct = Number(args[++i]); break;
             case '--hard-stop-pct': opts.hardStopPct = Number(args[++i]); break;
             case '--runner-trigger-pct': opts.runnerTriggerPct = Number(args[++i]); break;
             case '--runner-trail-pct': opts.runnerTrailPct = Number(args[++i]); break;
+            case '--reclaim-flip-bars': opts.reclaimFlipBars = Number(args[++i]); break;
             case '--no-wrong-side-guard': opts.wrongSideGuard = false; break;
         }
     }
@@ -109,10 +115,13 @@ async function main() {
     const payload = JSON.parse(await fs.readFile(opts.input, 'utf8'));
     const config = {
         zonePct: opts.zonePct,
+        retestZonePct: opts.retestZonePct,
+        retestCloseZoneMultiplier: opts.retestCloseZoneMultiplier,
         scalpTargetPct: opts.scalpTargetPct,
         hardStopPct: opts.hardStopPct,
         runnerTriggerPct: opts.runnerTriggerPct,
         runnerTrailPct: opts.runnerTrailPct,
+        reclaimFlipBars: opts.reclaimFlipBars,
         wrongSideGuard: opts.wrongSideGuard,
     };
     const results = [];

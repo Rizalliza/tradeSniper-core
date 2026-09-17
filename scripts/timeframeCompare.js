@@ -15,6 +15,8 @@ import { MarkerService } from '../src/market/MarkerService.js';
 import { BarLoader } from '../src/market/BarLoader.js';
 import { BacktestStats } from '../src/backtest/BacktestStats.js';
 import { MassiveData } from '../src/data/MassiveData.js';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 function parseArgs() {
     const args = process.argv.slice(2);
@@ -26,6 +28,12 @@ function parseArgs() {
         buffer: 0.0015,
         shares: 100,
         hardStop: 0.008,
+        windowMinutes: 15,
+        skipOpenMinutes: 0,
+        timeframes: null,
+        jsonOut: null,
+        cacheDir: 'data/massive_cache/rest',
+        noCache: false,
     };
     for (let i = 0; i < args.length; i++) {
         switch (args[i]) {
@@ -36,6 +44,12 @@ function parseArgs() {
             case '--buffer': opts.buffer = parseFloat(args[++i]); break;
             case '--shares': opts.shares = parseInt(args[++i], 10); break;
             case '--hard-stop': opts.hardStop = parseFloat(args[++i]); break;
+            case '--window': opts.windowMinutes = parseInt(args[++i], 10); break;
+            case '--skip-open-minutes': opts.skipOpenMinutes = parseInt(args[++i], 10); break;
+            case '--timeframes': opts.timeframes = args[++i].split(',').map(s => s.trim()).filter(Boolean); break;
+            case '--json-out': opts.jsonOut = args[++i]; break;
+            case '--cache-dir': opts.cacheDir = args[++i]; break;
+            case '--no-cache': opts.noCache = true; break;
         }
     }
     return opts;
@@ -55,21 +69,77 @@ const TIMEFRAMES = [
     { label: '5m',         period: 300,  source: 'minute' },
     { label: '15m',        period: 900,  source: 'minute' },
 ];
+const selectedTimeframes = opts.timeframes
+    ? TIMEFRAMES.filter(tf => opts.timeframes.includes(tf.label))
+    : TIMEFRAMES;
+
+if (opts.timeframes && selectedTimeframes.length !== opts.timeframes.length) {
+    const known = new Set(TIMEFRAMES.map(tf => tf.label));
+    const unknown = opts.timeframes.filter(label => !known.has(label));
+    throw new Error(`Unknown timeframe(s): ${unknown.join(', ')}. Known: ${TIMEFRAMES.map(tf => tf.label).join(', ')}`);
+}
 
 const md = new MassiveData({ apiKey: process.env.MASSIVE_API_KEY });
+
+function addMinutes(time, minutes) {
+    const [hour, minute, second = '00'] = time.split(':').map(Number);
+    const date = new Date(Date.UTC(2000, 0, 1, hour, minute + minutes, second));
+    return date.toISOString().slice(11, 19);
+}
+
+function parseDateUTC(dateStr) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(Date.UTC(year, month - 1, day));
+}
+
+function cachePath(symbol, multiplier, timespan, from, to) {
+    const fileName = `${multiplier}_${from}_${to}.json`;
+    return path.join(opts.cacheDir, symbol.toUpperCase(), timespan, fileName);
+}
+
+async function fetchCachedAggregates(symbol, multiplier, timespan, from, to, limit = 50000) {
+    const filePath = cachePath(symbol, multiplier, timespan, from, to);
+    if (!opts.noCache) {
+        try {
+            const cached = JSON.parse(await fs.readFile(filePath, 'utf8'));
+            return { bars: cached.bars || [], source: 'cache', filePath };
+        } catch (err) {
+            if (err.code !== 'ENOENT') throw err;
+        }
+    }
+
+    const bars = await md.fetchAggregates(symbol, multiplier, timespan, from, to, limit);
+    if (!opts.noCache) {
+        await fs.mkdir(path.dirname(filePath), { recursive: true });
+        await fs.writeFile(filePath, JSON.stringify({
+            source: 'Massive REST',
+            endpoint: `/v2/aggs/ticker/${symbol}/range/${multiplier}/${timespan}/${from}/${to}`,
+            generated_at: new Date().toISOString(),
+            symbol,
+            multiplier,
+            timespan,
+            from,
+            to,
+            count: bars.length,
+            bars,
+        }, null, 2) + '\n');
+    }
+
+    return { bars, source: 'network', filePath };
+}
 
 /**
  * Split a date range into monthly chunks.
  */
 function getMonthChunks(fromStr, toStr) {
     const chunks = [];
-    const start = new Date(fromStr);
-    const end = new Date(toStr);
+    const start = parseDateUTC(fromStr);
+    const end = parseDateUTC(toStr);
 
-    let cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    let cursor = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), 1));
     while (cursor <= end) {
-        const monthStart = cursor < start ? start : new Date(cursor.getFullYear(), cursor.getMonth(), 1);
-        const nextMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+        const monthStart = cursor < start ? start : new Date(Date.UTC(cursor.getUTCFullYear(), cursor.getUTCMonth(), 1));
+        const nextMonth = new Date(Date.UTC(cursor.getUTCFullYear(), cursor.getUTCMonth() + 1, 1));
         const monthEnd = nextMonth > end ? end : new Date(nextMonth.getTime() - 86400000);
 
         chunks.push({
@@ -83,10 +153,10 @@ function getMonthChunks(fromStr, toStr) {
 }
 
 async function getDailyBars(symbol) {
-    const fromDate = new Date(opts.from);
-    fromDate.setDate(fromDate.getDate() - 45);
+    const fromDate = parseDateUTC(opts.from);
+    fromDate.setUTCDate(fromDate.getUTCDate() - 45);
     const fromStr = fromDate.toISOString().slice(0, 10);
-    const bars = await md.fetchAggregates(symbol, 1, 'day', fromStr, opts.to, 50000);
+    const { bars } = await fetchCachedAggregates(symbol, 1, 'day', fromStr, opts.to, 50000);
     return bars.map(b => ({ date: b.date, o: b.open, h: b.high, l: b.low, c: b.close, v: b.volume }));
 }
 
@@ -94,7 +164,7 @@ async function getDailyBars(symbol) {
  * Fetch bars for a month, filter to trading hours, group by date.
  */
 async function fetchMonthBars(symbol, from, to, timespan) {
-    const bars = await md.fetchAggregates(symbol, 1, timespan, from, to, 100000);
+    const { bars, source } = await fetchCachedAggregates(symbol, 1, timespan, from, to, 100000);
     const trading = bars.filter(b => b.time >= '09:30:00' && b.time < '16:00:00');
 
     const byDate = new Map();
@@ -106,24 +176,28 @@ async function fetchMonthBars(symbol, from, to, timespan) {
     for (const [, dayBars] of byDate) {
         dayBars.sort((a, b) => a.time.localeCompare(b.time));
     }
-    return { total: bars.length, trading: trading.length, byDate };
+    return { total: bars.length, trading: trading.length, byDate, source };
 }
 
 /**
  * Run backtest for one day, return setup.
  */
-function backtestDay(symbol, dayBars, markerList, periodSeconds, barType) {
+function backtestDay(symbol, date, dayBars, markerList, periodSeconds, barType) {
     if (dayBars.length < 2) {
         return {
-            symbol, status: 'SKIPPED', exit_reason: 'NO_BARS',
+            symbol, date, status: 'SKIPPED', exit_reason: 'NO_BARS',
             entry_price: null, exit_price: null, pnl: 0, shares: opts.shares,
         };
     }
 
     const aggBars = BarLoader.aggregate(dayBars, periodSeconds, barType);
+    const windowStart = addMinutes('09:30:00', opts.skipOpenMinutes);
+    const windowEnd = addMinutes('09:30:00', opts.windowMinutes);
 
     const strategy = new SniperStrategy({
         bufferPct: opts.buffer,
+        windowStart,
+        windowEnd,
         reverseStopCount,
         trailingStop: true,
         trailingStepPct: 0.005,
@@ -141,10 +215,12 @@ function backtestDay(symbol, dayBars, markerList, periodSeconds, barType) {
     const trade = state.trades[0];
 
     const setup = {
-        symbol,
+        symbol, date,
         bias: null, status: null,
         entry_price: null, exit_price: null,
         pnl: 0, shares: opts.shares, exit_reason: null,
+        entry_time: null, exit_time: null,
+        entry_marker: null, profit_marker: null,
     };
 
     if (state.phase === 'NO_CROSS') {
@@ -159,6 +235,10 @@ function backtestDay(symbol, dayBars, markerList, periodSeconds, barType) {
         setup.bias = trade.direction;
         setup.entry_price = trade.entryPrice;
         setup.exit_price = trade.exitPrice;
+        setup.entry_time = trade.entryTime;
+        setup.exit_time = trade.exitTime;
+        setup.entry_marker = trade.entryMarker;
+        setup.profit_marker = trade.profitMarker;
         setup.status = trade.outcome;
         setup.exit_reason = trade.exitReason;
         const dir = trade.direction === 'BUY' ? 1 : -1;
@@ -173,6 +253,10 @@ function createAccumulator() {
         gross_profit: 0, gross_loss: 0, net_pnl: 0,
         hard_stops: 0, trailing_stops: 0,
     };
+}
+
+function createDetailsBucket() {
+    return { setups: [] };
 }
 
 function accumulate(acc, setup) {
@@ -196,6 +280,10 @@ function accumulate(acc, setup) {
     return acc;
 }
 
+function recordDetail(bucket, setup) {
+    bucket.setups.push(setup);
+}
+
 function formatAccumulator(acc) {
     const taken = acc.wins + acc.losses;
     const wr = taken ? (acc.wins / taken * 100).toFixed(1) : '0.0';
@@ -210,14 +298,21 @@ function formatAccumulator(acc) {
 
 async function main() {
     const allAcc = {};
+    const allDetails = {};
     const chunks = getMonthChunks(opts.from, opts.to);
+    const windowStart = addMinutes('09:30:00', opts.skipOpenMinutes);
+    const windowEnd = addMinutes('09:30:00', opts.windowMinutes);
     console.log(`Processing ${chunks.length} monthly chunks across ${opts.symbols.length} symbols`);
+    console.log(`Signal window: ${windowStart}-${windowEnd} ET (${opts.windowMinutes} min open window, skip first ${opts.skipOpenMinutes} min)`);
+    console.log(`Timeframes: ${selectedTimeframes.map(tf => tf.label).join(', ')}`);
+    console.log(`Cache: ${opts.noCache ? 'OFF' : opts.cacheDir}`);
 
     for (const symbol of opts.symbols) {
         console.log(`\n=== ${symbol} ===`);
 
-        for (const tf of TIMEFRAMES) {
+        for (const tf of selectedTimeframes) {
             allAcc[`${symbol}_${tf.label}`] = createAccumulator();
+            allDetails[`${symbol}_${tf.label}`] = createDetailsBucket();
         }
 
         const dailyBars = await getDailyBars(symbol);
@@ -233,7 +328,7 @@ async function main() {
             const secData = await fetchMonthBars(symbol, chunk.from, chunk.to, 'second');
             const minData = await fetchMonthBars(symbol, chunk.from, chunk.to, 'minute');
 
-            process.stdout.write(` sec=${secData.trading} min=${minData.trading} Running...`);
+            process.stdout.write(` sec=${secData.trading}(${secData.source}) min=${minData.trading}(${minData.source}) Running...`);
 
             // Get chunk's trading days from daily bars
             const chunkDays = dailyBars.filter(d => d.date >= chunk.from && d.date <= chunk.to);
@@ -249,10 +344,12 @@ async function main() {
                 const daySecBars = secData.byDate.get(day.date) || [];
                 const dayMinBars = minData.byDate.get(day.date) || [];
 
-                for (const tf of TIMEFRAMES) {
+                for (const tf of selectedTimeframes) {
                     const bars = tf.source === 'second' ? daySecBars : dayMinBars;
-                    const setup = backtestDay(symbol, bars, markerList, tf.period, tf.source);
-                    accumulate(allAcc[`${symbol}_${tf.label}`], setup);
+                    const setup = backtestDay(symbol, day.date, bars, markerList, tf.period, tf.source);
+                    const key = `${symbol}_${tf.label}`;
+                    accumulate(allAcc[key], setup);
+                    recordDetail(allDetails[key], setup);
                 }
                 processed++;
             }
@@ -267,7 +364,7 @@ async function main() {
 
         const symElapsed = ((Date.now() - symStartTime) / 60000).toFixed(1);
         console.log(`\n  ${symbol} complete (${symElapsed} min)`);
-        for (const tf of TIMEFRAMES) {
+        for (const tf of selectedTimeframes) {
             const acc = allAcc[`${symbol}_${tf.label}`];
             const stats = formatAccumulator(acc);
             const pfStr = acc.gross_loss > 0 ? stats.profit_factor.toFixed(2) : acc.gross_profit > 0 ? '∞' : '0.00';
@@ -282,7 +379,8 @@ async function main() {
     console.log(`  ${'TF'.padEnd(10)} ${'W'.padEnd(4)} ${'L'.padEnd(4)} ${'BE'.padEnd(4)} ${'Skip'.padEnd(5)} ${'WR%'.padEnd(7)} ${'P&L'.padEnd(10)} ${'PF'.padEnd(5)} ${'AvgW'.padEnd(8)} ${'AvgL'.padEnd(8)} ${'HS'.padEnd(4)} ${'TS'.padEnd(4)}`);
     console.log('  ────────────────────────────────────────────────────────────────────────────');
 
-    for (const tf of TIMEFRAMES) {
+    const summary = [];
+    for (const tf of selectedTimeframes) {
         const t = createAccumulator();
         for (const symbol of opts.symbols) {
             const a = allAcc[`${symbol}_${tf.label}`];
@@ -296,12 +394,63 @@ async function main() {
         const pf = t.gross_loss > 0 ? (t.gross_profit / t.gross_loss).toFixed(2) : t.gross_profit > 0 ? '∞' : '0.00';
         const avgW = t.wins ? (t.gross_profit / t.wins).toFixed(0) : '0';
         const avgL = t.losses ? (t.gross_loss / t.losses).toFixed(0) : '0';
+        summary.push({
+            timeframe: tf.label,
+            wins: t.wins,
+            losses: t.losses,
+            breakeven: t.breakeven,
+            skipped: t.skipped,
+            win_rate: Number(wr),
+            net_pnl: t.net_pnl,
+            profit_factor: pf === '∞' ? null : Number(pf),
+            profit_factor_display: pf,
+            avg_win: Number(avgW),
+            avg_loss: Number(avgL),
+            hard_stops: t.hard_stops,
+            trailing_stops: t.trailing_stops,
+        });
         console.log(`  ${tf.label.padEnd(10)} ${String(t.wins).padEnd(4)} ${String(t.losses).padEnd(4)} ${String(t.breakeven).padEnd(4)} ${String(t.skipped).padEnd(5)} ${wr.padEnd(6)}% $${String(t.net_pnl.toFixed(0)).padEnd(9)} ${pf.padEnd(5)} $${avgW.padEnd(7)} $${avgL.padEnd(7)} ${String(t.hard_stops).padEnd(4)} ${String(t.trailing_stops).padEnd(4)}`);
     }
     console.log('═══════════════════════════════════════════════════════════════════════════════');
     console.log('  W = wins, L = losses, BE = breakeven, WR = win rate, PF = profit factor');
     console.log('  AvgW/AvgL = average win/loss in dollars, HS = hard stop, TS = trailing stop');
     console.log('═══════════════════════════════════════════════════════════════════════════════');
+
+    if (opts.jsonOut) {
+        const details = {};
+        for (const symbol of opts.symbols) {
+            details[symbol] = {};
+            for (const tf of selectedTimeframes) {
+                const key = `${symbol}_${tf.label}`;
+                details[symbol][tf.label] = {
+                    stats: formatAccumulator(allAcc[key]),
+                    setups: allDetails[key].setups,
+                };
+            }
+        }
+        const payload = {
+            source: 'Massive',
+            generated_at: new Date().toISOString(),
+            period: { from: opts.from, to: opts.to },
+            symbols: opts.symbols,
+            config: {
+                risk: opts.risk,
+                buffer: opts.buffer,
+                shares: opts.shares,
+                hardStop: opts.hardStop,
+                windowMinutes: opts.windowMinutes,
+                skipOpenMinutes: opts.skipOpenMinutes,
+                windowStart,
+                windowEnd,
+                timeframes: selectedTimeframes.map(tf => tf.label),
+            },
+            summary,
+            details,
+        };
+        await fs.mkdir(path.dirname(opts.jsonOut), { recursive: true });
+        await fs.writeFile(opts.jsonOut, JSON.stringify(payload, null, 2) + '\n');
+        console.log(`\nWrote JSON snapshot: ${opts.jsonOut}`);
+    }
 }
 
 main().catch(err => {

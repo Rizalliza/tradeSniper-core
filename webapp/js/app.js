@@ -16,6 +16,7 @@ import { PatternDetector } from '/src/analysis/PatternDetector.js';
 import { OrderFlow } from '/src/analysis/OrderFlow.js';
 
 const BACKTEST_SNAPSHOT_URL = '/data/latest-massive-backtest.json';
+const PRESSURE_PILOT_URL = '/data/pressure-pilot-2026-09-09_2026-09-15.json';
 
 function num(value, digits = 2, fallback = '-') {
     return Number.isFinite(value) ? value.toFixed(digits) : fallback;
@@ -28,6 +29,15 @@ function money(value, digits = 2) {
 function profitFactor(value) {
     if (value === Infinity) return '∞';
     return num(value);
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 function snapshotTitle(snapshot) {
@@ -129,26 +139,32 @@ class FlowChart {
         this.container = container;
         this.bars = bars;
         this.markers = markers;
-        this.markerList = MarkerService.buildList(markers);
+        this.markerList = config.markerList || MarkerService.buildList(markers);
         this.strategyResult = strategyResult;
         this.config = {
-            width: config.width || 480,
-            height: config.height || 260,
-            padding: { top: 16, right: 60, bottom: 24, left: 10 },
+            width: config.width || 860,
+            height: config.height || 560,
+            padding: config.padding || { top: 18, right: 70, bottom: 48, left: 14 },
             range: config.range || 30, // minutes to show
             candleWidth: config.candleWidth || 4,
             candleGap: config.candleGap || 2,
+            shadedUntil: config.shadedUntil || null,
+            bufferPct: config.bufferPct || 0,
         };
         this.render();
     }
 
     render() {
-        const { width, height, padding, range, candleWidth, candleGap } = this.config;
+        const { width, height, padding, range } = this.config;
         const chartW = width - padding.left - padding.right;
-        const chartH = height - padding.top - padding.bottom;
+        const volumeH = 28;
+        const chartH = height - padding.top - padding.bottom - volumeH;
 
-        // Visible bars
-        const visibleBars = this.bars.slice(0, range);
+        const firstSecond = this.timeToSeconds(this.bars[0]?.time);
+        const rangeSeconds = Number.isFinite(firstSecond) ? range * 60 : null;
+        const visibleBars = rangeSeconds
+            ? this.bars.filter(b => this.timeToSeconds(b.time) - firstSecond < rangeSeconds)
+            : this.bars.slice(0, range);
         if (!visibleBars.length) return;
 
         // Price range — zoom to visible bars + nearby markers
@@ -183,15 +199,53 @@ class FlowChart {
         if (closestSupport) { minPrice = Math.min(minPrice, closestSupport.value); }
         if (closestResistance) { maxPrice = Math.max(maxPrice, closestResistance.value); }
 
+        const retestBand = this.getRetestBand();
+        if (retestBand) {
+            minPrice = Math.min(minPrice, retestBand.low);
+            maxPrice = Math.max(maxPrice, retestBand.high);
+        }
+
+        if (maxPrice === minPrice) {
+            maxPrice += maxPrice * 0.001;
+            minPrice -= minPrice * 0.001;
+        }
         const pricePad = (maxPrice - minPrice) * 0.12;
         minPrice -= pricePad;
         maxPrice += pricePad;
 
         const priceToY = (p) => padding.top + ((maxPrice - p) / (maxPrice - minPrice)) * chartH;
-        const barToX = (i) => padding.left + i * (candleWidth + candleGap) + candleWidth / 2;
+        const seconds = visibleBars.map(b => this.timeToSeconds(b.time)).filter(Number.isFinite);
+        const minSecond = seconds.length ? Math.min(...seconds) : 0;
+        const maxSecond = seconds.length ? Math.max(...seconds) : visibleBars.length - 1;
+        const spanSeconds = Math.max(1, maxSecond - minSecond);
+        const fallbackStep = visibleBars.length > 1 ? chartW / (visibleBars.length - 1) : chartW;
+        const barToX = (i) => {
+            const second = this.timeToSeconds(visibleBars[i]?.time);
+            if (!Number.isFinite(second) || maxSecond === minSecond) {
+                return padding.left + i * fallbackStep;
+            }
+            return padding.left + ((second - minSecond) / spanSeconds) * chartW;
+        };
+        const candleWidth = Math.max(1.5, Math.min(8, chartW / Math.max(visibleBars.length, 1) * 0.58));
+        const maxVolume = Math.max(...visibleBars.map(b => Number(b.volume) || 0), 1);
+        const volumeTop = padding.top + chartH + 8;
+        const volumeBase = volumeTop + volumeH - 4;
 
         // Build SVG
         let svg = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">`;
+
+        if (this.config.shadedUntil) {
+            const shadeSecond = this.timeToSeconds(this.config.shadedUntil);
+            if (Number.isFinite(shadeSecond) && shadeSecond > minSecond) {
+                const shadeX = padding.left + ((Math.min(shadeSecond, maxSecond) - minSecond) / spanSeconds) * chartW;
+                svg += `<rect x="${padding.left}" y="${padding.top}" width="${Math.max(0, shadeX - padding.left)}"
+                        height="${chartH + volumeH + 8}" fill="#ffcc00" opacity="0.055"/>`;
+                svg += `<line x1="${shadeX}" y1="${padding.top}" x2="${shadeX}" y2="${volumeBase}"
+                        stroke="#ffcc00" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.45"/>`;
+                svg += `<text x="${padding.left + 4}" y="${padding.top + 10}" fill="#ffcc00"
+                        font-size="8" font-family="monospace" opacity="0.8">FIRST 2M</text>`;
+            }
+        }
 
         // Grid lines
         svg += `<g class="grid">`;
@@ -203,20 +257,38 @@ class FlowChart {
         }
         svg += `</g>`;
 
+        if (retestBand) {
+            const yTop = priceToY(retestBand.high);
+            const yBottom = priceToY(retestBand.low);
+            const bandH = Math.max(2, yBottom - yTop);
+            const bandColor = retestBand.direction === 'BUY' ? '#00ccff' : '#ff8800';
+            svg += `<g class="retest-band">`;
+            svg += `<rect x="${padding.left}" y="${yTop}" width="${chartW}" height="${bandH}"
+                    fill="${bandColor}" opacity="0.105"/>`;
+            svg += `<line x1="${padding.left}" y1="${priceToY(retestBand.value)}" x2="${width - padding.right}" y2="${priceToY(retestBand.value)}"
+                    stroke="${bandColor}" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.9"/>`;
+            svg += `<text x="${padding.left + 6}" y="${Math.max(padding.top + 11, yTop - 4)}" fill="${bandColor}"
+                    font-size="8" font-family="monospace" font-weight="bold">RETEST ZONE ±${(this.config.bufferPct * 100).toFixed(2)}%</text>`;
+            svg += `</g>`;
+        }
+
         // Marker lines
         svg += `<g class="markers">`;
         for (const m of this.markerList) {
             const y = priceToY(m.value);
             const color = m.type === 'resistance' ? '#ff8844' :
-                          m.type === 'support' ? '#44aaff' : '#666688';
+                          m.type === 'support' ? '#44aaff' :
+                          m.type === 'flow' ? '#ffcc00' : '#666688';
             const dash = m.type === 'neutral' ? '4,4' : '';
+            const opacity = m.type === 'flow' ? 0.42 : 0.6;
 
             svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}"
-                    stroke="${color}" stroke-width="1" stroke-dasharray="${dash}" opacity="0.6"/>`;
+                    stroke="${color}" stroke-width="1" stroke-dasharray="${dash}" opacity="${opacity}"/>`;
 
             // Marker label on left
             const label = this.abbreviateMarker(m.name);
-            svg += `<rect x="${padding.left}" y="${y - 7}" width="32" height="14" fill="${color}" opacity="0.15"/>`;
+            const labelW = m.type === 'flow' ? 42 : 32;
+            svg += `<rect x="${padding.left}" y="${y - 7}" width="${labelW}" height="14" fill="${color}" opacity="0.15"/>`;
             svg += `<text x="${padding.left + 3}" y="${y + 3}" fill="${color}" font-size="8"
                     font-family="monospace" font-weight="bold">${label}</text>`;
 
@@ -225,6 +297,10 @@ class FlowChart {
                     font-family="monospace" text-anchor="end">${num(m.value)}</text>`;
         }
         svg += `</g>`;
+
+        // Close path - helps visually track retests through noisy 10s candles
+        const closePath = visibleBars.map((b, i) => `${i === 0 ? 'M' : 'L'} ${barToX(i).toFixed(2)} ${priceToY(b.close).toFixed(2)}`).join(' ');
+        svg += `<path class="price-path" d="${closePath}" fill="none" stroke="#2f6bff" stroke-width="1.1" opacity="0.78"/>`;
 
         // Candlesticks
         svg += `<g class="candles">`;
@@ -236,16 +312,33 @@ class FlowChart {
             const bodyTop = priceToY(Math.max(b.open, b.close));
             const bodyBottom = priceToY(Math.min(b.open, b.close));
             const bodyH = Math.max(1, bodyBottom - bodyTop);
+            const volRatio = Math.min(1, (Number(b.volume) || 0) / maxVolume);
+            const wickWidth = 0.6 + volRatio * 1.15;
+            const opacity = 0.58 + volRatio * 0.38;
 
             // Wick
             svg += `<line x1="${x}" y1="${priceToY(b.high)}" x2="${x}" y2="${priceToY(b.low)}"
-                    stroke="${color}" stroke-width="0.8" opacity="0.8"/>`;
+                    stroke="${color}" stroke-width="${wickWidth.toFixed(2)}" opacity="${opacity.toFixed(2)}"/>`;
 
             // Body
             svg += `<rect x="${x - candleWidth / 2}" y="${bodyTop}"
                     width="${candleWidth}" height="${bodyH}"
-                    fill="${bullish ? color : color}" opacity="0.9"/>`;
+                    fill="${color}" opacity="${opacity.toFixed(2)}"/>`;
         }
+        svg += `</g>`;
+
+        // Volume strip
+        svg += `<g class="volume">`;
+        for (let i = 0; i < visibleBars.length; i++) {
+            const b = visibleBars[i];
+            const x = barToX(i);
+            const bullish = b.close >= b.open;
+            const color = bullish ? '#00ff88' : '#ff3355';
+            const volH = Math.max(1, ((Number(b.volume) || 0) / maxVolume) * (volumeH - 6));
+            svg += `<rect x="${x - candleWidth / 2}" y="${volumeBase - volH}"
+                    width="${candleWidth}" height="${volH}" fill="${color}" opacity="0.28"/>`;
+        }
+        svg += `<line x1="${padding.left}" y1="${volumeBase}" x2="${width - padding.right}" y2="${volumeBase}" stroke="#1a1a28" stroke-width="0.5"/>`;
         svg += `</g>`;
 
         // Strategy annotations (cross, retest, entry)
@@ -257,19 +350,79 @@ class FlowChart {
 
         // Time axis
         svg += `<g class="time-axis">`;
-        const timeSteps = [0, Math.floor(range / 2), range - 1];
-        for (const i of timeSteps) {
-            if (visibleBars[i]) {
-                const x = barToX(i);
-                const t = visibleBars[i].time.slice(0, 5);
-                svg += `<text x="${x}" y="${height - 8}" fill="#555570" font-size="8"
-                        font-family="monospace" text-anchor="middle">${t}</text>`;
-            }
-        }
+        svg += this.drawTimeAxis({ minSecond, maxSecond, chartW, padding, height, volumeBase });
         svg += `</g>`;
 
         svg += `</svg>`;
         this.container.innerHTML = svg;
+    }
+
+    getRetestBand() {
+        const state = this.strategyResult;
+        if (!state?.crossMarker || !this.config.bufferPct) return null;
+        const marker = this.markerList.find(m => m.name === state.crossMarker);
+        if (!marker || !Number.isFinite(marker.value)) return null;
+        const distance = marker.value * this.config.bufferPct;
+        return {
+            value: marker.value,
+            low: marker.value - distance,
+            high: marker.value + distance,
+            direction: state.crossDir === 'UP' ? 'BUY' : 'SELL',
+        };
+    }
+
+    drawTimeAxis({ minSecond, maxSecond, chartW, padding, height, volumeBase }) {
+        const span = Math.max(1, maxSecond - minSecond);
+        const toX = (second) => padding.left + ((second - minSecond) / span) * chartW;
+        const visibleMinutes = this.config.range;
+        let svg = '';
+
+        if (visibleMinutes <= 2) {
+            const start = Math.ceil(minSecond / 2) * 2;
+            for (let second = start; second <= maxSecond; second += 2) {
+                const x = toX(second);
+                const elapsed = second - minSecond;
+                const major = elapsed % 10 === 0;
+                svg += `<line x1="${x}" y1="${volumeBase + 2}" x2="${x}" y2="${volumeBase + (major ? 12 : 7)}"
+                        stroke="${major ? '#8888a0' : '#555570'}" stroke-width="${major ? 0.7 : 0.45}" opacity="${major ? 0.8 : 0.45}"/>`;
+                svg += `<line x1="${x}" y1="${padding.top}" x2="${x}" y2="${volumeBase}"
+                        stroke="#1a1a28" stroke-width="0.45" opacity="${major ? 0.7 : 0.23}"/>`;
+                if (elapsed > 0) {
+                    svg += `<text x="${x + 1}" y="${height - 10}" fill="${major ? '#8888a0' : '#555570'}"
+                            font-size="6" font-family="monospace" transform="rotate(-58 ${x + 1} ${height - 10})">${elapsed}s</text>`;
+                }
+            }
+            const openLabel = this.secondsToTime(minSecond);
+            svg += `<text x="${padding.left}" y="${height - 30}" fill="#8888a0" font-size="8"
+                    font-family="monospace">${openLabel}</text>`;
+            return svg;
+        }
+
+        const start = Math.ceil(minSecond / 60) * 60;
+        for (let second = start; second <= maxSecond; second += 60) {
+            const x = toX(second);
+            const major = ((second - minSecond) / 60) % 5 === 0;
+            svg += `<line x1="${x}" y1="${volumeBase + 2}" x2="${x}" y2="${volumeBase + (major ? 12 : 8)}"
+                    stroke="${major ? '#8888a0' : '#555570'}" stroke-width="${major ? 0.7 : 0.45}" opacity="${major ? 0.8 : 0.5}"/>`;
+            svg += `<line x1="${x}" y1="${padding.top}" x2="${x}" y2="${volumeBase}"
+                    stroke="#1a1a28" stroke-width="0.45" opacity="${major ? 0.65 : 0.28}"/>`;
+            svg += `<text x="${x}" y="${height - 10}" fill="${major ? '#8888a0' : '#555570'}" font-size="7"
+                    font-family="monospace" text-anchor="middle">${this.secondsToTime(second).slice(0, 5)}</text>`;
+        }
+        return svg;
+    }
+
+    timeToSeconds(time) {
+        if (!time) return NaN;
+        const [h, m, s = '0'] = String(time).split(':');
+        return Number(h) * 3600 + Number(m) * 60 + Number(s);
+    }
+
+    secondsToTime(totalSeconds) {
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
     drawAnnotations(bars, barToX, priceToY) {
@@ -331,6 +484,20 @@ class FlowChart {
             }
         }
 
+        if (state.phase === 'BLOCKED' && state.blockedSignal) {
+            const blocked = state.blockedSignal;
+            const i = bars.findIndex(b => b.time >= blocked.time);
+            if (i >= 0 && bars[i]) {
+                const x = barToX(i);
+                const y = priceToY(blocked.price || bars[i].close);
+                const color = blocked.entryDir === 'BUY' ? '#ff8800' : '#00ccff';
+                svg += `<rect x="${x - 36}" y="${y - 20}" width="72" height="14" rx="2" fill="${color}" opacity="0.16"/>`;
+                svg += `<text x="${x}" y="${y - 10}" fill="${color}" font-size="8"
+                        font-family="monospace" font-weight="bold" text-anchor="middle">BLOCKED ${escapeHtml(blocked.entryDir)}</text>`;
+                svg += `<line x1="${x}" y1="${y - 4}" x2="${x}" y2="${y + 14}" stroke="${color}" stroke-width="0.8" opacity="0.75"/>`;
+            }
+        }
+
         return svg;
     }
 
@@ -349,6 +516,11 @@ class FlowChart {
             daily_low: 'D-L',
             weekly_low: 'W-L',
             monthly_low: 'M-L',
+            first2_high: 'F2-H',
+            first2_mid: 'F2-M',
+            first2_low: 'F2-L',
+            premarket_high: 'PM-H',
+            premarket_low: 'PM-L',
         };
         return map[name] || name.slice(0, 4).toUpperCase();
     }
@@ -361,9 +533,10 @@ class FlowChart {
 class SniperApp {
     constructor() {
         this.currentSymbol = 'AAPL';
-        this.currentRange = 30;
+        this.currentRange = 2;
         this.barsData = {}; // symbol → barsMap
         this.latestBacktest = null;
+        this.pressurePilot = null;
         this.backtestLab = new BacktestLab();
         this.init();
     }
@@ -376,6 +549,7 @@ class SniperApp {
         }
 
         this.latestBacktest = await this.loadLatestBacktest();
+        this.pressurePilot = await this.loadPressurePilot();
         this.initNewsDigest();
         this.setupNavigation();
         this.setupControls();
@@ -399,6 +573,18 @@ class SniperApp {
             const snapshot = await res.json();
             if (!snapshot?.stats || !Array.isArray(snapshot.setups)) return null;
             return snapshot;
+        } catch {
+            return null;
+        }
+    }
+
+    async loadPressurePilot() {
+        try {
+            const res = await fetch(PRESSURE_PILOT_URL, { cache: 'no-store' });
+            if (!res.ok) return null;
+            const payload = await res.json();
+            if (!Array.isArray(payload?.results)) return null;
+            return payload;
         } catch {
             return null;
         }
@@ -452,6 +638,12 @@ class SniperApp {
     }
 
     renderFlowStudy() {
+        if (this.pressurePilot) {
+            this.renderPressureFlowStudy();
+            return;
+        }
+
+        this.updateFlowSubtitle('SAMPLE FALLBACK · GENERATED 1-MIN BARS · REAL PRESSURE PILOT JSON NOT FOUND');
         const grid = document.getElementById('chartsGrid');
         const daily = DAILY_BARS[this.currentSymbol] || [];
         const barsMap = this.barsData[this.currentSymbol] || {};
@@ -534,6 +726,155 @@ class SniperApp {
             const container = card.querySelector('.chart-container');
             new FlowChart(container, dayBars, markers, state, { range: this.currentRange });
         }
+    }
+
+    renderPressureFlowStudy() {
+        const grid = document.getElementById('chartsGrid');
+        if (!grid) return;
+
+        const packs = this.getPressurePacks(this.currentSymbol);
+        const period = this.pressurePilot?.period;
+        const from = period?.from || 'UNKNOWN';
+        const to = period?.to || 'UNKNOWN';
+        const first2Agg = this.pressurePilot?.config?.first2AggregateSeconds || 2;
+        const validationAgg = this.pressurePilot?.config?.validationAggregateSeconds || 60;
+        const lens = this.currentRange <= 2
+            ? `FIRST 2M SWING · ${first2Agg}S CANDLES · ENTRY LOCKOUT / PRESSURE READ`
+            : `OPEN 30M · ${first2Agg}S FIRST-2M + ${validationAgg}S VALIDATION · ENTRIES 09:32+`;
+        this.updateFlowSubtitle(`PRESSURE PILOT · ${lens} · ${from} → ${to} · HARD STOP 0.10% · RETEST BUFFER ±0.15%`);
+
+        grid.innerHTML = '';
+        if (!packs.length) {
+            grid.innerHTML = `<div class="placeholder">No pressure pilot data for ${escapeHtml(this.currentSymbol)}</div>`;
+            return;
+        }
+
+        for (const pack of packs) {
+            const dayBars = this.normalizeBars([
+                ...(pack.bars?.open_first_2_min_aggregated_seconds || []),
+                ...(pack.bars?.open_aggregated_seconds || []),
+            ]);
+            if (!dayBars.length) continue;
+
+            const markers = pack.markers || {};
+            const markerList = MarkerService.buildList(markers);
+            const visualMarkerList = this.buildFlowMarkerList(pack);
+            const strategy = new SniperStrategy({
+                windowStart: '09:32:00',
+                windowEnd: '10:00:00',
+                bufferPct: 0.0015,
+                reverseStopCount: 3,
+                trailingStop: true,
+                hardStopPct: 0.001,
+                contextualEntryFilter: true,
+                opposingLevelMaxPct: 0.002,
+            });
+            strategy.reset(markerList, {
+                pressure: pack.pressure,
+                source: 'pressure-pilot',
+                levels: visualMarkerList,
+            });
+            for (const bar of dayBars) strategy.evaluate(bar);
+            strategy.finalize(dayBars[dayBars.length - 1]);
+            const state = strategy.getState();
+            state.crossBarIdx = strategy.crossBarIdx;
+            state.entryBarIdx = strategy.entryBarIdx;
+
+            const trade = state.trades[0];
+            let outcome = 'SKIPPED';
+            let outcomeClass = 'skipped';
+            if (trade) {
+                outcome = trade.outcome === 'BREAKEVEN' ? 'BE' : trade.outcome;
+                outcomeClass = trade.outcome === 'WON' ? 'won' : trade.outcome === 'LOST' ? 'lost' : 'skipped';
+            } else if (state.phase === 'NO_RETEST') {
+                outcome = 'NO_RETEST';
+            } else if (state.phase === 'NO_CROSS') {
+                outcome = 'NO_CROSS';
+            } else if (state.phase === 'BLOCKED') {
+                outcome = 'BLOCKED';
+            }
+
+            const pressure = pack.pressure || {};
+            const pressureLabel = pressure.label || 'UNKNOWN';
+            const pressureClass = String(pressureLabel).toLowerCase();
+            const components = pressure.components_bps || {};
+            const markerMeta = `
+                <span><span class="label">PD-C</span> <span class="value neutral">${num(markers.prior_day_close)}</span></span>
+                <span><span class="label">D-H</span> <span class="value resistance">${num(markers.daily_high)}</span></span>
+                <span><span class="label">D-L</span> <span class="value support">${num(markers.daily_low)}</span></span>
+                <span class="pressure-badge ${pressureClass}">${escapeHtml(pressureLabel)}</span>
+            `;
+
+            const card = document.createElement('div');
+            card.className = 'chart-card';
+            card.innerHTML = `
+                <div class="chart-header">
+                    <span class="chart-date">${escapeHtml(pack.date)} · ${escapeHtml(pack.symbol)}</span>
+                    <div class="chart-meta">${markerMeta}</div>
+                </div>
+                <div class="chart-container" data-date="${escapeHtml(pack.date)}"></div>
+                <div class="chart-footer">
+                    <span>F2 ${num(pack.windows?.open_first_2_min?.low)}-${num(pack.windows?.open_first_2_min?.high)} · gap ${num(components.gap, 1)}bp · pre ${num(components.premarket, 1)}bp · ${first2Agg}s/${validationAgg}s</span>
+                    <span class="outcome ${outcomeClass}">${escapeHtml(outcome)}</span>
+                </div>
+            `;
+
+            grid.appendChild(card);
+            const container = card.querySelector('.chart-container');
+            new FlowChart(container, dayBars, markers, state, {
+                range: this.currentRange,
+                height: this.currentRange <= 2 ? 640 : 560,
+                markerList: visualMarkerList,
+                shadedUntil: '09:32:00',
+                bufferPct: 0.0015,
+            });
+        }
+    }
+
+    getPressurePacks(symbol) {
+        const result = this.pressurePilot?.results?.find(r => r.symbol === symbol);
+        return Array.isArray(result?.packs) ? result.packs : [];
+    }
+
+    normalizeBars(bars) {
+        return bars
+            .filter(b => Number.isFinite(Number(b.open)) && Number.isFinite(Number(b.high)) &&
+                Number.isFinite(Number(b.low)) && Number.isFinite(Number(b.close)) && b.time)
+            .map(b => ({
+                symbol: b.symbol,
+                date: b.date,
+                time: b.time,
+                open: Number(b.open),
+                high: Number(b.high),
+                low: Number(b.low),
+                close: Number(b.close),
+                volume: Number(b.volume) || 0,
+            }))
+            .sort((a, b) => a.time.localeCompare(b.time));
+    }
+
+    buildFlowMarkerList(pack) {
+        const base = MarkerService.buildList(pack.markers || {});
+        const first2 = pack.windows?.open_first_2_min;
+        const premarket = pack.windows?.premarket;
+        const flowLevels = [
+            ['first2_high', first2?.high],
+            ['first2_mid', first2 && Number.isFinite(first2.high) && Number.isFinite(first2.low)
+                ? (first2.high + first2.low) / 2
+                : null],
+            ['first2_low', first2?.low],
+            ['premarket_high', premarket?.high],
+            ['premarket_low', premarket?.low],
+        ]
+            .filter(([, value]) => Number.isFinite(value))
+            .map(([name, value]) => ({ name, value, type: 'flow', tier: 'opening' }));
+
+        return [...base, ...flowLevels].sort((a, b) => b.value - a.value);
+    }
+
+    updateFlowSubtitle(text) {
+        const subtitle = document.querySelector('#view-flow .view-subtitle');
+        if (subtitle) subtitle.textContent = text;
     }
 
     renderBacktest() {

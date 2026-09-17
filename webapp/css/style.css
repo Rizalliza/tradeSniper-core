@@ -318,7 +318,7 @@ html, body {
 /* ============= CHARTS GRID ============= */
 .charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 760px), 1fr));
     gap: 16px;
 }
 
@@ -353,6 +353,9 @@ html, body {
 
 .chart-meta {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 14px;
     font-size: 10px;
     color: var(--text-muted);
@@ -362,6 +365,38 @@ html, body {
 .chart-meta .value.resistance { color: var(--marker-resistance); }
 .chart-meta .value.support { color: var(--marker-support); }
 .chart-meta .value.neutral { color: var(--text-secondary); }
+
+.pressure-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 8px;
+    border: 1px solid var(--border-color-bright);
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+.pressure-badge.bullish {
+    color: var(--accent-green);
+    border-color: rgba(0, 255, 136, 0.35);
+    background: rgba(0, 255, 136, 0.08);
+}
+.pressure-badge.bearish {
+    color: var(--accent-red);
+    border-color: rgba(255, 51, 85, 0.35);
+    background: rgba(255, 51, 85, 0.08);
+}
+.pressure-badge.neutral {
+    color: var(--accent-yellow);
+    border-color: rgba(255, 204, 0, 0.3);
+    background: rgba(255, 204, 0, 0.07);
+}
+.pressure-badge.unstable {
+    color: var(--accent-purple);
+    border-color: rgba(170, 102, 255, 0.35);
+    background: rgba(170, 102, 255, 0.08);
+}
 
 .chart-container {
     position: relative;

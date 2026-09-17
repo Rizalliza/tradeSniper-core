@@ -131,6 +131,43 @@ test('no retest if price is too far from marker', () => {
     assert.equal(s.getState().phase, 'CROSSED');
 });
 
+test('contextual filter blocks counter-bias BUY into nearby resistance', () => {
+    const s = new SniperStrategy({ contextualEntryFilter: true, opposingLevelMaxPct: 0.004 });
+    s.reset(makeMarkers(), {
+        pressure: { label: 'BEARISH' },
+        flowLevels: [
+            { name: 'first2_high', value: 150.35, type: 'flow', tier: 'opening' },
+        ],
+    });
+    s.evaluate(makeBar('09:30:00', 140, 0.5));
+    s.evaluate(makeBar('09:30:01', 155, 0.5)); // crosses 150 up
+    s.evaluate(makeBar('09:30:02', 150.2, 0.3)); // would normally BUY
+
+    const state = s.getState();
+    assert.equal(state.phase, 'BLOCKED');
+    assert.equal(state.trades.length, 0);
+    assert.equal(state.blockedSignal.reason, 'COUNTER_BIAS_NEAR_OPPOSING_LEVEL');
+    assert.equal(state.blockedSignal.direction, 'BUY');
+    assert.equal(state.blockedSignal.opposingLevel.name, 'first2_high');
+});
+
+test('contextual filter does not block aligned BUY', () => {
+    const s = new SniperStrategy({ contextualEntryFilter: true, opposingLevelMaxPct: 0.004 });
+    s.reset(makeMarkers(), {
+        pressure: { label: 'BULLISH' },
+        flowLevels: [
+            { name: 'first2_high', value: 150.35, type: 'flow', tier: 'opening' },
+        ],
+    });
+    s.evaluate(makeBar('09:30:00', 140, 0.5));
+    s.evaluate(makeBar('09:30:01', 155, 0.5));
+    s.evaluate(makeBar('09:30:02', 150.2, 0.3));
+
+    const state = s.getState();
+    assert.equal(state.phase, 'IN_TRADE');
+    assert.equal(state.entryDir, 'BUY');
+});
+
 test('profit target hit on SELL trade', () => {
     const s = new SniperStrategy();
     s.reset(makeMarkers(), {});

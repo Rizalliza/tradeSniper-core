@@ -154,3 +154,44 @@ A log of all key decisions and their rationale. When in doubt, check this file.
 
 **Reconsider when:** Full 3-symbol results are in
 
+---
+
+## D010: Opening Microstructure Becomes A First-Class Research Subsystem (2026-09-17)
+
+**Decision:** Promote the first two minutes after the U.S. open into a dedicated
+OpeningMicrostructure subsystem instead of treating F2-H/F2-M/F2-L as ordinary
+Sniper markers.
+
+**Rationale:**
+- Flow Study screenshots show later price reacting to F2-H/F2-M/F2-L and
+  premarket levels, but this is not yet proven edge.
+- The current bar-driven Sniper can detect cross/retest but cannot reliably know
+  event ordering inside a candle.
+- A `BULLISH` or `BEARISH` pressure label is too blunt when local F2 structure
+  has already failed or reclaimed.
+- Research should study acceptance, rejection, sweep, reclaim, and forward price
+  paths around levels before optimizing entries.
+
+**Architecture impact:**
+- Add normalized `MarketEvent` as the common input for historical replay and live
+  WebSocket data.
+- Add `TapeRecorder` for immutable raw trades/quotes.
+- Add `MarketReplay` so historical and live processing share the same engine.
+- Add `OpeningMicrostructureState` to compute F2 high/mid/low, VWAP, volume,
+  range, close position, high/low timestamps, and first direction.
+- Add `LevelInteractionEngine` for touch/cross/reject/reclaim/accept state.
+- Add `PathStudy` to measure forward return, MFE, and MAE after each interaction.
+
+**Not done yet:**
+- No tick/NBBO WebSocket adapter is implemented.
+- `TapeRecorder` exists only as a JSONL foundation; it is not wired to live
+  Massive trades/NBBO yet.
+- `MarketReplay` exists only as an event-processing foundation; no historical
+  tape dataset is connected yet.
+- Flow Study displays F2 levels but does not yet annotate machine-detected
+  acceptance/rejection/reclaim events.
+- Sniper does not yet consume an OpeningMicrostructure state object.
+- Current backtests still rely mainly on aggregate bars.
+
+**Reconsider if:** Large-sample path studies show F2 interactions do not separate
+from baselines after spread, slippage, and latency assumptions.

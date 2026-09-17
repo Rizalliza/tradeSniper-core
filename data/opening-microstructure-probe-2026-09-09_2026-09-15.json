@@ -1,0 +1,2721 @@
+{
+  "generated_at": "2026-09-17T07:09:55.432Z",
+  "input": "data/pressure-pilot-2026-09-09_2026-09-15.json",
+  "limitation": "Bar-level probe only. It cannot prove tick/NBBO ordering or millisecond edge.",
+  "config": {
+    "zonePct": 0.0015,
+    "acceptBars": 2
+  },
+  "results": [
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-09",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 316.16,
+        "midpoint": 315.59,
+        "low": 315.02,
+        "rangePct": 0.003613,
+        "volume": 839216.9459120005
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 316.16,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 315.87,
+          "high": 316.21,
+          "low": 315.59,
+          "relation": "INSIDE",
+          "penetrationBps": -18.03,
+          "levelValue": 316.16
+        },
+        "eventCount": 7
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 316.16,
+          "zone": 0.4742,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 316.16,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 315.87,
+              "high": 316.21,
+              "low": 315.59,
+              "relation": "INSIDE",
+              "penetrationBps": -18.03
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 316.16,
+              "time": "09:34:00",
+              "index": 2,
+              "close": 315.5199,
+              "high": 315.76,
+              "low": 315.2162,
+              "bars": 2
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 316.16,
+              "time": "09:57:00",
+              "index": 25,
+              "close": 317.1,
+              "high": 317.11,
+              "low": 316.6,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 315.59,
+          "zone": 0.4734,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 315.59,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 315.87,
+              "high": 316.21,
+              "low": 315.59,
+              "relation": "INSIDE",
+              "penetrationBps": 19.65
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 315.59,
+              "time": "09:42:00",
+              "index": 10,
+              "close": 316.13,
+              "high": 316.205,
+              "low": 315.95,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 315.02,
+          "zone": 0.4725,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 315.02,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 315.33,
+              "high": 315.85,
+              "low": 315.07,
+              "relation": "INSIDE",
+              "penetrationBps": 26.35
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 315.02,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 315.855,
+              "high": 315.88,
+              "low": 315.29,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-10",
+      "pressure": "BULLISH",
+      "f2": {
+        "high": 320.54,
+        "midpoint": 318.525,
+        "low": 316.51,
+        "rangePct": 0.012726,
+        "volume": 1810124.593337
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "BULLISH",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 320.54,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 319.7307,
+          "high": 319.775,
+          "low": 318.0944,
+          "bars": 2,
+          "levelValue": 320.54
+        },
+        "eventCount": 11
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 320.54,
+          "zone": 0.4808,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 320.54,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 319.7307,
+              "high": 319.775,
+              "low": 318.0944,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 320.54,
+              "time": "09:34:00",
+              "index": 2,
+              "close": 319.4,
+              "high": 320.8599,
+              "low": 319.0609,
+              "relation": "BELOW",
+              "penetrationBps": -46.14
+            },
+            {
+              "type": "CROSS_UP",
+              "level": "F2-H",
+              "value": 320.54,
+              "time": "09:36:00",
+              "index": 4,
+              "close": 321.33,
+              "high": 321.44,
+              "low": 319.65
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-H",
+              "value": 320.54,
+              "time": "09:36:00",
+              "index": 4,
+              "close": 321.33,
+              "high": 321.44,
+              "low": 319.65
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 320.54,
+              "time": "09:37:00",
+              "index": 5,
+              "close": 321.88,
+              "high": 321.91,
+              "low": 320.93,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 318.525,
+          "zone": 0.4778,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 318.525,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 318.4207,
+              "high": 319.07,
+              "low": 316.74,
+              "relation": "INSIDE",
+              "penetrationBps": 17.11
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 318.525,
+              "time": "09:34:00",
+              "index": 2,
+              "close": 319.4,
+              "high": 320.8599,
+              "low": 319.0609,
+              "bars": 2
+            },
+            {
+              "type": "CROSS_UP",
+              "level": "F2-M",
+              "value": 318.525,
+              "time": "09:43:00",
+              "index": 11,
+              "close": 319.67,
+              "high": 319.73,
+              "low": 317.45
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-M",
+              "value": 318.525,
+              "time": "09:43:00",
+              "index": 11,
+              "close": 319.67,
+              "high": 319.73,
+              "low": 317.45
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 316.51,
+          "zone": 0.4748,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 316.51,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 318.4207,
+              "high": 319.07,
+              "low": 316.74,
+              "relation": "ABOVE",
+              "penetrationBps": 80.88
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 316.51,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 319.7307,
+              "high": 319.775,
+              "low": 318.0944,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-11",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 329.37,
+        "midpoint": 327.835,
+        "low": 326.3,
+        "rangePct": 0.009375,
+        "volume": 1472241.7058429997
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 329.37,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 328.8702,
+          "high": 329.48,
+          "low": 328.355,
+          "relation": "BELOW",
+          "penetrationBps": -30.82,
+          "levelValue": 329.37
+        },
+        "eventCount": 6
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 329.37,
+          "zone": 0.4941,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 329.37,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 328.8702,
+              "high": 329.48,
+              "low": 328.355,
+              "relation": "BELOW",
+              "penetrationBps": -30.82
+            },
+            {
+              "type": "CROSS_UP",
+              "level": "F2-H",
+              "value": 329.37,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 330.7657,
+              "high": 330.89,
+              "low": 328.79
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-H",
+              "value": 329.37,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 330.7657,
+              "high": 330.89,
+              "low": 328.79
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 329.37,
+              "time": "09:34:00",
+              "index": 2,
+              "close": 331.98,
+              "high": 332.28,
+              "low": 330.43,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 327.835,
+          "zone": 0.4918,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 327.835,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 330.7657,
+              "high": 330.89,
+              "low": 328.79,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 326.3,
+          "zone": 0.4895,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 326.3,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 330.7657,
+              "high": 330.89,
+              "low": 328.79,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-14",
+      "pressure": "BULLISH",
+      "f2": {
+        "high": 334.83,
+        "midpoint": 333.52,
+        "low": 332.21,
+        "rangePct": 0.007826,
+        "volume": 1155997.5821009995
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "BULLISH",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 334.83,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 332.4,
+          "high": 333.18,
+          "low": 331.86,
+          "bars": 2,
+          "levelValue": 334.83
+        },
+        "eventCount": 9
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 334.83,
+          "zone": 0.5022,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 334.83,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 332.4,
+              "high": 333.18,
+              "low": 331.86,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 334.83,
+              "time": "09:55:00",
+              "index": 23,
+              "close": 334.8101,
+              "high": 334.83,
+              "low": 334.07,
+              "relation": "INSIDE",
+              "penetrationBps": -22.7
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 333.52,
+          "zone": 0.5003,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 333.52,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 332.46,
+              "high": 333.13,
+              "low": 331.72,
+              "relation": "BELOW",
+              "penetrationBps": -53.97
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 333.52,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 332.4,
+              "high": 333.18,
+              "low": 331.86,
+              "bars": 2
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 333.52,
+              "time": "09:55:00",
+              "index": 23,
+              "close": 334.8101,
+              "high": 334.83,
+              "low": 334.07,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 332.21,
+          "zone": 0.4983,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 332.21,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 332.46,
+              "high": 333.13,
+              "low": 331.72,
+              "relation": "INSIDE",
+              "penetrationBps": 27.69
+            },
+            {
+              "type": "CROSS_DOWN",
+              "level": "F2-L",
+              "value": 332.21,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 331.41,
+              "high": 332.7762,
+              "low": 331.35
+            },
+            {
+              "type": "REJECT_DOWN",
+              "level": "F2-L",
+              "value": 332.21,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 331.41,
+              "high": 332.7762,
+              "low": 331.35
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 332.21,
+              "time": "09:43:00",
+              "index": 11,
+              "close": 333.24,
+              "high": 333.9399,
+              "low": 333.1698,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-15",
+      "pressure": "BEARISH",
+      "f2": {
+        "high": 331.5,
+        "midpoint": 329.925,
+        "low": 328.35,
+        "rangePct": 0.009542,
+        "volume": 1064057.7822200002
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "BEARISH",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 331.5,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 330.59,
+          "high": 331.2787,
+          "low": 330.38,
+          "relation": "BELOW",
+          "penetrationBps": -33.79,
+          "levelValue": 331.5
+        },
+        "eventCount": 5
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 331.5,
+          "zone": 0.4973,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 331.5,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 330.59,
+              "high": 331.2787,
+              "low": 330.38,
+              "relation": "BELOW",
+              "penetrationBps": -33.79
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 331.5,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 329.9897,
+              "high": 330.68,
+              "low": 329.89,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 329.925,
+          "zone": 0.4949,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 329.925,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 330.59,
+              "high": 331.2787,
+              "low": 330.38,
+              "relation": "ABOVE",
+              "penetrationBps": 41.03
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 329.925,
+              "time": "09:37:00",
+              "index": 5,
+              "close": 330.91,
+              "high": 330.92,
+              "low": 330.52,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 328.35,
+          "zone": 0.4925,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 328.35,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 329.9897,
+              "high": 330.68,
+              "low": 329.89,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-09-09",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 494.2,
+        "midpoint": 493.105,
+        "low": 492.01,
+        "rangePct": 0.004442,
+        "volume": 452246.4846840003
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 494.2,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 492.27,
+          "high": 494.23,
+          "low": 492.265,
+          "relation": "BELOW",
+          "penetrationBps": -39.15,
+          "levelValue": 494.2
+        },
+        "eventCount": 7
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 494.2,
+          "zone": 0.7413,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 494.2,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 492.27,
+              "high": 494.23,
+              "low": 492.265,
+              "relation": "BELOW",
+              "penetrationBps": -39.15
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 494.2,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 492.2,
+              "high": 492.36,
+              "low": 491.14,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 493.105,
+          "zone": 0.7397,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 493.105,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 492.27,
+              "high": 494.23,
+              "low": 492.265,
+              "relation": "BELOW",
+              "penetrationBps": 22.81
+            },
+            {
+              "type": "REJECT_DOWN",
+              "level": "F2-M",
+              "value": 493.105,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 492.27,
+              "high": 494.23,
+              "low": 492.265
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 493.105,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 492.2,
+              "high": 492.36,
+              "low": 491.14,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 492.01,
+          "zone": 0.738,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 492.01,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 492.27,
+              "high": 494.23,
+              "low": 492.265,
+              "relation": "INSIDE",
+              "penetrationBps": 45.12
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 492.01,
+              "time": "09:37:00",
+              "index": 5,
+              "close": 493.6667,
+              "high": 494.3,
+              "low": 493.08,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-09-10",
+      "pressure": "BEARISH",
+      "f2": {
+        "high": 489.7,
+        "midpoint": 487.9752,
+        "low": 486.2505,
+        "rangePct": 0.007064,
+        "volume": 525389.1985270004
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "BEARISH",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 489.7,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 488.16,
+          "high": 488.3,
+          "low": 486.52,
+          "bars": 2,
+          "levelValue": 489.7
+        },
+        "eventCount": 7
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 489.7,
+          "zone": 0.7346,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 489.7,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 488.16,
+              "high": 488.3,
+              "low": 486.52,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 489.7,
+              "time": "09:43:00",
+              "index": 11,
+              "close": 488.87,
+              "high": 489.24,
+              "low": 488.4,
+              "relation": "BELOW",
+              "penetrationBps": -26.55
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 489.7,
+              "time": "09:48:00",
+              "index": 16,
+              "close": 490.52,
+              "high": 491.07,
+              "low": 489.91,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 487.9752,
+          "zone": 0.732,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 487.9752,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 487.19,
+              "high": 487.3599,
+              "low": 486,
+              "relation": "BELOW",
+              "penetrationBps": -40.48
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 487.9752,
+              "time": "09:46:00",
+              "index": 14,
+              "close": 490.21,
+              "high": 490.3099,
+              "low": 489.665,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 486.2505,
+          "zone": 0.7294,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 486.2505,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 487.19,
+              "high": 487.3599,
+              "low": 486,
+              "relation": "ABOVE",
+              "penetrationBps": 22.82
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 486.2505,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 488.16,
+              "high": 488.3,
+              "low": 486.52,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-09-11",
+      "pressure": "BULLISH",
+      "f2": {
+        "high": 496.3,
+        "midpoint": 494.808,
+        "low": 493.316,
+        "rangePct": 0.00602,
+        "volume": 601786.478789
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "BULLISH",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 496.3,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 496.455,
+          "high": 496.59,
+          "low": 494.44,
+          "relation": "INSIDE",
+          "penetrationBps": -37.48,
+          "levelValue": 496.3
+        },
+        "eventCount": 6
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 496.3,
+          "zone": 0.7445,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 496.3,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 496.455,
+              "high": 496.59,
+              "low": 494.44,
+              "relation": "INSIDE",
+              "penetrationBps": -37.48
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 496.3,
+              "time": "09:38:00",
+              "index": 6,
+              "close": 498.68,
+              "high": 498.97,
+              "low": 497.57,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 494.808,
+          "zone": 0.7422,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 494.808,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 494.56,
+              "high": 494.78,
+              "low": 493.7501,
+              "relation": "INSIDE",
+              "penetrationBps": -21.38
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 494.808,
+              "time": "09:34:00",
+              "index": 2,
+              "close": 496.55,
+              "high": 496.69,
+              "low": 495.85,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 493.316,
+          "zone": 0.74,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 493.316,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 494.56,
+              "high": 494.78,
+              "low": 493.7501,
+              "relation": "ABOVE",
+              "penetrationBps": 29.68
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 493.316,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 496.455,
+              "high": 496.59,
+              "low": 494.44,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-09-14",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 499.8,
+        "midpoint": 498.04,
+        "low": 496.28,
+        "rangePct": 0.007082,
+        "volume": 726996.0609749997
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 499.8,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 496.15,
+          "high": 497.17,
+          "low": 495.51,
+          "bars": 2,
+          "levelValue": 499.8
+        },
+        "eventCount": 8
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 499.8,
+          "zone": 0.7497,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 499.8,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 496.15,
+              "high": 497.17,
+              "low": 495.51,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 499.8,
+              "time": "09:48:00",
+              "index": 16,
+              "close": 500.06,
+              "high": 500.13,
+              "low": 498.5815,
+              "relation": "INSIDE",
+              "penetrationBps": -24.38
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 499.8,
+              "time": "09:53:00",
+              "index": 21,
+              "close": 501.2308,
+              "high": 501.67,
+              "low": 500.68,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 498.04,
+          "zone": 0.7471,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 498.04,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 496.57,
+              "high": 497.74,
+              "low": 496.51,
+              "relation": "BELOW",
+              "penetrationBps": -30.72
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 498.04,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 496.15,
+              "high": 497.17,
+              "low": 495.51,
+              "bars": 2
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 498.04,
+              "time": "09:49:00",
+              "index": 17,
+              "close": 499.36,
+              "high": 501.01,
+              "low": 499.12,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 496.28,
+          "zone": 0.7444,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 496.28,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 496.57,
+              "high": 497.74,
+              "low": 496.51,
+              "relation": "INSIDE",
+              "penetrationBps": 29.42
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 496.28,
+              "time": "09:43:00",
+              "index": 11,
+              "close": 497.115,
+              "high": 497.65,
+              "low": 496.88,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-09-15",
+      "pressure": "BEARISH",
+      "f2": {
+        "high": 503.05,
+        "midpoint": 501.075,
+        "low": 499.1,
+        "rangePct": 0.007899,
+        "volume": 467341.26144
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "BEARISH",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 503.05,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 500.32,
+          "high": 501.355,
+          "low": 500.05,
+          "bars": 2,
+          "levelValue": 503.05
+        },
+        "eventCount": 8
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 503.05,
+          "zone": 0.7546,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 503.05,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 500.32,
+              "high": 501.355,
+              "low": 500.05,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 503.05,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 502.815,
+              "high": 503.29,
+              "low": 500.26,
+              "relation": "INSIDE",
+              "penetrationBps": -55.46
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 503.05,
+              "time": "09:39:00",
+              "index": 7,
+              "close": 505.76,
+              "high": 505.9,
+              "low": 504.565,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 501.075,
+          "zone": 0.7516,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 501.075,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 500.16,
+              "high": 501.57,
+              "low": 499.9601,
+              "relation": "BELOW",
+              "penetrationBps": -22.25
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 501.075,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 500.32,
+              "high": 501.355,
+              "low": 500.05,
+              "bars": 2
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-M",
+              "value": 501.075,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 502.815,
+              "high": 503.29,
+              "low": 500.26
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 501.075,
+              "time": "09:36:00",
+              "index": 4,
+              "close": 503.01,
+              "high": 503.3675,
+              "low": 502.39,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 499.1,
+          "zone": 0.7487,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 499.1,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 500.32,
+              "high": 501.355,
+              "low": 500.05,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-09",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 225.95,
+        "midpoint": 225.32,
+        "low": 224.69,
+        "rangePct": 0.005593,
+        "volume": 2294954.1020169994
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 225.95,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 224.86,
+          "high": 225.05,
+          "low": 224.5601,
+          "bars": 2,
+          "levelValue": 225.95
+        },
+        "eventCount": 9
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 225.95,
+          "zone": 0.3389,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 225.95,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 224.86,
+              "high": 225.05,
+              "low": 224.5601,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 225.95,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 225.66,
+              "high": 225.68,
+              "low": 224.96,
+              "relation": "INSIDE",
+              "penetrationBps": -43.82
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 225.32,
+          "zone": 0.338,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 225.32,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 225.0499,
+              "high": 225.39,
+              "low": 224.7201,
+              "relation": "INSIDE",
+              "penetrationBps": -26.62
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-M",
+              "value": 225.32,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 225.66,
+              "high": 225.68,
+              "low": 224.96
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 225.32,
+              "time": "09:38:00",
+              "index": 6,
+              "close": 225.89,
+              "high": 225.9295,
+              "low": 225.59,
+              "bars": 2
+            },
+            {
+              "type": "REJECT_DOWN",
+              "level": "F2-M",
+              "value": 225.32,
+              "time": "09:44:00",
+              "index": 12,
+              "close": 224.77,
+              "high": 225.675,
+              "low": 224.77
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 225.32,
+              "time": "09:45:00",
+              "index": 13,
+              "close": 224.865,
+              "high": 225.08,
+              "low": 224.64,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 224.69,
+          "zone": 0.337,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 224.69,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 225.0499,
+              "high": 225.39,
+              "low": 224.7201,
+              "relation": "ABOVE",
+              "penetrationBps": 31.15
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 224.69,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 225.66,
+              "high": 225.68,
+              "low": 224.96,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-10",
+      "pressure": "BEARISH",
+      "f2": {
+        "high": 220.99,
+        "midpoint": 220.38,
+        "low": 219.77,
+        "rangePct": 0.005532,
+        "volume": 3027353.5154899983
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "BEARISH",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 220.99,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 218.8038,
+          "high": 219.06,
+          "low": 218.45,
+          "bars": 2,
+          "levelValue": 220.99
+        },
+        "eventCount": 6
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 220.99,
+          "zone": 0.3315,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 220.99,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 218.8038,
+              "high": 219.06,
+              "low": 218.45,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 220.38,
+          "zone": 0.3306,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 220.38,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 218.88,
+              "high": 220.42,
+              "low": 218.78,
+              "relation": "BELOW",
+              "penetrationBps": -72.6
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 220.38,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 218.8038,
+              "high": 219.06,
+              "low": 218.45,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 219.77,
+          "zone": 0.3297,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 219.77,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 218.88,
+              "high": 220.42,
+              "low": 218.78,
+              "relation": "BELOW",
+              "penetrationBps": 29.58
+            },
+            {
+              "type": "REJECT_DOWN",
+              "level": "F2-L",
+              "value": 219.77,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 218.88,
+              "high": 220.42,
+              "low": 218.78
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-L",
+              "value": 219.77,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 218.8038,
+              "high": 219.06,
+              "low": 218.45,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-11",
+      "pressure": "BULLISH",
+      "f2": {
+        "high": 221.34,
+        "midpoint": 220.245,
+        "low": 219.1501,
+        "rangePct": 0.009899,
+        "volume": 2265912.197182
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "BULLISH",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 221.34,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 219.96,
+          "high": 220.0205,
+          "low": 219.45,
+          "bars": 2,
+          "levelValue": 221.34
+        },
+        "eventCount": 7
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 221.34,
+          "zone": 0.332,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 221.34,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 219.96,
+              "high": 220.0205,
+              "low": 219.45,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 221.34,
+              "time": "09:54:00",
+              "index": 22,
+              "close": 221.16,
+              "high": 221.18,
+              "low": 220.55,
+              "relation": "INSIDE",
+              "penetrationBps": -35.69
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 220.245,
+          "zone": 0.3304,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 220.245,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 219.96,
+              "high": 220.0205,
+              "low": 219.45,
+              "relation": "INSIDE",
+              "penetrationBps": -36.1
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 220.245,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 219.69,
+              "high": 220.2,
+              "low": 219.66,
+              "bars": 2
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 220.245,
+              "time": "09:54:00",
+              "index": 22,
+              "close": 221.16,
+              "high": 221.18,
+              "low": 220.55,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 219.1501,
+          "zone": 0.3287,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 219.1501,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 219.6,
+              "high": 219.74,
+              "low": 219.18,
+              "relation": "ABOVE",
+              "penetrationBps": 26.92
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 219.1501,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 219.96,
+              "high": 220.0205,
+              "low": 219.45,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-14",
+      "pressure": "BEARISH",
+      "f2": {
+        "high": 211.5,
+        "midpoint": 210.68,
+        "low": 209.86,
+        "rangePct": 0.007764,
+        "volume": 6014441.871660999
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "BEARISH",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 211.5,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 209.74,
+          "high": 210.08,
+          "low": 209.24,
+          "bars": 2,
+          "levelValue": 211.5
+        },
+        "eventCount": 8
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 211.5,
+          "zone": 0.3173,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 211.5,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 209.74,
+              "high": 210.08,
+              "low": 209.24,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 211.5,
+              "time": "09:49:00",
+              "index": 17,
+              "close": 211.31,
+              "high": 211.56,
+              "low": 210.945,
+              "relation": "INSIDE",
+              "penetrationBps": -26.24
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 210.68,
+          "zone": 0.316,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 210.68,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 209.74,
+              "high": 210.08,
+              "low": 209.24,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 210.68,
+              "time": "09:45:00",
+              "index": 13,
+              "close": 210.29,
+              "high": 210.4,
+              "low": 209.8463,
+              "relation": "BELOW",
+              "penetrationBps": -39.57
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 210.68,
+              "time": "09:50:00",
+              "index": 18,
+              "close": 211.21,
+              "high": 211.4399,
+              "low": 211.11,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 209.86,
+          "zone": 0.3148,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 209.86,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 209.675,
+              "high": 210.0394,
+              "low": 209.57,
+              "relation": "INSIDE",
+              "penetrationBps": 0
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-L",
+              "value": 209.86,
+              "time": "09:37:00",
+              "index": 5,
+              "close": 209.1407,
+              "high": 209.55,
+              "low": 209.13,
+              "bars": 2
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 209.86,
+              "time": "09:46:00",
+              "index": 14,
+              "close": 210.35,
+              "high": 210.565,
+              "low": 210.25,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-15",
+      "pressure": "BULLISH",
+      "f2": {
+        "high": 213.47,
+        "midpoint": 213.0163,
+        "low": 212.5625,
+        "rangePct": 0.004253,
+        "volume": 2902233.419568
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Rejected F2-H and closed back below retest zone",
+        "pressureLabel": "BULLISH",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 213.47,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 213.7654,
+          "high": 213.79,
+          "low": 212.62,
+          "relation": "INSIDE",
+          "penetrationBps": -39.82,
+          "levelValue": 213.47
+        },
+        "eventCount": 8
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 213.47,
+          "zone": 0.3202,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 213.47,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 213.7654,
+              "high": 213.79,
+              "low": 212.62,
+              "relation": "INSIDE",
+              "penetrationBps": -39.82
+            },
+            {
+              "type": "REJECT_DOWN",
+              "level": "F2-H",
+              "value": 213.47,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 213.07,
+              "high": 213.8795,
+              "low": 213.05
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 213.47,
+              "time": "09:37:00",
+              "index": 5,
+              "close": 212.8383,
+              "high": 213.405,
+              "low": 212.79,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 213.0163,
+          "zone": 0.3195,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 213.0163,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 213.7654,
+              "high": 213.79,
+              "low": 212.62,
+              "relation": "ABOVE",
+              "penetrationBps": 36.32
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-M",
+              "value": 213.0163,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 213.7654,
+              "high": 213.79,
+              "low": 212.62
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 213.0163,
+              "time": "09:46:00",
+              "index": 14,
+              "close": 213.64,
+              "high": 213.83,
+              "low": 213.37,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 212.5625,
+          "zone": 0.3188,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 212.5625,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 213.7654,
+              "high": 213.79,
+              "low": 212.62,
+              "relation": "ABOVE",
+              "penetrationBps": 57.75
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 212.5625,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 213.07,
+              "high": 213.8795,
+              "low": 213.05,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-09",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 374.57,
+        "midpoint": 371.2001,
+        "low": 367.8301,
+        "rangePct": 0.018303,
+        "volume": 1210027.4343120004
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 374.57,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 374.25,
+          "high": 375,
+          "low": 371.76,
+          "relation": "INSIDE",
+          "penetrationBps": -75.02,
+          "levelValue": 374.57
+        },
+        "eventCount": 5
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 374.57,
+          "zone": 0.5619,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 374.57,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 374.25,
+              "high": 375,
+              "low": 371.76,
+              "relation": "INSIDE",
+              "penetrationBps": -75.02
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 374.57,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 372.265,
+              "high": 374.15,
+              "low": 371.81,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 371.2001,
+          "zone": 0.5568,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 371.2001,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 374.74,
+              "high": 375.44,
+              "low": 373.31,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 371.2001,
+              "time": "09:36:00",
+              "index": 4,
+              "close": 371.17,
+              "high": 372.17,
+              "low": 370.51,
+              "relation": "INSIDE",
+              "penetrationBps": 26.13
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 367.8301,
+          "zone": 0.5517,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 367.8301,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 374.74,
+              "high": 375.44,
+              "low": 373.31,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-10",
+      "pressure": "BEARISH",
+      "f2": {
+        "high": 361.74,
+        "midpoint": 359.71,
+        "low": 357.68,
+        "rangePct": 0.011259,
+        "volume": 855666.998883
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "BEARISH",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 361.74,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 361.22,
+          "high": 362.01,
+          "low": 358.1979,
+          "relation": "INSIDE",
+          "penetrationBps": -97.92,
+          "levelValue": 361.74
+        },
+        "eventCount": 8
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 361.74,
+          "zone": 0.5426,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 361.74,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 361.22,
+              "high": 362.01,
+              "low": 358.1979,
+              "relation": "INSIDE",
+              "penetrationBps": -97.92
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 361.74,
+              "time": "09:34:00",
+              "index": 2,
+              "close": 360.08,
+              "high": 361.17,
+              "low": 359.75,
+              "bars": 2
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 361.74,
+              "time": "09:40:00",
+              "index": 8,
+              "close": 363.525,
+              "high": 363.83,
+              "low": 362.5,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 359.71,
+          "zone": 0.5396,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 359.71,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 361.22,
+              "high": 362.01,
+              "low": 358.1979,
+              "relation": "ABOVE",
+              "penetrationBps": 63.94
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-M",
+              "value": 359.71,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 361.22,
+              "high": 362.01,
+              "low": 358.1979
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 359.71,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 360.91,
+              "high": 361.34,
+              "low": 360.1503,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 357.68,
+          "zone": 0.5365,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 357.68,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 361.22,
+              "high": 362.01,
+              "low": 358.1979,
+              "relation": "ABOVE",
+              "penetrationBps": 121.06
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 357.68,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 360.91,
+              "high": 361.34,
+              "low": 360.1503,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-11",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 364.38,
+        "midpoint": 362.99,
+        "low": 361.6,
+        "rangePct": 0.007633,
+        "volume": 717233.0141489999
+      },
+      "signal": {
+        "signal": "BULLISH_F2_RECLAIM",
+        "reason": "Accepted above F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 364.38,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 364.37,
+          "high": 365,
+          "low": 362.85,
+          "relation": "INSIDE",
+          "penetrationBps": 17.02,
+          "levelValue": 364.38
+        },
+        "eventCount": 5
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 364.38,
+          "zone": 0.5466,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 364.38,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 364.37,
+              "high": 365,
+              "low": 362.85,
+              "relation": "INSIDE",
+              "penetrationBps": 17.02
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 364.38,
+              "time": "09:39:00",
+              "index": 7,
+              "close": 366.77,
+              "high": 366.94,
+              "low": 365.7,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 362.99,
+          "zone": 0.5445,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 362.99,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 364.37,
+              "high": 365,
+              "low": 362.85,
+              "relation": "ABOVE",
+              "penetrationBps": 55.37
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 362.99,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 365.405,
+              "high": 366.5,
+              "low": 363.98,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 361.6,
+          "zone": 0.5424,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 361.6,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 365.405,
+              "high": 366.5,
+              "low": 363.98,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-14",
+      "pressure": "BEARISH",
+      "f2": {
+        "high": 366,
+        "midpoint": 362.525,
+        "low": 359.05,
+        "rangePct": 0.019317,
+        "volume": 1072454.8206960002
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Rejected F2-H and closed back below retest zone",
+        "pressureLabel": "BEARISH",
+        "firstEvent": {
+          "type": "FIRST_TOUCH",
+          "level": "F2-H",
+          "value": 366,
+          "time": "09:32:00",
+          "index": 0,
+          "close": 366.88,
+          "high": 367.73,
+          "low": 365.1,
+          "relation": "ABOVE",
+          "penetrationBps": 47.27,
+          "levelValue": 366
+        },
+        "eventCount": 8
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 366,
+          "zone": 0.549,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 366,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 366.88,
+              "high": 367.73,
+              "low": 365.1,
+              "relation": "ABOVE",
+              "penetrationBps": 47.27
+            },
+            {
+              "type": "RECLAIM_UP",
+              "level": "F2-H",
+              "value": 366,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 366.88,
+              "high": 367.73,
+              "low": 365.1
+            },
+            {
+              "type": "REJECT_DOWN",
+              "level": "F2-H",
+              "value": 366,
+              "time": "09:34:00",
+              "index": 2,
+              "close": 365.37,
+              "high": 366.7,
+              "low": 365.2
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 366,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 363.9589,
+              "high": 365.93,
+              "low": 363.7,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 362.525,
+          "zone": 0.5438,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 362.525,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 365.83,
+              "high": 367.04,
+              "low": 365.51,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 362.525,
+              "time": "09:36:00",
+              "index": 4,
+              "close": 362.1848,
+              "high": 364.13,
+              "low": 361.751,
+              "relation": "INSIDE",
+              "penetrationBps": 44.27
+            },
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 362.525,
+              "time": "09:38:00",
+              "index": 6,
+              "close": 361.2,
+              "high": 362.12,
+              "low": 360.93,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 359.05,
+          "zone": 0.5386,
+          "events": [
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 359.05,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 365.83,
+              "high": 367.04,
+              "low": 365.51,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-15",
+      "pressure": "NEUTRAL",
+      "f2": {
+        "high": 360.69,
+        "midpoint": 358.0303,
+        "low": 355.3705,
+        "rangePct": 0.014828,
+        "volume": 804788.2152539995
+      },
+      "signal": {
+        "signal": "BEARISH_F2_FAILURE",
+        "reason": "Accepted below F2-M after the first-two-minute map formed",
+        "pressureLabel": "NEUTRAL",
+        "firstEvent": {
+          "type": "ACCEPT_BELOW",
+          "level": "F2-H",
+          "value": 360.69,
+          "time": "09:33:00",
+          "index": 1,
+          "close": 355.42,
+          "high": 356.29,
+          "low": 355.03,
+          "bars": 2,
+          "levelValue": 360.69
+        },
+        "eventCount": 8
+      },
+      "levels": [
+        {
+          "level": "F2-H",
+          "value": 360.69,
+          "zone": 0.541,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-H",
+              "value": 360.69,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 355.42,
+              "high": 356.29,
+              "low": 355.03,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-H",
+              "value": 360.69,
+              "time": "09:36:00",
+              "index": 4,
+              "close": 359.7,
+              "high": 360.24,
+              "low": 358.0822,
+              "relation": "BELOW",
+              "penetrationBps": -72.3
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-H",
+              "value": 360.69,
+              "time": "09:50:00",
+              "index": 18,
+              "close": 361.57,
+              "high": 361.74,
+              "low": 361.16,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-M",
+          "value": 358.0303,
+          "zone": 0.537,
+          "events": [
+            {
+              "type": "ACCEPT_BELOW",
+              "level": "F2-M",
+              "value": 358.0303,
+              "time": "09:33:00",
+              "index": 1,
+              "close": 355.42,
+              "high": 356.29,
+              "low": 355.03,
+              "bars": 2
+            },
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-M",
+              "value": 358.0303,
+              "time": "09:35:00",
+              "index": 3,
+              "close": 358.2401,
+              "high": 358.58,
+              "low": 355.55,
+              "relation": "INSIDE",
+              "penetrationBps": 15.35
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-M",
+              "value": 358.0303,
+              "time": "09:37:00",
+              "index": 5,
+              "close": 359.72,
+              "high": 360,
+              "low": 359.27,
+              "bars": 2
+            }
+          ]
+        },
+        {
+          "level": "F2-L",
+          "value": 355.3705,
+          "zone": 0.5331,
+          "events": [
+            {
+              "type": "FIRST_TOUCH",
+              "level": "F2-L",
+              "value": 355.3705,
+              "time": "09:32:00",
+              "index": 0,
+              "close": 354.98,
+              "high": 356.78,
+              "low": 354.7,
+              "relation": "INSIDE",
+              "penetrationBps": 39.66
+            },
+            {
+              "type": "ACCEPT_ABOVE",
+              "level": "F2-L",
+              "value": 355.3705,
+              "time": "09:36:00",
+              "index": 4,
+              "close": 359.7,
+              "high": 360.24,
+              "low": 358.0822,
+              "bars": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

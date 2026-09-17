@@ -12,6 +12,8 @@ export class SniperStrategy extends BaseStrategy {
         this.trailingStepPct = config.trailingStepPct ?? 0.005;
         this.hardStopPct = config.hardStopPct ?? 0.008;      // 0.8% default hard stop — caps max loss per trade
         this.breakevenAfterPct = config.breakevenAfterPct ?? 0; // 0 = disabled by default. Set 0.003 to move to breakeven after 0.3% profit
+        this.contextualEntryFilter = config.contextualEntryFilter ?? false;
+        this.opposingLevelMaxPct = config.opposingLevelMaxPct ?? 0.002;
         this._prevBar = null;
         this._barIndex = 0;
     }
@@ -34,6 +36,7 @@ export class SniperStrategy extends BaseStrategy {
         this.trailingActive = false;
         this.trailingLevel = null;
         this.bestPrice = null;  // best (most profitable) price reached so far
+        this.blockedSignal = null;
         this._prevBar = null;
         this._barIndex = 0;
     }
@@ -66,10 +69,78 @@ export class SniperStrategy extends BaseStrategy {
     _detectRetest(bar, idx) {
         const buffer = this.crossMarker.value * this.bufferPct;
         if (this.crossDir === 'DOWN' && bar.high >= this.crossMarker.value - buffer) {
+            const block = this._entryBlock('SELL', this.crossMarker, bar, idx);
+            if (block) { this._blockSignal(block); return; }
             this._openTrade('SELL', this.crossMarker, bar, idx);
         } else if (this.crossDir === 'UP' && bar.low <= this.crossMarker.value + buffer) {
+            const block = this._entryBlock('BUY', this.crossMarker, bar, idx);
+            if (block) { this._blockSignal(block); return; }
             this._openTrade('BUY', this.crossMarker, bar, idx);
         }
+    }
+
+    _entryBlock(direction, marker, bar, idx) {
+        if (!this.contextualEntryFilter) return null;
+        const bias = this._pressureBias();
+        const counterBias =
+            (direction === 'BUY' && bias === 'BEARISH') ||
+            (direction === 'SELL' && bias === 'BULLISH');
+        if (!counterBias) return null;
+
+        const blocker = this._nearestOpposingLevel(direction, marker.value);
+        if (!blocker) return null;
+
+        return {
+            reason: 'COUNTER_BIAS_NEAR_OPPOSING_LEVEL',
+            direction,
+            marker: marker.name,
+            markerValue: marker.value,
+            time: bar.time,
+            barIndex: idx,
+            pressureBias: bias,
+            opposingLevel: blocker,
+        };
+    }
+
+    _blockSignal(block) {
+        this.blockedSignal = block;
+        this.phase = 'BLOCKED';
+    }
+
+    _pressureBias() {
+        const label = this.context?.pressure?.label || this.context?.pressureLabel || this.context?.bias;
+        return typeof label === 'string' ? label.toUpperCase() : 'NEUTRAL';
+    }
+
+    _contextLevels() {
+        const levels = this.context?.levels || this.context?.flowLevels || [];
+        return Array.isArray(levels) ? levels : [];
+    }
+
+    _nearestOpposingLevel(direction, entryPrice) {
+        const maxDistance = entryPrice * this.opposingLevelMaxPct;
+        const contextLevels = this._contextLevels();
+        const candidates = [...this.markerList, ...contextLevels]
+            .filter(level => Number.isFinite(level.value))
+            .filter(level => Math.abs(level.value - entryPrice) > 0.0001)
+            .map(level => ({
+                name: level.name || level.id || 'level',
+                value: level.value,
+                type: level.type || 'level',
+                tier: level.tier || null,
+                score: level.score ?? null,
+                distance: Math.abs(level.value - entryPrice),
+            }))
+            .filter(level => level.distance <= maxDistance);
+
+        if (direction === 'BUY') {
+            return candidates
+                .filter(level => level.value > entryPrice)
+                .sort((a, b) => a.distance - b.distance)[0] || null;
+        }
+        return candidates
+            .filter(level => level.value < entryPrice)
+            .sort((a, b) => a.distance - b.distance)[0] || null;
     }
 
     _openTrade(direction, marker, bar, idx) {
@@ -282,6 +353,7 @@ export class SniperStrategy extends BaseStrategy {
             forwardCrossings: [...this.forwardCrossings],
             trailingActive: this.trailingActive,
             trailingLevel: this.trailingLevel,
+            blockedSignal: this.blockedSignal ? { ...this.blockedSignal } : null,
         };
     }
 }

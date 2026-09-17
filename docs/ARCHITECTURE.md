@@ -85,6 +85,104 @@ MarkerService
          Web UI / Reports
 ```
 
+## Target Research Core (Opening Microstructure)
+
+The next architecture step is event-driven research, not a larger UI or direct
+broker execution. The first two minutes after the U.S. open are treated as a
+price-discovery event that creates reference levels to be tested statistically.
+
+```
+EventSource
+  │
+  ├── HistoricalReplay
+  └── LiveWebSocket
+        │
+        ▼
+Normalized MarketEvent
+        │
+        ├── TapeRecorder          raw trades/quotes, timestamps, sequence ids
+        ├── BarBuilder            1s/2s/5s/minute bars for visualization
+        ├── OpeningMicrostructure F2-H/M/L/VWAP/range/order of high/low
+        ├── LevelInteraction      touch/cross/reject/reclaim/accept states
+        └── PathStudy             MFE/MAE/forward returns after each event
+        │
+        ▼
+MarketState
+        │
+        ▼
+SniperStrategy
+        │
+        ├── Research decisions
+        └── Future paper/live execution
+```
+
+### Core Rule
+
+Live and historical data must use the same engine:
+
+```
+engine.process(event)
+```
+
+The strategy should not know whether an event came from a recorded tape or from
+a live WebSocket. This prevents a split-brain system where backtests and live
+signals behave differently.
+
+### Normalized Events
+
+Everything downstream should consume normalized events:
+
+```js
+{
+  type: 'TRADE',
+  symbol: 'AAPL',
+  exchangeTs: 0,
+  sipTs: 0,
+  receiveTs: 0,
+  sequence: 0,
+  price: 329.93,
+  size: 100,
+  exchange: 'XNAS',
+  conditions: []
+}
+```
+
+```js
+{
+  type: 'QUOTE',
+  symbol: 'AAPL',
+  exchangeTs: 0,
+  sipTs: 0,
+  receiveTs: 0,
+  sequence: 0,
+  bid: 329.92,
+  bidSize: 400,
+  ask: 329.94,
+  askSize: 300
+}
+```
+
+### Opening Map
+
+OpeningMicrostructure must construct and persist, at minimum:
+
+- F2 high, midpoint, low
+- F2 open, close, VWAP, volume
+- F2 range, range percentage, range versus ATR
+- close position inside the F2 range
+- high timestamp and low timestamp
+- first direction: low-to-high or high-to-low
+- premarket high/low and legacy daily/weekly/monthly levels for confluence
+
+The current Flow Study can draw F2-H/M/L, but it does not yet know acceptance,
+rejection, reclaim, sweep, or event ordering.
+
+### Sniper Position In The Stack
+
+Sniper should sit downstream of market intelligence. It should consume evidence
+from OpeningMicrostructure and LevelInteraction instead of trying to infer all
+market state from OHLC bars.
+
 ## Risk Management Layers
 
 1. **Position sizing** — Risk % of account per trade (default 1%)

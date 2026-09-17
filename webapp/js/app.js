@@ -17,6 +17,7 @@ import { OrderFlow } from '/src/analysis/OrderFlow.js';
 
 const BACKTEST_SNAPSHOT_URL = '/data/latest-massive-backtest.json';
 const PRESSURE_PILOT_URL = '/data/pressure-pilot-2026-09-09_2026-09-15.json';
+const OPENING_PROBE_URL = '/data/opening-microstructure-probe-2026-09-09_2026-09-15.json';
 
 function num(value, digits = 2, fallback = '-') {
     return Number.isFinite(value) ? value.toFixed(digits) : fallback;
@@ -537,6 +538,8 @@ class SniperApp {
         this.barsData = {}; // symbol → barsMap
         this.latestBacktest = null;
         this.pressurePilot = null;
+        this.openingProbe = null;
+        this.reviewLimit = 5;
         this.backtestLab = new BacktestLab();
         this.init();
     }
@@ -550,6 +553,7 @@ class SniperApp {
 
         this.latestBacktest = await this.loadLatestBacktest();
         this.pressurePilot = await this.loadPressurePilot();
+        this.openingProbe = await this.loadOpeningProbe();
         this.initNewsDigest();
         this.setupNavigation();
         this.setupControls();
@@ -581,6 +585,18 @@ class SniperApp {
     async loadPressurePilot() {
         try {
             const res = await fetch(PRESSURE_PILOT_URL, { cache: 'no-store' });
+            if (!res.ok) return null;
+            const payload = await res.json();
+            if (!Array.isArray(payload?.results)) return null;
+            return payload;
+        } catch {
+            return null;
+        }
+    }
+
+    async loadOpeningProbe() {
+        try {
+            const res = await fetch(OPENING_PROBE_URL, { cache: 'no-store' });
             if (!res.ok) return null;
             const payload = await res.json();
             if (!Array.isArray(payload?.results)) return null;
@@ -732,7 +748,7 @@ class SniperApp {
         const grid = document.getElementById('chartsGrid');
         if (!grid) return;
 
-        const packs = this.getPressurePacks(this.currentSymbol);
+        const packs = this.getPressurePacks(this.currentSymbol).slice(0, this.reviewLimit);
         const period = this.pressurePilot?.period;
         const from = period?.from || 'UNKNOWN';
         const to = period?.to || 'UNKNOWN';
@@ -741,7 +757,7 @@ class SniperApp {
         const lens = this.currentRange <= 2
             ? `FIRST 2M SWING · ${first2Agg}S CANDLES · ENTRY LOCKOUT / PRESSURE READ`
             : `OPEN 30M · ${first2Agg}S FIRST-2M + ${validationAgg}S VALIDATION · ENTRIES 09:32+`;
-        this.updateFlowSubtitle(`PRESSURE PILOT · ${lens} · ${from} → ${to} · HARD STOP 0.10% · RETEST BUFFER ±0.15%`);
+        this.updateFlowSubtitle(`TEST RUN 5 · PRESSURE PILOT + F2 PROBE · ${lens} · ${from} → ${to} · HARD STOP 0.10% · RETEST BUFFER ±0.15%`);
 
         grid.innerHTML = '';
         if (!packs.length) {
@@ -797,12 +813,16 @@ class SniperApp {
             const pressure = pack.pressure || {};
             const pressureLabel = pressure.label || 'UNKNOWN';
             const pressureClass = String(pressureLabel).toLowerCase();
+            const probe = this.getOpeningProbeResult(pack.symbol, pack.date);
+            const probeSignal = probe?.signal?.signal || 'NO_PROBE';
+            const probeClass = this.probeSignalClass(probeSignal);
             const components = pressure.components_bps || {};
             const markerMeta = `
                 <span><span class="label">PD-C</span> <span class="value neutral">${num(markers.prior_day_close)}</span></span>
                 <span><span class="label">D-H</span> <span class="value resistance">${num(markers.daily_high)}</span></span>
                 <span><span class="label">D-L</span> <span class="value support">${num(markers.daily_low)}</span></span>
                 <span class="pressure-badge ${pressureClass}">${escapeHtml(pressureLabel)}</span>
+                <span class="probe-badge ${probeClass}">${escapeHtml(probeSignal)}</span>
             `;
 
             const card = document.createElement('div');
@@ -814,7 +834,7 @@ class SniperApp {
                 </div>
                 <div class="chart-container" data-date="${escapeHtml(pack.date)}"></div>
                 <div class="chart-footer">
-                    <span>F2 ${num(pack.windows?.open_first_2_min?.low)}-${num(pack.windows?.open_first_2_min?.high)} · gap ${num(components.gap, 1)}bp · pre ${num(components.premarket, 1)}bp · ${first2Agg}s/${validationAgg}s</span>
+                    <span>F2 ${num(pack.windows?.open_first_2_min?.low)}-${num(pack.windows?.open_first_2_min?.high)} · gap ${num(components.gap, 1)}bp · pre ${num(components.premarket, 1)}bp · probe ${escapeHtml(probe?.signal?.reason || 'not loaded')}</span>
                     <span class="outcome ${outcomeClass}">${escapeHtml(outcome)}</span>
                 </div>
             `;
@@ -834,6 +854,17 @@ class SniperApp {
     getPressurePacks(symbol) {
         const result = this.pressurePilot?.results?.find(r => r.symbol === symbol);
         return Array.isArray(result?.packs) ? result.packs : [];
+    }
+
+    getOpeningProbeResult(symbol, date) {
+        return this.openingProbe?.results?.find(r => r.symbol === symbol && r.date === date) || null;
+    }
+
+    probeSignalClass(signal) {
+        const text = String(signal || '').toLowerCase();
+        if (text.includes('bullish')) return 'bullish';
+        if (text.includes('bearish')) return 'bearish';
+        return 'neutral';
     }
 
     normalizeBars(bars) {

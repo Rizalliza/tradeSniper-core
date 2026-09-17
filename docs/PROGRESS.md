@@ -1,10 +1,105 @@
 # TradeSniper Project Progress
 
-## Current Phase: Stage 1 — Foundation & Hardening
+## Current Phase: Stage 1 — Opening Microstructure Research
 
 **Status: In progress**
-**Last updated: 2026-09-15**
-**Current commit: develop branch (see latest commit)**
+**Last updated: 2026-09-17**
+**Current commit: develop branch (latest pushed core commit: `51a5c5e`)**
+
+---
+
+## Current Working Thesis
+
+TradeSniper is now focused on the U.S. opening sniper niche:
+
+```
+09:30:00-09:32:00 = detect + confirm + execute
+09:32:00+          = runner management only, not the main entry hunt
+```
+
+The objective is not to wait for a completed first-two-minute map before entry.
+The objective is to trade the evolving first-two-minute structure safely:
+
+- capture small, consistent cross/retest moves inside the first 2 minutes
+- prevent wrong-side BUY/SELL execution when local opening structure has failed
+- let only favorable positions become runners beyond the first 2 minutes
+- prove whether the edge survives larger samples, spread, slippage, and latency
+
+Current manual review on five AAPL sessions showed a promising but unproven read:
+4 favorable / 1 unresolved-tricky. This is enough to focus research, not enough
+to declare profitability.
+
+---
+
+## Latest Implemented Work
+
+### ✅ Opening Microstructure Foundation
+- Added normalized `MarketEvent` schema for `TRADE` and `QUOTE`.
+- Added Massive message normalizer for future WebSocket/tape ingestion.
+- Added JSONL `TapeRecorder` foundation.
+- Added `MarketReplay` foundation so historical and live events can feed the same engine.
+- Added `OpeningMicrostructureState` foundation for F2 high/low/mid/open/close/VWAP/range/volume/highTime/lowTime/firstDirection.
+- Added tests for each module.
+
+### ✅ No-WebSocket F2 Probe
+- Added `scripts/openingMicrostructureProbe.js`.
+- Probe consumes `data/pressure-pilot-2026-09-09_2026-09-15.json`.
+- Outputs bar-level F2 signals to `data/opening-microstructure-probe-2026-09-09_2026-09-15.json`.
+- Limitation: bar-level only. It cannot prove tick/NBBO ordering or millisecond edge.
+
+### ✅ Flow Study Review View
+- Flow Study now renders only 5 cards per selected symbol for focused review.
+- Cards display the F2 probe signal badge:
+  - `BULLISH_F2_RECLAIM`
+  - `BEARISH_F2_FAILURE`
+  - `NO_PROBE`
+- First-2-minute view uses 2-second candles.
+- Open-30-minute view uses first-2-minute 2s candles plus 1-minute validation candles.
+
+### ✅ Sniper Wrong-Side Filter Foundation
+- Added contextual entry filter to block counter-bias entries into nearby opposing levels.
+- AAPL 2026-09-15 bad-case behavior can be blocked when bearish pressure and nearby opposing opening level conflict with BUY.
+
+---
+
+## Not Done Yet
+
+- No live Massive WebSocket adapter yet.
+- No live tick/NBBO tape recorder yet.
+- No historical tick/NBBO tape dataset yet.
+- No `LevelConfluenceEngine` yet.
+- No first-two-minute internal sequence engine yet.
+- No `LevelInteractionEngine` for touch/cross/retest/reject/reclaim/accept yet.
+- No 15-minute `PathStudy` database/output yet.
+- Sniper does not yet consume evolving `OpeningMicrostructureLiveState`.
+- Current probe does not yet classify the internal 5s/7s/11s retests the user manually identified.
+
+---
+
+## Next Build Target
+
+Build the engine that converts the user's visual labels into machine-detected
+opening events:
+
+1. `LevelConfluenceEngine`
+   - merge nearby levels into one zone
+   - avoid counting `F2-M + PM-H` or `D-H + PD-C + F2-L` as multiple fake confirmations
+
+2. `OpeningMicrostructureLiveState`
+   - provisional high/low/mid while 09:30-09:32 is still forming
+   - final F2 state after 09:32
+   - supports execution inside the first two minutes
+
+3. `F2InternalSequenceProbe`
+   - detect retest at 5s/7s/11s style events
+   - separate `TOUCH`, `CROSS`, `VALID_RETEST`, `REJECT`, `ACCEPT`, `RUNNER`
+
+4. `PathStudy15m`
+   - track +30s, +1m, +2m, +5m, +10m, +15m
+   - record MFE/MAE after every F2/zone interaction
+
+This is the current priority over broad UI expansion, ML, broker integration, or
+pattern sprawl.
 
 ---
 

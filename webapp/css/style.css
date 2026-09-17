@@ -398,6 +398,33 @@ html, body {
     background: rgba(170, 102, 255, 0.08);
 }
 
+.probe-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 8px;
+    border: 1px solid var(--border-color-bright);
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+.probe-badge.bullish {
+    color: var(--accent-blue);
+    border-color: rgba(0, 204, 255, 0.35);
+    background: rgba(0, 204, 255, 0.08);
+}
+.probe-badge.bearish {
+    color: var(--accent-orange);
+    border-color: rgba(255, 136, 0, 0.36);
+    background: rgba(255, 136, 0, 0.08);
+}
+.probe-badge.neutral {
+    color: var(--text-secondary);
+    border-color: rgba(136, 136, 160, 0.3);
+    background: rgba(136, 136, 160, 0.06);
+}
+
 .chart-container {
     position: relative;
     padding: 0;

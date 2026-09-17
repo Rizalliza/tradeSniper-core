@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-17T13:34:17.487Z",
+  "generated_at": "2026-09-17T13:45:00.305Z",
   "config": {
     "symbols": [
       "AAPL",
@@ -7,7 +7,7 @@
       "NVDA",
       "TSLA"
     ],
-    "wsUrl": "wss://socket.massive.com/stocks",
+    "wsUrl": "wss://delayed.massive.com/stocks",
     "outDir": "data/live-shadow/2026-09-17",
     "until": "09:45:00",
     "periodSeconds": 2,
@@ -17,49 +17,244 @@
     "runnerTriggerPct": 0.0015,
     "runnerTrailPct": 0.001,
     "noQuotes": false,
-    "transport": "rest",
+    "channels": [
+      "AM"
+    ],
+    "transport": "ws",
     "pollMs": 1000
   },
   "rows": {
     "AAPL": {
       "symbol": "AAPL",
       "date": "2026-09-17",
-      "phase": "IDLE",
+      "phase": "CLOSED",
       "pending": null,
-      "trade": null,
-      "events": [],
-      "openingRange": null,
-      "localBias": "NEUTRAL"
+      "trade": {
+        "symbol": "AAPL",
+        "date": "2026-09-17",
+        "direction": "BUY",
+        "entryPrice": 333.95,
+        "entryTime": "09:27:00",
+        "entryReason": "RETEST_FROM_ABOVE",
+        "crossTime": "09:27:00",
+        "crossLevel": "F2-H",
+        "bestPrice": 334.68,
+        "runner": false,
+        "runnerArmedTime": null,
+        "trailingStop": null,
+        "exitPrice": 334.73,
+        "exitTime": "09:28:00",
+        "exitReason": "PAPER_EOD_EXIT",
+        "pnlPct": 0.002336,
+        "outcome": "WON"
+      },
+      "events": [
+        {
+          "type": "CROSS_UP",
+          "direction": "BUY",
+          "level": "F2-H",
+          "levelValue": 333.95,
+          "time": "09:27:00",
+          "close": 334.6
+        },
+        {
+          "type": "PAPER_ENTRY",
+          "direction": "BUY",
+          "level": "F2-H",
+          "entryPrice": 333.95,
+          "time": "09:27:00",
+          "retestType": "RETEST_FROM_ABOVE"
+        },
+        {
+          "type": "PAPER_EXIT",
+          "direction": "BUY",
+          "reason": "PAPER_EOD_EXIT",
+          "time": "09:28:00",
+          "exitPrice": 334.73,
+          "pnlPct": 0.002336,
+          "outcome": "WON"
+        }
+      ],
+      "openingRange": {
+        "high": 335.16,
+        "low": 333.5983,
+        "midpoint": 334.37915
+      },
+      "localBias": "BULLISH"
     },
     "MSFT": {
       "symbol": "MSFT",
       "date": "2026-09-17",
-      "phase": "IDLE",
+      "phase": "CLOSED",
       "pending": null,
-      "trade": null,
-      "events": [],
-      "openingRange": null,
-      "localBias": "NEUTRAL"
+      "trade": {
+        "symbol": "MSFT",
+        "date": "2026-09-17",
+        "direction": "BUY",
+        "entryPrice": 494.675,
+        "entryTime": "09:25:00",
+        "entryReason": "RETEST_FROM_ABOVE",
+        "crossTime": "09:25:00",
+        "crossLevel": "F2-M",
+        "bestPrice": 495.4999,
+        "runner": false,
+        "runnerArmedTime": null,
+        "trailingStop": null,
+        "exitPrice": 498.94,
+        "exitTime": "09:28:00",
+        "exitReason": "PAPER_EOD_EXIT",
+        "pnlPct": 0.008622,
+        "outcome": "WON"
+      },
+      "events": [
+        {
+          "type": "CROSS_UP",
+          "direction": "BUY",
+          "level": "F2-M",
+          "levelValue": 494.675,
+          "time": "09:25:00",
+          "close": 495.4999
+        },
+        {
+          "type": "PAPER_ENTRY",
+          "direction": "BUY",
+          "level": "F2-M",
+          "entryPrice": 494.675,
+          "time": "09:25:00",
+          "retestType": "RETEST_FROM_ABOVE"
+        },
+        {
+          "type": "PAPER_EXIT",
+          "direction": "BUY",
+          "reason": "PAPER_EOD_EXIT",
+          "time": "09:28:00",
+          "exitPrice": 498.94,
+          "pnlPct": 0.008622,
+          "outcome": "WON"
+        }
+      ],
+      "openingRange": {
+        "high": 499.98,
+        "low": 494.5,
+        "midpoint": 497.24
+      },
+      "localBias": "BULLISH"
     },
     "NVDA": {
       "symbol": "NVDA",
       "date": "2026-09-17",
-      "phase": "IDLE",
+      "phase": "CLOSED",
       "pending": null,
-      "trade": null,
-      "events": [],
-      "openingRange": null,
-      "localBias": "NEUTRAL"
+      "trade": {
+        "symbol": "NVDA",
+        "date": "2026-09-17",
+        "direction": "SELL",
+        "entryPrice": 219,
+        "entryTime": "09:27:00",
+        "entryReason": "RETEST_FROM_BELOW",
+        "crossTime": "09:27:00",
+        "crossLevel": "F2-H",
+        "bestPrice": 218.5,
+        "runner": false,
+        "runnerArmedTime": null,
+        "trailingStop": null,
+        "exitPrice": 218.5,
+        "exitTime": "09:28:00",
+        "exitReason": "PAPER_EOD_EXIT",
+        "pnlPct": 0.002283,
+        "outcome": "WON"
+      },
+      "events": [
+        {
+          "type": "CROSS_DOWN",
+          "direction": "SELL",
+          "level": "F2-H",
+          "levelValue": 219,
+          "time": "09:27:00",
+          "close": 218.52
+        },
+        {
+          "type": "PAPER_ENTRY",
+          "direction": "SELL",
+          "level": "F2-H",
+          "entryPrice": 219,
+          "time": "09:27:00",
+          "retestType": "RETEST_FROM_BELOW"
+        },
+        {
+          "type": "PAPER_EXIT",
+          "direction": "SELL",
+          "reason": "PAPER_EOD_EXIT",
+          "time": "09:28:00",
+          "exitPrice": 218.5,
+          "pnlPct": 0.002283,
+          "outcome": "WON"
+        }
+      ],
+      "openingRange": {
+        "high": 219,
+        "low": 218.18,
+        "midpoint": 218.59
+      },
+      "localBias": "BEARISH"
     },
     "TSLA": {
       "symbol": "TSLA",
       "date": "2026-09-17",
-      "phase": "IDLE",
+      "phase": "CLOSED",
       "pending": null,
-      "trade": null,
-      "events": [],
-      "openingRange": null,
-      "localBias": "NEUTRAL"
+      "trade": {
+        "symbol": "TSLA",
+        "date": "2026-09-17",
+        "direction": "BUY",
+        "entryPrice": 365.1575,
+        "entryTime": "09:25:00",
+        "entryReason": "RETEST_FROM_ABOVE",
+        "crossTime": "09:25:00",
+        "crossLevel": "F2-M",
+        "bestPrice": 365.71,
+        "runner": false,
+        "runnerArmedTime": null,
+        "trailingStop": null,
+        "exitPrice": 367.78,
+        "exitTime": "09:28:00",
+        "exitReason": "PAPER_EOD_EXIT",
+        "pnlPct": 0.007182,
+        "outcome": "WON"
+      },
+      "events": [
+        {
+          "type": "CROSS_UP",
+          "direction": "BUY",
+          "level": "F2-M",
+          "levelValue": 365.1575,
+          "time": "09:25:00",
+          "close": 365.63
+        },
+        {
+          "type": "PAPER_ENTRY",
+          "direction": "BUY",
+          "level": "F2-M",
+          "entryPrice": 365.1575,
+          "time": "09:25:00",
+          "retestType": "RETEST_FROM_ABOVE"
+        },
+        {
+          "type": "PAPER_EXIT",
+          "direction": "BUY",
+          "reason": "PAPER_EOD_EXIT",
+          "time": "09:28:00",
+          "exitPrice": 367.78,
+          "pnlPct": 0.007182,
+          "outcome": "WON"
+        }
+      ],
+      "openingRange": {
+        "high": 367.78,
+        "low": 365.015,
+        "midpoint": 366.3975
+      },
+      "localBias": "BULLISH"
     }
   }
 }

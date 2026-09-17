@@ -30,6 +30,7 @@ function parseArgs() {
         runnerTriggerPct: 0.0015,
         runnerTrailPct: 0.001,
         noQuotes: false,
+        channels: ['A'],
         transport: 'ws',
         pollMs: 1000,
     };
@@ -48,6 +49,7 @@ function parseArgs() {
             case '--runner-trigger-pct': opts.runnerTriggerPct = Number(args[++i]); break;
             case '--runner-trail-pct': opts.runnerTrailPct = Number(args[++i]); break;
             case '--no-quotes': opts.noQuotes = true; break;
+            case '--channels': opts.channels = args[++i].split(',').map(s => s.trim().toUpperCase()).filter(Boolean); break;
             case '--transport': opts.transport = args[++i]; break;
             case '--poll-ms': opts.pollMs = Number(args[++i]); break;
         }
@@ -184,6 +186,18 @@ class LiveBarBuilder {
         };
     }
 
+    observeAggregate(bar) {
+        this.onBar(bar);
+        if (bar.time < '09:32:00') {
+            this.trader.processOpeningBar(bar);
+            this.lastOpeningBar = bar;
+        } else {
+            this.closeOpeningIfDue(bar.time);
+            this.trader.processRunnerBar(bar);
+        }
+        return this._newTraderEvents();
+    }
+
     _newTraderEvents() {
         const snapshot = this.trader.snapshot();
         const events = snapshot.events.slice(this.eventCursor).map(event => ({
@@ -239,6 +253,21 @@ async function fetchSecondBars(apiKey, symbol, date) {
             raw: row,
         };
     });
+}
+
+function aggregateMessageToBar(raw, session) {
+    const dt = marketDateTime(timestampToDate(raw.s ?? raw.t));
+    return {
+        symbol: raw.sym,
+        date: dt.date || session,
+        time: dt.time,
+        open: Number(raw.o),
+        high: Number(raw.h),
+        low: Number(raw.l),
+        close: Number(raw.c),
+        volume: Number(raw.v) || 0,
+        vwap: Number(raw.a),
+    };
 }
 
 async function main() {
@@ -376,9 +405,19 @@ async function main() {
                 console.log(`[STATUS] ${raw.status || ''} ${raw.message || ''}`);
                 if (!authed && /auth/i.test(raw.status || raw.message || '')) {
                     authed = true;
-                    const channels = opts.symbols.flatMap(symbol => opts.noQuotes ? [`T.${symbol}`] : [`T.${symbol}`, `Q.${symbol}`]);
+                    const channelTypes = opts.noQuotes
+                        ? opts.channels.filter(channel => channel !== 'Q')
+                        : opts.channels;
+                    const channels = opts.symbols.flatMap(symbol => channelTypes.map(channel => `${channel}.${symbol}`));
                     ws.send(JSON.stringify({ action: 'subscribe', params: channels.join(',') }));
                     console.log(`Subscribed ${channels.join(',')}`);
+                }
+                continue;
+            }
+            if (raw.ev === 'AM' || raw.ev === 'A') {
+                const bar = aggregateMessageToBar(raw, session);
+                if (builders[bar.symbol]) {
+                    paperEvents.push(...builders[bar.symbol].observeAggregate(bar));
                 }
                 continue;
             }

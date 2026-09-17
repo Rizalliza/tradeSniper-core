@@ -102,11 +102,14 @@ to declare profitability.
   - live 2-second bar construction
   - paper cross/retest/block/exit audit events
 - Live attempt on 2026-09-17 around 09:30 ET found an infrastructure blocker:
-  - WebSocket connection to `wss://socket.massive.com/stocks` failed upgrade with non-101 status.
+  - WebSocket connection to `wss://socket.massive.com/stocks` authenticated successfully.
+  - Correct Starter-plan channel is `A.*` for live second aggregates, not `T.*`, `Q.*`, or `AM.*`.
+  - `A.AAPL,A.MSFT,A.NVDA,A.TSLA` subscribed syntactically, but Massive returned: `You don't have access real-time data... you may need to visit the dashboard to sign your agreements`.
   - Massive MCP `/v2/last/trade/AAPL` returned `NOT_ENTITLED`.
-  - REST second aggregates were available, but current latest data was not at the 09:30 opening window; the app received no 09:30+ bars.
+  - Delayed WebSocket `wss://delayed.massive.com/stocks` with `AM.*` did stream bars, proving auth/socket/parsing works.
+  - REST second aggregates were available, but they are not a reliable low-latency substitute for first-two-minute execution.
   - `data/live-shadow/2026-09-17/summary.json` therefore shows all symbols `IDLE` with no opening range.
-- Conclusion: the app now has a live shadow harness, but this Massive account/path did not provide real-time opening data for the first two minutes.
+- Conclusion: the app now has a live shadow harness and should use `A.*`, but the current API key/account still needs real-time market-data agreement/entitlement activation before it can receive live second candles.
 
 ---
 

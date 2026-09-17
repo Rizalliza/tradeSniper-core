@@ -1,0 +1,65 @@
+{
+  "generated_at": "2026-09-17T13:34:17.487Z",
+  "config": {
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "wsUrl": "wss://socket.massive.com/stocks",
+    "outDir": "data/live-shadow/2026-09-17",
+    "until": "09:45:00",
+    "periodSeconds": 2,
+    "zonePct": 0.0015,
+    "scalpTargetPct": 0.001,
+    "hardStopPct": 0.001,
+    "runnerTriggerPct": 0.0015,
+    "runnerTrailPct": 0.001,
+    "noQuotes": false,
+    "transport": "rest",
+    "pollMs": 1000
+  },
+  "rows": {
+    "AAPL": {
+      "symbol": "AAPL",
+      "date": "2026-09-17",
+      "phase": "IDLE",
+      "pending": null,
+      "trade": null,
+      "events": [],
+      "openingRange": null,
+      "localBias": "NEUTRAL"
+    },
+    "MSFT": {
+      "symbol": "MSFT",
+      "date": "2026-09-17",
+      "phase": "IDLE",
+      "pending": null,
+      "trade": null,
+      "events": [],
+      "openingRange": null,
+      "localBias": "NEUTRAL"
+    },
+    "NVDA": {
+      "symbol": "NVDA",
+      "date": "2026-09-17",
+      "phase": "IDLE",
+      "pending": null,
+      "trade": null,
+      "events": [],
+      "openingRange": null,
+      "localBias": "NEUTRAL"
+    },
+    "TSLA": {
+      "symbol": "TSLA",
+      "date": "2026-09-17",
+      "phase": "IDLE",
+      "pending": null,
+      "trade": null,
+      "events": [],
+      "openingRange": null,
+      "localBias": "NEUTRAL"
+    }
+  }
+}

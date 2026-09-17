@@ -93,6 +93,21 @@ to declare profitability.
   - 61.11% win rate excluding blocked sessions
   - AAPL 2026-09-15 is blocked as `LOCAL_OPENING_BIAS_CONFLICT BUY vs BEARISH`.
 
+### ✅ Live Shadow Attempt / Feed Gap Found
+- Added `scripts/openingSniperLiveShadow.js` and `npm run opening:shadow`.
+- The script supports:
+  - Massive WebSocket trade/quote stream when enabled
+  - REST latest-second-aggregate fallback
+  - JSONL tape recording
+  - live 2-second bar construction
+  - paper cross/retest/block/exit audit events
+- Live attempt on 2026-09-17 around 09:30 ET found an infrastructure blocker:
+  - WebSocket connection to `wss://socket.massive.com/stocks` failed upgrade with non-101 status.
+  - Massive MCP `/v2/last/trade/AAPL` returned `NOT_ENTITLED`.
+  - REST second aggregates were available, but current latest data was not at the 09:30 opening window; the app received no 09:30+ bars.
+  - `data/live-shadow/2026-09-17/summary.json` therefore shows all symbols `IDLE` with no opening range.
+- Conclusion: the app now has a live shadow harness, but this Massive account/path did not provide real-time opening data for the first two minutes.
+
 ---
 
 ## Not Done Yet
@@ -101,6 +116,7 @@ to declare profitability.
 - No live tick/NBBO tape recorder yet.
 - No historical tick/NBBO tape dataset yet.
 - No broker or live paper adapter yet; current verifier is historical replay only.
+- Real-time Massive entitlement/feed path is not yet solved.
 - No 15-minute `PathStudy` database/output yet.
 - Sniper does not yet consume `OpeningSniperPaperTrader` / `OpeningMicrostructureLiveState` in production mode.
 - Current probe is still bar-level, not true tick/NBBO ordering.

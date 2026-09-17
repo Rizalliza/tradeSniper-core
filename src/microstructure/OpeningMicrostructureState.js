@@ -26,11 +26,15 @@ export class OpeningMicrostructureState {
         this.lowTime = null;
         this.volume = 0;
         this.tradeCount = 0;
+        this.lastObservedTime = null;
         this._vwapNumerator = 0;
     }
 
     process(event) {
         const normalized = normalizeMarketEvent(event);
+        if (normalized.symbol === this.symbol && normalized.date === this.session) {
+            this.lastObservedTime = this._eventTime(normalized);
+        }
         if (normalized.type !== MARKET_EVENT_TYPES.TRADE) return this.snapshot();
         if (normalized.symbol !== this.symbol) return this.snapshot();
         if (!this._inOpeningWindow(normalized)) return this.snapshot();
@@ -69,6 +73,8 @@ export class OpeningMicrostructureState {
                 highTime: this.highTime,
                 lowTime: this.lowTime,
                 firstDirection: this._firstDirection(),
+                isFinal: this._isFinal(),
+                elapsedMs: this._elapsedMs(),
             },
         };
     }
@@ -101,6 +107,20 @@ export class OpeningMicrostructureState {
         return time >= this.startTime && time < this.endTime;
     }
 
+    _eventTime(event) {
+        return event.time || this._timeFromTimestamp(event.sipTs ?? event.exchangeTs);
+    }
+
+    _isFinal() {
+        return Boolean(this.lastObservedTime && this.lastObservedTime >= this.endTime);
+    }
+
+    _elapsedMs() {
+        const time = this.lastObservedTime || this.highTime || this.lowTime;
+        if (!time) return 0;
+        return Math.max(0, Math.min(timeToMs(time) - timeToMs(this.startTime), timeToMs(this.endTime) - timeToMs(this.startTime)));
+    }
+
     _firstDirection() {
         if (this.highTime == null || this.lowTime == null) return 'UNKNOWN';
         if (this.highTime === this.lowTime) return 'FLAT';
@@ -111,4 +131,9 @@ export class OpeningMicrostructureState {
         if (!Number.isFinite(Number(timestamp))) return null;
         return new Date(Number(timestamp)).toISOString().slice(11, 19);
     }
+}
+
+function timeToMs(time) {
+    const [hh = 0, mm = 0, ss = 0] = String(time).split(':').map(Number);
+    return ((hh * 60 * 60) + (mm * 60) + ss) * 1000;
 }

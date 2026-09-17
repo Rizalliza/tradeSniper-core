@@ -195,3 +195,27 @@ Sniper markers.
 
 **Reconsider if:** Large-sample path studies show F2 interactions do not separate
 from baselines after spread, slippage, and latency assumptions.
+
+---
+
+## D011: Local F2 Signals Are Separate From Broad Context Acceptance (2026-09-17)
+
+**Decision:** Keep first-two-minute F2 structure signals separate from broad
+daily/monthly/premarket context acceptance.
+
+**Rationale:**
+- A broad level like `monthly_low` can be accepted after 09:32 while the first
+  two minutes already showed a downside runner.
+- Treating broad context acceptance as local BUY/SELL permission recreates the
+  wrong-side execution failure we are trying to remove.
+- `BULLISH_F2_RECLAIM` / `BEARISH_F2_FAILURE` remain local opening structure
+  signals. Broad fallback labels are now emitted as `CONTEXT_*`.
+
+**Implementation:**
+- `LevelConfluenceEngine` merges nearby markers into one zone.
+- `LevelInteractionEngine` classifies touch/cross/retest/reject/reclaim/accept.
+- `F2InternalSequenceProbe` labels first-window 2-second events and runner state.
+- `openingMicrostructureProbe` now emits both `zones` and `internalSequence`.
+
+**Reconsider if:** Larger path studies show broad context acceptance has better
+forward-path separation than local opening structure after execution costs.

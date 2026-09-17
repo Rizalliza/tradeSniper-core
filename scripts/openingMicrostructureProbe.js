@@ -13,6 +13,9 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { buildConfluenceZones } from '../src/microstructure/LevelConfluenceEngine.js';
+import { LevelInteractionEngine } from '../src/microstructure/LevelInteractionEngine.js';
+import { analyzeF2InternalSequence } from '../src/microstructure/F2InternalSequenceProbe.js';
 
 function parseArgs() {
     const args = process.argv.slice(2);
@@ -38,16 +41,6 @@ function parseArgs() {
 
 function num(value, digits = 4) {
     return Number.isFinite(value) ? Number(value.toFixed(digits)) : null;
-}
-
-function relation(close, level, zone) {
-    if (close > level + zone) return 'ABOVE';
-    if (close < level - zone) return 'BELOW';
-    return 'INSIDE';
-}
-
-function touches(bar, level, zone) {
-    return bar.high >= level - zone && bar.low <= level + zone;
 }
 
 function normalizeBars(bars = []) {
@@ -76,90 +69,78 @@ function firstTwoMinuteLevels(pack) {
     ].filter(level => Number.isFinite(level.value));
 }
 
-function classifyLevelPath(level, bars, opts) {
-    const zone = level.value * opts.zonePct;
-    const events = [];
-    let prev = null;
-    let aboveRun = 0;
-    let belowRun = 0;
-    let acceptedAbove = false;
-    let acceptedBelow = false;
+function referenceLevels(pack) {
+    const markerLevels = (pack.marker_list || []).map(marker => ({
+        name: marker.name,
+        value: Number(marker.value),
+        role: marker.tier || marker.type || 'marker',
+        type: marker.type || 'marker',
+        source: 'marker_list',
+    }));
+    const premarket = pack.windows?.premarket || {};
+    const pmHigh = Number(premarket.high);
+    const pmLow = Number(premarket.low);
+    const pmMid = Number.isFinite(pmHigh) && Number.isFinite(pmLow) ? (pmHigh + pmLow) / 2 : NaN;
 
-    for (let i = 0; i < bars.length; i++) {
-        const bar = bars[i];
-        const rel = relation(bar.close, level.value, zone);
-        const hit = touches(bar, level.value, zone);
+    return [
+        ...markerLevels,
+        { name: 'PM-H', value: pmHigh, role: 'premarket', type: 'opening_context', source: 'premarket' },
+        { name: 'PM-M', value: pmMid, role: 'premarket', type: 'opening_context', source: 'premarket' },
+        { name: 'PM-L', value: pmLow, role: 'premarket', type: 'opening_context', source: 'premarket' },
+    ].filter(level => Number.isFinite(level.value));
+}
 
-        aboveRun = rel === 'ABOVE' ? aboveRun + 1 : 0;
-        belowRun = rel === 'BELOW' ? belowRun + 1 : 0;
-
-        if (hit && !events.some(e => e.type === 'FIRST_TOUCH')) {
-            events.push(event(level, 'FIRST_TOUCH', bar, i, {
-                relation: rel,
-                penetrationBps: penetrationBps(bar, level.value, zone),
-            }));
-        }
-
-        if (prev && prev.relation === 'BELOW' && rel === 'ABOVE') {
-            events.push(event(level, 'CROSS_UP', bar, i));
-        }
-        if (prev && prev.relation === 'ABOVE' && rel === 'BELOW') {
-            events.push(event(level, 'CROSS_DOWN', bar, i));
-        }
-
-        if (!acceptedAbove && aboveRun >= opts.acceptBars) {
-            acceptedAbove = true;
-            events.push(event(level, 'ACCEPT_ABOVE', bar, i, { bars: aboveRun }));
-        }
-        if (!acceptedBelow && belowRun >= opts.acceptBars) {
-            acceptedBelow = true;
-            events.push(event(level, 'ACCEPT_BELOW', bar, i, { bars: belowRun }));
-        }
-
-        const rejectedFromAbove = hit && bar.high > level.value + zone && bar.close < level.value - zone;
-        const rejectedFromBelow = hit && bar.low < level.value - zone && bar.close > level.value + zone;
-        if (rejectedFromAbove) events.push(event(level, 'REJECT_DOWN', bar, i));
-        if (rejectedFromBelow) events.push(event(level, 'RECLAIM_UP', bar, i));
-
-        prev = { relation: rel, close: bar.close };
-    }
-
+function classifyZonePath(zone, bars, opts) {
+    const engine = new LevelInteractionEngine({
+        zones: [zone],
+        acceptBars: opts.acceptBars,
+    });
+    const events = engine.processBars(bars);
     return {
-        level: level.name,
-        value: num(level.value),
-        zone: num(zone),
+        zoneId: zone.id,
+        level: zone.levels.map(level => level.name).join('+'),
+        value: num(zone.center),
+        zoneLow: num(zone.low),
+        zoneHigh: num(zone.high),
+        confluence: zone.confluence,
+        levels: zone.levels.map(level => ({
+            name: level.name,
+            value: num(level.value),
+            role: level.role,
+            source: level.source,
+        })),
         events,
     };
 }
 
-function event(level, type, bar, index, extra = {}) {
+function classifyLevelPath(level, bars, opts) {
+    const zone = buildConfluenceZones([level], { zonePct: opts.zonePct })[0];
+    const report = classifyZonePath(zone, bars, opts);
     return {
-        type,
         level: level.name,
         value: num(level.value),
-        time: bar.time,
-        index,
-        close: num(bar.close),
-        high: num(bar.high),
-        low: num(bar.low),
-        ...extra,
+        zone: num(Math.max(level.value - report.zoneLow, report.zoneHigh - level.value)),
+        events: report.events.map(event => ({
+            ...event,
+            type: event.type === 'TOUCH' ? 'FIRST_TOUCH' : event.type,
+            level: level.name,
+        })),
     };
 }
 
-function penetrationBps(bar, level, zone) {
-    if (bar.high > level + zone) return num(((bar.high - level) / level) * 10000, 2);
-    if (bar.low < level - zone) return num(((bar.low - level) / level) * 10000, 2);
-    return 0;
-}
-
-function summarizeSignal(levelReports, pack) {
-    const events = levelReports.flatMap(report => report.events.map(e => ({ ...e, levelValue: report.value })));
+function summarizeSignal(zoneReports, pack) {
+    const events = zoneReports.flatMap(report => report.events.map(e => ({
+        ...e,
+        zoneId: report.zoneId,
+        levelNames: report.levels.map(level => level.name),
+        levelValue: report.value,
+    })));
     const acceptAbove = events.find(e => e.type === 'ACCEPT_ABOVE');
     const acceptBelow = events.find(e => e.type === 'ACCEPT_BELOW');
-    const f2HighReject = events.find(e => e.level === 'F2-H' && e.type === 'REJECT_DOWN');
-    const f2LowReclaim = events.find(e => e.level === 'F2-L' && e.type === 'RECLAIM_UP');
-    const f2MidAcceptAbove = events.find(e => e.level === 'F2-M' && e.type === 'ACCEPT_ABOVE');
-    const f2MidAcceptBelow = events.find(e => e.level === 'F2-M' && e.type === 'ACCEPT_BELOW');
+    const f2HighReject = events.find(e => e.levelNames.includes('F2-H') && e.type === 'REJECT_DOWN');
+    const f2LowReclaim = events.find(e => e.levelNames.includes('F2-L') && e.type === 'RECLAIM_UP');
+    const f2MidAcceptAbove = events.find(e => e.levelNames.includes('F2-M') && e.type === 'ACCEPT_ABOVE');
+    const f2MidAcceptBelow = events.find(e => e.levelNames.includes('F2-M') && e.type === 'ACCEPT_BELOW');
 
     let signal = 'NO_SIGNAL';
     let reason = 'No strong F2 acceptance/rejection event found at bar resolution';
@@ -167,18 +148,22 @@ function summarizeSignal(levelReports, pack) {
     if (f2HighReject || f2MidAcceptBelow) {
         signal = 'BEARISH_F2_FAILURE';
         reason = f2HighReject
-            ? 'Rejected F2-H and closed back below retest zone'
+            ? `Rejected ${f2HighReject.level} and closed back below retest zone`
             : 'Accepted below F2-M after the first-two-minute map formed';
     } else if (f2LowReclaim || f2MidAcceptAbove) {
         signal = 'BULLISH_F2_RECLAIM';
         reason = f2LowReclaim
-            ? 'Swept below F2-L and reclaimed above the zone'
+            ? `Swept below ${f2LowReclaim.level} and reclaimed above the zone`
             : 'Accepted above F2-M after the first-two-minute map formed';
     } else if (acceptAbove) {
-        signal = 'BULLISH_ACCEPTANCE';
+        signal = acceptAbove.levelNames?.some(name => name.startsWith('F2-'))
+            ? 'BULLISH_ACCEPTANCE'
+            : 'CONTEXT_BULLISH_ACCEPTANCE';
         reason = `Accepted above ${acceptAbove.level}`;
     } else if (acceptBelow) {
-        signal = 'BEARISH_ACCEPTANCE';
+        signal = acceptBelow.levelNames?.some(name => name.startsWith('F2-'))
+            ? 'BEARISH_ACCEPTANCE'
+            : 'CONTEXT_BEARISH_ACCEPTANCE';
         reason = `Accepted below ${acceptBelow.level}`;
     }
 
@@ -199,9 +184,13 @@ async function main() {
     for (const symbolPack of payload.results || []) {
         for (const pack of symbolPack.packs || []) {
             const validationBars = normalizeBars(pack.bars?.open_aggregated_seconds || []);
+            const firstTwoBars = normalizeBars(pack.bars?.open_first_2_min_aggregated_seconds || []);
             const levels = firstTwoMinuteLevels(pack);
+            const confluenceLevels = [...levels, ...referenceLevels(pack)];
+            const zones = buildConfluenceZones(confluenceLevels, { zonePct: opts.zonePct });
+            const zoneReports = zones.map(zone => classifyZonePath(zone, validationBars, opts));
             const levelReports = levels.map(level => classifyLevelPath(level, validationBars, opts));
-            const signal = summarizeSignal(levelReports, pack);
+            const signal = summarizeSignal(zoneReports, pack);
             results.push({
                 symbol: pack.symbol,
                 date: pack.date,
@@ -214,6 +203,8 @@ async function main() {
                     volume: pack.windows?.open_first_2_min?.volume || 0,
                 },
                 signal,
+                internalSequence: analyzeF2InternalSequence(firstTwoBars, opts),
+                zones: zoneReports,
                 levels: levelReports,
             });
         }

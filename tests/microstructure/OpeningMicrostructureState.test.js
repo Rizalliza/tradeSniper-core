@@ -30,6 +30,8 @@ test('OpeningMicrostructureState computes F2 map from trade events', () => {
     assert.equal(snapshot.f2.highTime, '09:31:10');
     assert.equal(snapshot.f2.lowTime, '09:30:20');
     assert.equal(snapshot.f2.firstDirection, 'LOW_TO_HIGH');
+    assert.equal(snapshot.f2.isFinal, true);
+    assert.equal(snapshot.f2.elapsedMs, 120000);
 });
 
 test('OpeningMicrostructureState ignores other symbols and quote events', () => {

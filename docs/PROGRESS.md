@@ -4,7 +4,7 @@
 
 **Status: In progress**
 **Last updated: 2026-09-17**
-**Current commit: develop branch (latest pushed core commit: `51a5c5e`)**
+**Current commit: develop branch (latest pushed core commit before this work: `6293168`)**
 
 ---
 
@@ -60,6 +60,15 @@ to declare profitability.
 - Added contextual entry filter to block counter-bias entries into nearby opposing levels.
 - AAPL 2026-09-15 bad-case behavior can be blocked when bearish pressure and nearby opposing opening level conflict with BUY.
 
+### ✅ Opening Sniper Event Engines
+- Added `LevelConfluenceEngine` to merge nearby levels into auditable confluence zones.
+- Added `LevelInteractionEngine` to classify `TOUCH`, `CROSS_UP`, `CROSS_DOWN`, `RETEST_FROM_ABOVE`, `RETEST_FROM_BELOW`, `REJECT_DOWN`, `RECLAIM_UP`, `ACCEPT_ABOVE`, and `ACCEPT_BELOW`.
+- Added `OpeningMicrostructureLiveState` so the first-two-minute map can be consumed while it is still forming, then marked final after 09:32.
+- Added `F2InternalSequenceProbe` to classify internal 2-second first-window behavior, including early runner state.
+- Updated `openingMicrostructureProbe` to emit confluence-zone events plus `internalSequence`.
+- Changed broad daily/monthly/premarket acceptance fallback to `CONTEXT_*` signals so it is not confused with local F2 permission.
+- Important current finding: AAPL 2026-09-15 now shows only `CONTEXT_BULLISH_ACCEPTANCE` after 09:32, while the first-two-minute internal sequence records early `RUNNER_DOWN`. That is exactly the kind of BUY/SELL confusion the execution gate must block.
+
 ---
 
 ## Not Done Yet
@@ -67,12 +76,10 @@ to declare profitability.
 - No live Massive WebSocket adapter yet.
 - No live tick/NBBO tape recorder yet.
 - No historical tick/NBBO tape dataset yet.
-- No `LevelConfluenceEngine` yet.
-- No first-two-minute internal sequence engine yet.
-- No `LevelInteractionEngine` for touch/cross/retest/reject/reclaim/accept yet.
+- No live wrong-side execution gate consuming `internalSequence.runner` yet.
 - No 15-minute `PathStudy` database/output yet.
 - Sniper does not yet consume evolving `OpeningMicrostructureLiveState`.
-- Current probe does not yet classify the internal 5s/7s/11s retests the user manually identified.
+- Current probe is still bar-level, not true tick/NBBO ordering.
 
 ---
 
@@ -81,22 +88,19 @@ to declare profitability.
 Build the engine that converts the user's visual labels into machine-detected
 opening events:
 
-1. `LevelConfluenceEngine`
-   - merge nearby levels into one zone
-   - avoid counting `F2-M + PM-H` or `D-H + PD-C + F2-L` as multiple fake confirmations
+1. Wire Sniper wrong-side gate to opening microstructure state
+   - block BUY when internal sequence has `RUNNER_DOWN` / accepted below F2-M
+   - block SELL when internal sequence has `RUNNER_UP` / accepted above F2-M
+   - keep broad `CONTEXT_*` acceptance as context, not as entry permission
 
-2. `OpeningMicrostructureLiveState`
-   - provisional high/low/mid while 09:30-09:32 is still forming
-   - final F2 state after 09:32
-   - supports execution inside the first two minutes
-
-3. `F2InternalSequenceProbe`
-   - detect retest at 5s/7s/11s style events
-   - separate `TOUCH`, `CROSS`, `VALID_RETEST`, `REJECT`, `ACCEPT`, `RUNNER`
-
-4. `PathStudy15m`
+2. `PathStudy15m`
    - track +30s, +1m, +2m, +5m, +10m, +15m
    - record MFE/MAE after every F2/zone interaction
+
+3. Live data proof
+   - wire Massive WebSocket trades/quotes into `OpeningMicrostructureLiveState`
+   - record tick/NBBO tape for replay
+   - verify whether 2-second bars are enough for execution timing
 
 This is the current priority over broad UI expansion, ML, broker integration, or
 pattern sprawl.

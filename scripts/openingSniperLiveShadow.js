@@ -187,6 +187,7 @@ class LiveBarBuilder {
     }
 
     observeAggregate(bar) {
+        if (bar.date !== this.date || bar.time < '09:30:00') return [];
         this.onBar(bar);
         if (bar.time < '09:32:00') {
             this.trader.processOpeningBar(bar);

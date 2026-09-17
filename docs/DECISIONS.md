@@ -219,3 +219,33 @@ daily/monthly/premarket context acceptance.
 
 **Reconsider if:** Larger path studies show broad context acceptance has better
 forward-path separation than local opening structure after execution costs.
+
+---
+
+## D012: Verify Opening Execution With Guarded Paper Replay Before Broker Wiring (2026-09-17)
+
+**Decision:** Use a deterministic paper replay harness to verify first-two-minute
+cross/retest detection, paper entry, scalp exit, hard stop, and runner management
+before wiring broker execution.
+
+**Rationale:**
+- The current risk is not only whether an order can be sent quickly; it is
+  whether the app chooses the correct side during the opening scramble.
+- Historical 2-second replay can prove the strategy state machine is able to
+  detect cross/retest and produce an auditable paper fill before 09:32.
+- The same event schema can later be fed by Massive WebSocket/tick data in live
+  shadow mode.
+- A local wrong-side guard is required because broad context can be bullish while
+  first-window local structure has already turned bearish.
+
+**Implementation:**
+- `OpeningSniperPaperTrader` allows entry only before `09:32:00`.
+- It requires cross then later retest; it does not exit on the same bar as entry.
+- It exits via scalp target/hard stop/window-end invalidation or manages runner
+  continuation with a trailing stop.
+- It blocks BUY vs bearish local opening bias and SELL vs bullish local opening
+  bias.
+- `scripts/openingSniperPaperReplay.js` writes an auditable JSON report.
+
+**Reconsider if:** Tick/NBBO replay shows the 2-second bars materially reorder
+cross/retest/exit events often enough to invalidate the paper replay.

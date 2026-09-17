@@ -12,6 +12,7 @@
     "buffer:analyze": "node scripts/bufferAnalysis.js",
     "massive:backtest": "node -r dotenv/config scripts/massiveBacktest.js",
     "massive:export-agents": "node -r dotenv/config scripts/exportAgentMassiveData.js",
+    "opening:paper": "node scripts/openingSniperPaperReplay.js",
     "webapp:dev": "node scripts/serve.js --port 3000",
     "start": "node scripts/serve.js",
     "sniper:live": "node scripts/sniper-live.js"

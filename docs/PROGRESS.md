@@ -69,6 +69,30 @@ to declare profitability.
 - Changed broad daily/monthly/premarket acceptance fallback to `CONTEXT_*` signals so it is not confused with local F2 permission.
 - Important current finding: AAPL 2026-09-15 now shows only `CONTEXT_BULLISH_ACCEPTANCE` after 09:32, while the first-two-minute internal sequence records early `RUNNER_DOWN`. That is exactly the kind of BUY/SELL confusion the execution gate must block.
 
+### ✅ First-2-Minute Paper Execution Verifier
+- Added `OpeningSniperPaperTrader` to replay first-window bars as a paper execution harness.
+- Entries are allowed only before `09:32:00`.
+- A paper entry requires cross then later retest; the entry bar is not used for exit management to avoid overstating intrabar fill order.
+- Exits support:
+  - `SCALP_TARGET`
+  - `HARD_STOP`
+  - `WINDOW_END_SCALP_EXIT`
+  - `WINDOW_END_INVALIDATION`
+  - `RUNNER_TRAIL`
+  - `RUNNER_HELD_TO_END`
+- Added local wrong-side guard:
+  - blocks BUY when first-window local bias has turned bearish
+  - blocks SELL when first-window local bias has turned bullish
+- Added `scripts/openingSniperPaperReplay.js` and `npm run opening:paper`.
+- Current September sample paper replay:
+  - 20 sessions
+  - 18 first-window paper entries
+  - 2 blocked wrong-side setups
+  - 6 runners
+  - 11 wins / 7 losses
+  - 61.11% win rate excluding blocked sessions
+  - AAPL 2026-09-15 is blocked as `LOCAL_OPENING_BIAS_CONFLICT BUY vs BEARISH`.
+
 ---
 
 ## Not Done Yet
@@ -76,9 +100,9 @@ to declare profitability.
 - No live Massive WebSocket adapter yet.
 - No live tick/NBBO tape recorder yet.
 - No historical tick/NBBO tape dataset yet.
-- No live wrong-side execution gate consuming `internalSequence.runner` yet.
+- No broker or live paper adapter yet; current verifier is historical replay only.
 - No 15-minute `PathStudy` database/output yet.
-- Sniper does not yet consume evolving `OpeningMicrostructureLiveState`.
+- Sniper does not yet consume `OpeningSniperPaperTrader` / `OpeningMicrostructureLiveState` in production mode.
 - Current probe is still bar-level, not true tick/NBBO ordering.
 
 ---
@@ -88,16 +112,21 @@ to declare profitability.
 Build the engine that converts the user's visual labels into machine-detected
 opening events:
 
-1. Wire Sniper wrong-side gate to opening microstructure state
+1. Convert paper verifier into live shadow/paper mode
+   - feed Massive WebSocket trades/quotes into `OpeningMicrostructureLiveState`
+   - emit the same paper-entry and paper-exit records in real time
+   - persist JSONL audit trail for every cross/retest/block/exit
+
+2. Wire Sniper wrong-side gate to opening microstructure state
    - block BUY when internal sequence has `RUNNER_DOWN` / accepted below F2-M
    - block SELL when internal sequence has `RUNNER_UP` / accepted above F2-M
    - keep broad `CONTEXT_*` acceptance as context, not as entry permission
 
-2. `PathStudy15m`
+3. `PathStudy15m`
    - track +30s, +1m, +2m, +5m, +10m, +15m
    - record MFE/MAE after every F2/zone interaction
 
-3. Live data proof
+4. Live data proof
    - wire Massive WebSocket trades/quotes into `OpeningMicrostructureLiveState`
    - record tick/NBBO tape for replay
    - verify whether 2-second bars are enough for execution timing

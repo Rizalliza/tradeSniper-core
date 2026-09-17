@@ -13,6 +13,7 @@
     "massive:backtest": "node -r dotenv/config scripts/massiveBacktest.js",
     "massive:export-agents": "node -r dotenv/config scripts/exportAgentMassiveData.js",
     "opening:paper": "node scripts/openingSniperPaperReplay.js",
+    "opening:paper:review": "node scripts/openingPaperReviewDeck.js",
     "opening:shadow": "node -r dotenv/config scripts/openingSniperLiveShadow.js",
     "webapp:dev": "node scripts/serve.js --port 3000",
     "start": "node scripts/serve.js",

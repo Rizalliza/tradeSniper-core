@@ -36,6 +36,12 @@ function parseArgs() {
         trailingStop: true,
         trailingStep: 0.005,
         hardStop: 0.008,       // 0.8% default hard stop
+        breakevenAfter: 0,
+        exitConfirmMode: 'touch',
+        exitConfirmBars: 1,
+        exitConfirmPenetration: 0,
+        runnerMinForwardCrosses: 0,
+        runnerMinProfit: 0,
         lookbackDays: 45,      // daily bars before --from for marker computation
         jsonOut: null,
     };
@@ -53,6 +59,12 @@ function parseArgs() {
             case '--trailing-step': opts.trailingStep = parseFloat(args[++i]); break;
             case '--hard-stop': opts.hardStop = parseFloat(args[++i]); break;
             case '--no-hard-stop': opts.hardStop = 0; break;
+            case '--breakeven-after': opts.breakevenAfter = parseFloat(args[++i]); break;
+            case '--exit-confirm-mode': opts.exitConfirmMode = args[++i]; break;
+            case '--exit-confirm-bars': opts.exitConfirmBars = parseInt(args[++i], 10); break;
+            case '--exit-confirm-penetration': opts.exitConfirmPenetration = parseFloat(args[++i]); break;
+            case '--runner-min-forward-crosses': opts.runnerMinForwardCrosses = parseInt(args[++i], 10); break;
+            case '--runner-min-profit': opts.runnerMinProfit = parseFloat(args[++i]); break;
             case '--lookback-days': opts.lookbackDays = parseInt(args[++i], 10); break;
             case '--json-out': opts.jsonOut = args[++i]; break;
         }
@@ -100,6 +112,12 @@ async function writeJsonSnapshot(outputPath, opts, stats, setups) {
             trailingStop: opts.trailingStop,
             trailingStep: opts.trailingStep,
             hardStop: opts.hardStop,
+            breakevenAfter: opts.breakevenAfter,
+            exitConfirmMode: opts.exitConfirmMode,
+            exitConfirmBars: opts.exitConfirmBars,
+            exitConfirmPenetration: opts.exitConfirmPenetration,
+            runnerMinForwardCrosses: opts.runnerMinForwardCrosses,
+            runnerMinProfit: opts.runnerMinProfit,
             lookbackDays: opts.lookbackDays,
         },
         stats: {
@@ -132,6 +150,9 @@ async function runBacktest(opts) {
     console.log(`Config: risk=${opts.risk} (reverseStop=${reverseStopCount}), buffer=${(opts.buffer * 100).toFixed(2)}%`);
     console.log(`Trailing stop: ${opts.trailingStop ? 'ON' : 'OFF'} (step=${(opts.trailingStep * 100).toFixed(2)}%)`);
     console.log(`Hard stop: ${opts.hardStop > 0 ? (opts.hardStop * 100).toFixed(1) + '%' : 'OFF'}`);
+    console.log(`Breakeven: ${opts.breakevenAfter > 0 ? 'after ' + (opts.breakevenAfter * 100).toFixed(2) + '%' : 'OFF'}`);
+    console.log(`Exit confirm: mode=${opts.exitConfirmMode}, bars=${opts.exitConfirmBars}, penetration=${(opts.exitConfirmPenetration * 100).toFixed(2)}%`);
+    console.log(`Runner proof: forwardCrosses>=${opts.runnerMinForwardCrosses}, profit>=${(opts.runnerMinProfit * 100).toFixed(2)}%`);
     console.log(`Shares: ${opts.shares}`);
     console.log('');
 
@@ -194,6 +215,12 @@ async function runBacktest(opts) {
                 trailingStop: opts.trailingStop,
                 trailingStepPct: opts.trailingStep,
                 hardStopPct: opts.hardStop,
+                breakevenAfterPct: opts.breakevenAfter,
+                exitConfirmMode: opts.exitConfirmMode,
+                exitConfirmBars: opts.exitConfirmBars,
+                exitConfirmPenetrationPct: opts.exitConfirmPenetration,
+                runnerMinForwardCrosses: opts.runnerMinForwardCrosses,
+                runnerMinProfitPct: opts.runnerMinProfit,
             });
             strategy.reset(markerList, { date: dateStr, symbol });
 

@@ -199,6 +199,60 @@ test('profit target hit on BUY trade', () => {
     assert.equal(state.trades[0].outcome, 'WON');
 });
 
+test('confirmed hard stop can cancel wick touch that recovers', () => {
+    const s = new SniperStrategy({ exitConfirmMode: 'close-through', hardStopPct: 0.01 });
+    s.reset(makeMarkers(), {});
+    s.evaluate(makeBar('09:30:00', 140, 0.5));
+    s.evaluate(makeBar('09:30:01', 155, 0.5));
+    s.evaluate(makeBar('09:30:02', 150.2, 0.3)); // BUY at 150
+
+    s.evaluate({ time: '09:30:03', open: 150, high: 151, low: 148.4, close: 149.1 });
+    assert.equal(s.getState().phase, 'IN_TRADE');
+    assert.equal(s.getState().pendingExit.reason, 'HARD_STOP');
+
+    s.evaluate({ time: '09:30:04', open: 149.2, high: 151, low: 149, close: 150.5 });
+    assert.equal(s.getState().pendingExit, null);
+
+    s.evaluate(makeBar('09:30:05', 162, 1));
+    const state = s.getState();
+    assert.equal(state.phase, 'CLOSED');
+    assert.equal(state.trades[0].exitReason, 'MARKER_PROFIT');
+    assert.equal(state.trades[0].outcome, 'WON');
+});
+
+test('confirmed hard stop exits after adverse close through stop', () => {
+    const s = new SniperStrategy({ exitConfirmMode: 'close-through', hardStopPct: 0.01 });
+    s.reset(makeMarkers(), {});
+    s.evaluate(makeBar('09:30:00', 140, 0.5));
+    s.evaluate(makeBar('09:30:01', 155, 0.5));
+    s.evaluate(makeBar('09:30:02', 150.2, 0.3)); // BUY at 150
+
+    s.evaluate({ time: '09:30:03', open: 150, high: 150.5, low: 148.4, close: 148.2 });
+    const state = s.getState();
+    assert.equal(state.phase, 'CLOSED');
+    assert.equal(state.trades[0].exitReason, 'HARD_STOP_CONFIRMED');
+    assert.equal(state.trades[0].outcome, 'LOST');
+    assert.equal(state.trades[0].exitConfirmation.mode, 'close-through');
+});
+
+test('breakeven trigger protects a proven trade', () => {
+    const s = new SniperStrategy({ breakevenAfterPct: 0.003, hardStopPct: 0 });
+    s.reset(makeMarkers(), {});
+    s.evaluate(makeBar('09:30:00', 140, 0.5));
+    s.evaluate(makeBar('09:30:01', 155, 0.5));
+    s.evaluate(makeBar('09:30:02', 150.2, 0.3)); // BUY at 150
+
+    s.evaluate({ time: '09:30:03', open: 150.2, high: 151, low: 150.1, close: 150.8 });
+    assert.equal(s.getState().trailingActive, true);
+    assert.equal(s.getState().trailingLevel, 150);
+
+    s.evaluate({ time: '09:30:04', open: 150.5, high: 150.6, low: 149.9, close: 150.1 });
+    const state = s.getState();
+    assert.equal(state.phase, 'CLOSED');
+    assert.equal(state.trades[0].exitReason, 'TRAILING_STOP');
+    assert.equal(state.trades[0].outcome, 'BREAKEVEN');
+});
+
 test('reverse stop after N crossings', () => {
     const s = new SniperStrategy({ reverseStopCount: 3, trailingStop: false });
     s.reset(makeMarkers(), {});

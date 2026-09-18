@@ -12,6 +12,11 @@ export class SniperStrategy extends BaseStrategy {
         this.trailingStepPct = config.trailingStepPct ?? 0.005;
         this.hardStopPct = config.hardStopPct ?? 0.008;      // 0.8% default hard stop — caps max loss per trade
         this.breakevenAfterPct = config.breakevenAfterPct ?? 0; // 0 = disabled by default. Set 0.003 to move to breakeven after 0.3% profit
+        this.exitConfirmMode = config.exitConfirmMode ?? 'touch';
+        this.exitConfirmBars = config.exitConfirmBars ?? 1;
+        this.exitConfirmPenetrationPct = config.exitConfirmPenetrationPct ?? 0;
+        this.runnerMinForwardCrosses = config.runnerMinForwardCrosses ?? 0;
+        this.runnerMinProfitPct = config.runnerMinProfitPct ?? 0;
         this.contextualEntryFilter = config.contextualEntryFilter ?? false;
         this.opposingLevelMaxPct = config.opposingLevelMaxPct ?? 0.002;
         this._prevBar = null;
@@ -37,6 +42,7 @@ export class SniperStrategy extends BaseStrategy {
         this.trailingLevel = null;
         this.bestPrice = null;  // best (most profitable) price reached so far
         this.blockedSignal = null;
+        this.pendingExit = null;
         this._prevBar = null;
         this._barIndex = 0;
     }
@@ -157,12 +163,15 @@ export class SniperStrategy extends BaseStrategy {
             profitMarker: this.profitMarker?.name || null,
             reverseCrossings: [], forwardCrossings: [],
             trailingActive: false, trailingLevel: null,
+            pendingExit: null,
             pnl: null, outcome: null,
         };
         this.phase = 'IN_TRADE';
     }
 
     _manageTrade(bar, idx) {
+        if (this.pendingExit && this._updatePendingExit(bar)) return;
+
         // Track best price reached (for runner/trailing logic)
         this._updateBestPrice(bar);
 
@@ -173,7 +182,7 @@ export class SniperStrategy extends BaseStrategy {
                 : this.entryPrice * (1 + this.hardStopPct);
             const stopHit = this.entryDir === 'BUY' ? bar.low <= stopLevel : bar.high >= stopLevel;
             if (stopHit) {
-                this._closeTrade(stopLevel, 'HARD_STOP', bar.time); return;
+                this._handleExitTouch(stopLevel, 'HARD_STOP', bar); return;
             }
         }
 
@@ -209,8 +218,95 @@ export class SniperStrategy extends BaseStrategy {
         // 5. Trailing stop hit check (skip on the bar that just activated trailing)
         if (this.trailingActive && !justHitStopCount) {
             const hit = this.entryDir === 'SELL' ? bar.high >= this.trailingLevel : bar.low <= this.trailingLevel;
-            if (hit) { this._closeTrade(this.trailingLevel, 'TRAILING_STOP', bar.time); return; }
+            if (hit) { this._handleExitTouch(this.trailingLevel, 'TRAILING_STOP', bar); return; }
         }
+    }
+
+    _handleExitTouch(price, reason, bar) {
+        if (this.exitConfirmMode === 'touch') {
+            this._closeTrade(price, reason, bar.time);
+            return;
+        }
+
+        const touch = this._exitTouchState(price, bar);
+        if (this._exitConfirmed(touch, 1)) {
+            this._closeTrade(price, `${reason}_CONFIRMED`, bar.time);
+            this._recordExitConfirmation(touch, bar.time, bar.time, 1, this.exitConfirmMode);
+            return;
+        }
+
+        this.pendingExit = {
+            reason,
+            price,
+            firstTouchTime: bar.time,
+            lastTouchTime: bar.time,
+            touchCount: 1,
+            mode: this.exitConfirmMode,
+        };
+        if (this.activeTrade) {
+            this.activeTrade.pendingExit = { ...this.pendingExit };
+        }
+    }
+
+    _updatePendingExit(bar) {
+        const touch = this._exitTouchState(this.pendingExit.price, bar);
+        if (touch.touched) {
+            this.pendingExit.touchCount += 1;
+            this.pendingExit.lastTouchTime = bar.time;
+            if (this.activeTrade) {
+                this.activeTrade.pendingExit = { ...this.pendingExit };
+            }
+            if (this._exitConfirmed(touch, this.pendingExit.touchCount)) {
+                const pending = this.pendingExit;
+                this._closeTrade(pending.price, `${pending.reason}_CONFIRMED`, bar.time);
+                this._recordExitConfirmation(touch, pending.firstTouchTime, bar.time, pending.touchCount, pending.mode);
+            }
+            return true;
+        }
+        if (touch.recovered) {
+            this.pendingExit = null;
+            if (this.activeTrade) this.activeTrade.pendingExit = null;
+            return false;
+        }
+        return true;
+    }
+
+    _exitConfirmed(touch, touchCount) {
+        if (this.exitConfirmPenetrationPct > 0 && touch.penetrated) return true;
+        if (this.exitConfirmMode === 'close-through') return touch.adverseClose && touchCount >= this.exitConfirmBars;
+        if (this.exitConfirmMode === 'penetration') return false;
+        return touch.adverseClose && touchCount >= this.exitConfirmBars;
+    }
+
+    _exitTouchState(price, bar) {
+        const penetration = price * this.exitConfirmPenetrationPct;
+        if (this.entryDir === 'BUY') {
+            return {
+                touched: bar.low <= price,
+                penetrated: bar.low <= price - penetration,
+                adverseClose: bar.close <= price,
+                recovered: bar.close > price,
+            };
+        }
+        return {
+            touched: bar.high >= price,
+            penetrated: bar.high >= price + penetration,
+            adverseClose: bar.close >= price,
+            recovered: bar.close < price,
+        };
+    }
+
+    _recordExitConfirmation(touch, touchTime, confirmTime, touchCount, mode) {
+        const trade = this.trades[this.trades.length - 1];
+        if (!trade) return;
+        trade.exitConfirmation = {
+            mode,
+            touchTime,
+            confirmTime,
+            penetrated: touch.penetrated,
+            adverseClose: touch.adverseClose,
+            touchCount,
+        };
     }
 
     _profitPct(bar) {
@@ -291,6 +387,12 @@ export class SniperStrategy extends BaseStrategy {
         return (price - this.entryPrice) * dir > 0;
     }
 
+    _isProfitableByPct(price, minPct = 0) {
+        const dir = this.entryDir === 'BUY' ? 1 : -1;
+        const profitPct = ((price - this.entryPrice) / this.entryPrice) * dir;
+        return profitPct > minPct;
+    }
+
     _activateTrailingStop() {
         this.trailingActive = true;
         this.trailingLevel = this.entryPrice;
@@ -324,13 +426,19 @@ export class SniperStrategy extends BaseStrategy {
         this.activeTrade = null;
         this.trailingActive = false;
         this.trailingLevel = null;
+        this.pendingExit = null;
         this.phase = 'CLOSED';
     }
 
     finalize(lastBar) {
         if (this.phase === 'IN_TRADE' && this.activeTrade) {
             const favorable = (lastBar.close - this.entryPrice) * (this.entryDir === 'BUY' ? 1 : -1);
-            this._closeTrade(lastBar.close, favorable > 0 ? 'RUNNER' : 'EOD_UNFAVORABLE', lastBar.time);
+            const runnerQualified = this.forwardCrossings.length >= this.runnerMinForwardCrosses &&
+                this._isProfitableByPct(lastBar.close, this.runnerMinProfitPct);
+            const reason = favorable > 0
+                ? runnerQualified ? 'RUNNER' : 'UNPROVEN_PROFIT_EXIT'
+                : 'EOD_UNFAVORABLE';
+            this._closeTrade(lastBar.close, reason, lastBar.time);
         } else if (this.phase === 'CROSSED') {
             this.phase = 'NO_RETEST';
         } else if (this.phase === 'IDLE') {
@@ -353,6 +461,7 @@ export class SniperStrategy extends BaseStrategy {
             forwardCrossings: [...this.forwardCrossings],
             trailingActive: this.trailingActive,
             trailingLevel: this.trailingLevel,
+            pendingExit: this.pendingExit ? { ...this.pendingExit } : null,
             blockedSignal: this.blockedSignal ? { ...this.blockedSignal } : null,
         };
     }

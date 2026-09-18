@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-17T15:27:34.568Z",
+  "generated_at": "2026-09-18T06:11:53.867Z",
   "input": "data/pressure-pilot-2026-09-09_2026-09-15.json",
-  "limitation": "Historical 2-second/validation-bar paper replay. It verifies detection logic, not live broker fill quality or tick/NBBO ordering.",
+  "limitation": "Historical 2-second/validation-bar paper replay. summary is filtered sniper; controlSummary is raw sniper without local bias blocking. This verifies detection logic, not live broker fill quality or tick/NBBO ordering.",
   "config": {
     "zonePct": 0.0015,
     "retestZonePct": 0.00025,
@@ -29,6 +29,25 @@
     "exitReasons": {
       "HARD_STOP": 5,
       "SCALP_TARGET": 8,
+      "RUNNER_TRAIL": 4
+    }
+  },
+  "controlSummary": {
+    "sessions": 20,
+    "paperEntries": 20,
+    "noCross": 0,
+    "noRetest": 0,
+    "blocked": 0,
+    "firstWindowEntries": 20,
+    "runners": 4,
+    "wins": 14,
+    "losses": 6,
+    "breakeven": 0,
+    "winRate": 0.7,
+    "avgPnlPct": 0.0008165500000000001,
+    "exitReasons": {
+      "HARD_STOP": 6,
+      "SCALP_TARGET": 10,
       "RUNNER_TRAIL": 4
     }
   },
@@ -89,7 +108,57 @@
           "pnlPct": -0.001,
           "outcome": "LOST"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "AAPL",
+          "date": "2026-09-09",
+          "direction": "SELL",
+          "entryPrice": 315.69,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_BELOW",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-H",
+          "bestPrice": 315.145,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 316.00569,
+          "exitTime": "09:30:06",
+          "exitReason": "HARD_STOP",
+          "pnlPct": -0.001,
+          "outcome": "LOST"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-H",
+            "levelValue": 315.69,
+            "time": "09:30:02",
+            "close": 315.295
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "SELL",
+            "level": "F2-H",
+            "entryPrice": 315.69,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_BELOW"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "SELL",
+            "reason": "HARD_STOP",
+            "time": "09:30:06",
+            "exitPrice": 316.00569,
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          }
+        ]
+      }
     },
     {
       "symbol": "AAPL",
@@ -147,7 +216,57 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "AAPL",
+          "date": "2026-09-10",
+          "direction": "BUY",
+          "entryPrice": 317.15,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-H",
+          "bestPrice": 318.51,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 317.46715,
+          "exitTime": "09:30:06",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-H",
+            "levelValue": 317.15,
+            "time": "09:30:02",
+            "close": 318.3
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-H",
+            "entryPrice": 317.15,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:06",
+            "exitPrice": 317.46715,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "AAPL",
@@ -189,7 +308,67 @@
           "time": "09:30:12",
           "close": 327.89
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "AAPL",
+          "date": "2026-09-11",
+          "direction": "BUY",
+          "entryPrice": 327.8,
+          "entryTime": "09:30:12",
+          "entryIndex": 6,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:10",
+          "crossLevel": "RECLAIM-H",
+          "bestPrice": 328.13,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 328.1278,
+          "exitTime": "09:30:18",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-M",
+            "levelValue": 327.49,
+            "time": "09:30:02",
+            "close": 327.17
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "SELL",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "levelValue": 327.8,
+            "reclaimedLevel": "F2-M",
+            "time": "09:30:10",
+            "close": 327.59
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "entryPrice": 327.8,
+            "time": "09:30:12",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:18",
+            "exitPrice": 328.1278,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "AAPL",
@@ -247,7 +426,57 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "AAPL",
+          "date": "2026-09-14",
+          "direction": "SELL",
+          "entryPrice": 334.42,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_BELOW",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-M",
+          "bestPrice": 333.36,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 334.08558,
+          "exitTime": "09:30:06",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-M",
+            "levelValue": 334.42,
+            "time": "09:30:02",
+            "close": 334.005
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "SELL",
+            "level": "F2-M",
+            "entryPrice": 334.42,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_BELOW"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "SELL",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:06",
+            "exitPrice": 334.08558,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "AAPL",
@@ -299,7 +528,77 @@
           "time": "09:30:16",
           "close": 329.85
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "AAPL",
+          "date": "2026-09-15",
+          "direction": "BUY",
+          "entryPrice": 329.79,
+          "entryTime": "09:30:16",
+          "entryIndex": 8,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:10",
+          "crossLevel": "RECLAIM-H",
+          "bestPrice": 330.2,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 330.11979,
+          "exitTime": "09:30:18",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-L",
+            "levelValue": 329.21,
+            "time": "09:30:02",
+            "close": 328.82
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "BUY",
+            "direction": "SELL",
+            "level": "RECLAIM-L",
+            "levelValue": 328.36,
+            "reclaimedLevel": "F2-L",
+            "time": "09:30:06",
+            "close": 328.65
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "SELL",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "levelValue": 329.79,
+            "reclaimedLevel": "RECLAIM-L",
+            "time": "09:30:10",
+            "close": 329.68
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "entryPrice": 329.79,
+            "time": "09:30:16",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:18",
+            "exitPrice": 330.11979,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "MSFT",
@@ -357,7 +656,57 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "MSFT",
+          "date": "2026-09-09",
+          "direction": "SELL",
+          "entryPrice": 493.75,
+          "entryTime": "09:30:42",
+          "entryIndex": 21,
+          "entryReason": "RETEST_FROM_BELOW",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-H",
+          "bestPrice": 493.2,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 493.25625,
+          "exitTime": "09:30:56",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-H",
+            "levelValue": 493.75,
+            "time": "09:30:02",
+            "close": 493
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "SELL",
+            "level": "F2-H",
+            "entryPrice": 493.75,
+            "time": "09:30:42",
+            "retestType": "RETEST_FROM_BELOW"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "SELL",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:56",
+            "exitPrice": 493.25625,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "MSFT",
@@ -415,7 +764,57 @@
           "pnlPct": -0.001,
           "outcome": "LOST"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "MSFT",
+          "date": "2026-09-10",
+          "direction": "BUY",
+          "entryPrice": 488.655,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-H",
+          "bestPrice": 489.7,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 488.166345,
+          "exitTime": "09:30:06",
+          "exitReason": "HARD_STOP",
+          "pnlPct": -0.001,
+          "outcome": "LOST"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-H",
+            "levelValue": 488.655,
+            "time": "09:30:02",
+            "close": 489.45
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-H",
+            "entryPrice": 488.655,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "HARD_STOP",
+            "time": "09:30:06",
+            "exitPrice": 488.166345,
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          }
+        ]
+      }
     },
     {
       "symbol": "MSFT",
@@ -473,7 +872,57 @@
           "pnlPct": -0.001,
           "outcome": "LOST"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "MSFT",
+          "date": "2026-09-11",
+          "direction": "BUY",
+          "entryPrice": 495.535,
+          "entryTime": "09:30:06",
+          "entryIndex": 3,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:04",
+          "crossLevel": "F2-M",
+          "bestPrice": 495.96,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 495.039465,
+          "exitTime": "09:30:16",
+          "exitReason": "HARD_STOP",
+          "pnlPct": -0.001,
+          "outcome": "LOST"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-M",
+            "levelValue": 495.535,
+            "time": "09:30:04",
+            "close": 495.81
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-M",
+            "entryPrice": 495.535,
+            "time": "09:30:06",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "HARD_STOP",
+            "time": "09:30:16",
+            "exitPrice": 495.039465,
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          }
+        ]
+      }
     },
     {
       "symbol": "MSFT",
@@ -505,7 +954,57 @@
           "time": "09:30:04",
           "close": 497.72
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "MSFT",
+          "date": "2026-09-14",
+          "direction": "SELL",
+          "entryPrice": 497.73,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_BELOW",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-H",
+          "bestPrice": 497.03,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 498.22773,
+          "exitTime": "09:30:06",
+          "exitReason": "HARD_STOP",
+          "pnlPct": -0.001,
+          "outcome": "LOST"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-H",
+            "levelValue": 497.73,
+            "time": "09:30:02",
+            "close": 498.07
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "SELL",
+            "level": "F2-H",
+            "entryPrice": 497.73,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_BELOW"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "SELL",
+            "reason": "HARD_STOP",
+            "time": "09:30:06",
+            "exitPrice": 498.22773,
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          }
+        ]
+      }
     },
     {
       "symbol": "MSFT",
@@ -573,7 +1072,67 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "MSFT",
+          "date": "2026-09-15",
+          "direction": "BUY",
+          "entryPrice": 501.6,
+          "entryTime": "09:30:14",
+          "entryIndex": 7,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:08",
+          "crossLevel": "RECLAIM-H",
+          "bestPrice": 502.31,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 502.1016,
+          "exitTime": "09:30:16",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-M",
+            "levelValue": 500.475,
+            "time": "09:30:02",
+            "close": 499.63
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "SELL",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "levelValue": 501.6,
+            "reclaimedLevel": "F2-M",
+            "time": "09:30:08",
+            "close": 501.34
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "entryPrice": 501.6,
+            "time": "09:30:14",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:16",
+            "exitPrice": 502.1016,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "NVDA",
@@ -638,7 +1197,64 @@
           "pnlPct": 0.001836,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "NVDA",
+          "date": "2026-09-09",
+          "direction": "BUY",
+          "entryPrice": 224.7121,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-L",
+          "bestPrice": 225.35,
+          "runner": true,
+          "runnerArmedTime": "09:30:06",
+          "trailingStop": 225.12465,
+          "exitPrice": 225.12465,
+          "exitTime": "09:30:08",
+          "exitReason": "RUNNER_TRAIL",
+          "pnlPct": 0.001836,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-L",
+            "levelValue": 224.7121,
+            "time": "09:30:02",
+            "close": 224.975
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-L",
+            "entryPrice": 224.7121,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "SCALP_TARGET_RUNNER",
+            "direction": "BUY",
+            "time": "09:30:06",
+            "bestPrice": 225.35,
+            "trailingStop": 225.12465
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "RUNNER_TRAIL",
+            "time": "09:30:08",
+            "exitPrice": 225.12465,
+            "pnlPct": 0.001836,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "NVDA",
@@ -696,7 +1312,57 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "NVDA",
+          "date": "2026-09-10",
+          "direction": "SELL",
+          "entryPrice": 220.575,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_BELOW",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-M",
+          "bestPrice": 219.77,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 220.354425,
+          "exitTime": "09:30:06",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-M",
+            "levelValue": 220.575,
+            "time": "09:30:02",
+            "close": 219.86
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "SELL",
+            "level": "F2-M",
+            "entryPrice": 220.575,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_BELOW"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "SELL",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:06",
+            "exitPrice": 220.354425,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "NVDA",
@@ -794,7 +1460,97 @@
           "pnlPct": -0.001,
           "outcome": "LOST"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "NVDA",
+          "date": "2026-09-11",
+          "direction": "BUY",
+          "entryPrice": 220.6,
+          "entryTime": "09:30:24",
+          "entryIndex": 12,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:22",
+          "crossLevel": "RECLAIM-H",
+          "bestPrice": 220.8,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 220.3794,
+          "exitTime": "09:30:30",
+          "exitReason": "HARD_STOP",
+          "pnlPct": -0.001,
+          "outcome": "LOST"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-M",
+            "levelValue": 220.984,
+            "time": "09:30:02",
+            "close": 221.34
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "BUY",
+            "direction": "SELL",
+            "level": "RECLAIM-L",
+            "levelValue": 220.5,
+            "reclaimedLevel": "F2-M",
+            "time": "09:30:06",
+            "close": 220.6612
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "SELL",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "levelValue": 220.85,
+            "reclaimedLevel": "RECLAIM-L",
+            "time": "09:30:10",
+            "close": 220.82
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "BUY",
+            "direction": "SELL",
+            "level": "RECLAIM-L",
+            "levelValue": 220.535,
+            "reclaimedLevel": "RECLAIM-H",
+            "time": "09:30:14",
+            "close": 220.61
+          },
+          {
+            "type": "RECLAIM_FLIP",
+            "from": "SELL",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "levelValue": 220.6,
+            "reclaimedLevel": "RECLAIM-L",
+            "time": "09:30:22",
+            "close": 220.55
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "RECLAIM-H",
+            "entryPrice": 220.6,
+            "time": "09:30:24",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "HARD_STOP",
+            "time": "09:30:30",
+            "exitPrice": 220.3794,
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          }
+        ]
+      }
     },
     {
       "symbol": "NVDA",
@@ -852,7 +1608,57 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "NVDA",
+          "date": "2026-09-14",
+          "direction": "BUY",
+          "entryPrice": 211,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-L",
+          "bestPrice": 211.425,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 211.211,
+          "exitTime": "09:30:06",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-L",
+            "levelValue": 211,
+            "time": "09:30:02",
+            "close": 211.11
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-L",
+            "entryPrice": 211,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:06",
+            "exitPrice": 211.211,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "NVDA",
@@ -910,7 +1716,57 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "NVDA",
+          "date": "2026-09-15",
+          "direction": "BUY",
+          "entryPrice": 213.055,
+          "entryTime": "09:30:06",
+          "entryIndex": 3,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-M",
+          "bestPrice": 213.415,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 213.268055,
+          "exitTime": "09:30:08",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-M",
+            "levelValue": 213.055,
+            "time": "09:30:02",
+            "close": 212.796
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-M",
+            "entryPrice": 213.055,
+            "time": "09:30:06",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:08",
+            "exitPrice": 213.268055,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "TSLA",
@@ -975,7 +1831,64 @@
           "pnlPct": 0.004679,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "TSLA",
+          "date": "2026-09-09",
+          "direction": "BUY",
+          "entryPrice": 369.4,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-H",
+          "bestPrice": 371.5,
+          "runner": true,
+          "runnerArmedTime": "09:30:06",
+          "trailingStop": 371.1285,
+          "exitPrice": 371.1285,
+          "exitTime": "09:30:08",
+          "exitReason": "RUNNER_TRAIL",
+          "pnlPct": 0.004679,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-H",
+            "levelValue": 369.4,
+            "time": "09:30:02",
+            "close": 369.906
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-H",
+            "entryPrice": 369.4,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "SCALP_TARGET_RUNNER",
+            "direction": "BUY",
+            "time": "09:30:06",
+            "bestPrice": 371.5,
+            "trailingStop": 371.1285
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "RUNNER_TRAIL",
+            "time": "09:30:08",
+            "exitPrice": 371.1285,
+            "pnlPct": 0.004679,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "TSLA",
@@ -1033,7 +1946,57 @@
           "pnlPct": 0.001,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "TSLA",
+          "date": "2026-09-10",
+          "direction": "SELL",
+          "entryPrice": 361.4,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_BELOW",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-H",
+          "bestPrice": 360.38,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 361.0386,
+          "exitTime": "09:30:06",
+          "exitReason": "SCALP_TARGET",
+          "pnlPct": 0.001,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_DOWN",
+            "direction": "SELL",
+            "level": "F2-H",
+            "levelValue": 361.4,
+            "time": "09:30:02",
+            "close": 361
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "SELL",
+            "level": "F2-H",
+            "entryPrice": 361.4,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_BELOW"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "SELL",
+            "reason": "SCALP_TARGET",
+            "time": "09:30:06",
+            "exitPrice": 361.0386,
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "TSLA",
@@ -1098,7 +2061,64 @@
           "pnlPct": 0.002909,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "TSLA",
+          "date": "2026-09-11",
+          "direction": "BUY",
+          "entryPrice": 362.92,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-M",
+          "bestPrice": 364.34,
+          "runner": true,
+          "runnerArmedTime": "09:30:06",
+          "trailingStop": 363.97565999999995,
+          "exitPrice": 363.97566,
+          "exitTime": "09:30:08",
+          "exitReason": "RUNNER_TRAIL",
+          "pnlPct": 0.002909,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-M",
+            "levelValue": 362.92,
+            "time": "09:30:02",
+            "close": 363.29
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-M",
+            "entryPrice": 362.92,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "SCALP_TARGET_RUNNER",
+            "direction": "BUY",
+            "time": "09:30:06",
+            "bestPrice": 364.34,
+            "trailingStop": 363.97566
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "RUNNER_TRAIL",
+            "time": "09:30:08",
+            "exitPrice": 363.97566,
+            "pnlPct": 0.002909,
+            "outcome": "WON"
+          }
+        ]
+      }
     },
     {
       "symbol": "TSLA",
@@ -1156,7 +2176,57 @@
           "pnlPct": -0.001,
           "outcome": "LOST"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "TSLA",
+          "date": "2026-09-14",
+          "direction": "BUY",
+          "entryPrice": 359.785,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-M",
+          "bestPrice": 360.51,
+          "runner": false,
+          "runnerArmedTime": null,
+          "trailingStop": null,
+          "exitPrice": 359.425215,
+          "exitTime": "09:30:06",
+          "exitReason": "HARD_STOP",
+          "pnlPct": -0.001,
+          "outcome": "LOST"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-M",
+            "levelValue": 359.785,
+            "time": "09:30:02",
+            "close": 359.8857
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-M",
+            "entryPrice": 359.785,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "HARD_STOP",
+            "time": "09:30:06",
+            "exitPrice": 359.425215,
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          }
+        ]
+      }
     },
     {
       "symbol": "TSLA",
@@ -1221,7 +2291,64 @@
           "pnlPct": 0.002907,
           "outcome": "WON"
         }
-      ]
+      ],
+      "control": {
+        "phase": "CLOSED",
+        "trade": {
+          "symbol": "TSLA",
+          "date": "2026-09-15",
+          "direction": "BUY",
+          "entryPrice": 358.225,
+          "entryTime": "09:30:04",
+          "entryIndex": 2,
+          "entryReason": "RETEST_FROM_ABOVE",
+          "crossTime": "09:30:02",
+          "crossLevel": "F2-M",
+          "bestPrice": 359.6259,
+          "runner": true,
+          "runnerArmedTime": "09:30:06",
+          "trailingStop": 359.2662741,
+          "exitPrice": 359.266274,
+          "exitTime": "09:30:08",
+          "exitReason": "RUNNER_TRAIL",
+          "pnlPct": 0.002907,
+          "outcome": "WON"
+        },
+        "events": [
+          {
+            "type": "CROSS_UP",
+            "direction": "BUY",
+            "level": "F2-M",
+            "levelValue": 358.225,
+            "time": "09:30:02",
+            "close": 358.075
+          },
+          {
+            "type": "PAPER_ENTRY",
+            "direction": "BUY",
+            "level": "F2-M",
+            "entryPrice": 358.225,
+            "time": "09:30:04",
+            "retestType": "RETEST_FROM_ABOVE"
+          },
+          {
+            "type": "SCALP_TARGET_RUNNER",
+            "direction": "BUY",
+            "time": "09:30:06",
+            "bestPrice": 359.6259,
+            "trailingStop": 359.266274
+          },
+          {
+            "type": "PAPER_EXIT",
+            "direction": "BUY",
+            "reason": "RUNNER_TRAIL",
+            "time": "09:30:08",
+            "exitPrice": 359.266274,
+            "pnlPct": 0.002907,
+            "outcome": "WON"
+          }
+        ]
+      }
     }
   ]
 }

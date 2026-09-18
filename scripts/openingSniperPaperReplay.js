@@ -124,12 +124,20 @@ async function main() {
         reclaimFlipBars: opts.reclaimFlipBars,
         wrongSideGuard: opts.wrongSideGuard,
     };
+    const controlConfig = { ...config, wrongSideGuard: false };
     const results = [];
 
     for (const symbolPack of payload.results || []) {
         for (const pack of symbolPack.packs || []) {
             const first2Bars = normalizeBars(pack.bars?.open_first_2_min_aggregated_seconds || []);
             const validationBars = normalizeBars(pack.bars?.open_aggregated_seconds || []);
+            const control = replayOpeningSniperPaper({
+                symbol: pack.symbol,
+                date: pack.date,
+                first2Bars,
+                validationBars,
+                config: controlConfig,
+            });
             const result = replayOpeningSniperPaper({
                 symbol: pack.symbol,
                 date: pack.date,
@@ -145,17 +153,28 @@ async function main() {
                 openingRange: result.openingRange,
                 trade: result.trade,
                 events: result.events,
+                control: {
+                    phase: control.phase,
+                    trade: control.trade,
+                    events: control.events,
+                },
             });
         }
     }
 
     const summary = summarize(results);
+    const controlSummary = summarize(results.map(row => ({
+        phase: row.control.phase,
+        trade: row.control.trade,
+        events: row.control.events,
+    })));
     const output = {
         generated_at: new Date().toISOString(),
         input: opts.input,
-        limitation: 'Historical 2-second/validation-bar paper replay. It verifies detection logic, not live broker fill quality or tick/NBBO ordering.',
+        limitation: 'Historical 2-second/validation-bar paper replay. summary is filtered sniper; controlSummary is raw sniper without local bias blocking. This verifies detection logic, not live broker fill quality or tick/NBBO ordering.',
         config,
         summary,
+        controlSummary,
         results,
     };
 
@@ -163,9 +182,8 @@ async function main() {
     await fs.writeFile(opts.out, JSON.stringify(output, null, 2) + '\n');
 
     console.log(`Opening sniper paper replay: ${opts.input}`);
-    console.log(`Entries ${summary.paperEntries}/${summary.sessions}, first-window fills ${summary.firstWindowEntries}, runners ${summary.runners}`);
-    console.log(`Blocked ${summary.blocked}, no-cross ${summary.noCross}, no-retest ${summary.noRetest}`);
-    console.log(`Wins ${summary.wins}, losses ${summary.losses}, breakeven ${summary.breakeven}, WR ${pct(summary.winRate)}, avg ${pct(summary.avgPnlPct)}`);
+    console.log(`Filtered: entries ${summary.paperEntries}/${summary.sessions}, runners ${summary.runners}, blocked ${summary.blocked}, WR ${pct(summary.winRate)}, avg ${pct(summary.avgPnlPct)}`);
+    console.log(`Control:  entries ${controlSummary.paperEntries}/${controlSummary.sessions}, runners ${controlSummary.runners}, blocked ${controlSummary.blocked}, WR ${pct(controlSummary.winRate)}, avg ${pct(controlSummary.avgPnlPct)}`);
     console.log('');
     for (const row of results) {
         const trade = row.trade;

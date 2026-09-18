@@ -63,7 +63,7 @@ function candleChart(row, pack) {
     const pad = { left: 52, right: 24, top: 18, bottom: 28 };
     const prices = bars.flatMap(bar => [bar.high, bar.low]);
     const f2 = pack.windows?.open_first_2_min || {};
-    for (const value of [f2.high, f2.low, row.trade?.entryPrice, row.trade?.exitPrice]) {
+    for (const value of [f2.high, f2.low, row.trade?.entryPrice, row.trade?.exitPrice, row.control?.trade?.entryPrice, row.control?.trade?.exitPrice]) {
         if (Number.isFinite(Number(value))) prices.push(Number(value));
     }
     const min = Math.min(...prices);
@@ -118,6 +118,13 @@ function candleChart(row, pack) {
     } else {
         const block = row.events?.find(event => event.type === 'PAPER_BLOCK');
         if (block) chartParts.push(`<text x="${pad.left + 10}" y="${pad.top + 22}" fill="#ffcc66" font-size="13">BLOCKED: ${esc(block.direction)} vs ${esc(block.localBias)}</text>`);
+        if (row.control?.trade) {
+            const raw = row.control.trade;
+            const entryIndex = Math.max(0, bars.findIndex(bar => bar.time >= raw.entryTime));
+            const exitIndex = Math.max(0, bars.findIndex(bar => bar.time >= raw.exitTime));
+            chartParts.push(marker(x(entryIndex), y(raw.entryPrice), '#b78cff', `RAW ${raw.direction}`));
+            chartParts.push(marker(x(exitIndex), y(raw.exitPrice), '#8aa4ff', `RAW ${raw.exitReason.replaceAll('_', ' ')}`));
+        }
     }
 
     chartParts.push(`<text x="${pad.left}" y="${height - 9}" fill="#b8c6d8" font-size="11">${num(min)} - ${num(max)}</text>`);
@@ -135,9 +142,12 @@ function card(row, pack) {
     const trade = row.trade;
     const outcome = trade?.outcome || row.phase;
     const tone = outcome === 'WON' ? 'win' : outcome === 'LOST' ? 'loss' : row.phase === 'BLOCKED' ? 'blocked' : 'neutral';
+    const control = row.control?.trade;
     const details = trade
         ? `${trade.direction} ${trade.entryTime} -> ${trade.exitTime} · ${trade.exitReason.replaceAll('_', ' ')} · ${pct(trade.pnlPct)}`
-        : `No trade · ${row.phase}`;
+        : control
+            ? `Filtered ${row.phase} · raw ${control.direction} ${control.entryTime} -> ${control.exitTime} · ${control.exitReason.replaceAll('_', ' ')} · ${pct(control.pnlPct)}`
+            : `No trade · ${row.phase}`;
     return `
       <article class="card ${tone}">
         <header>
@@ -153,6 +163,7 @@ function card(row, pack) {
 
 function html(paper, packMap) {
     const summary = paper.summary || {};
+    const controlSummary = paper.controlSummary || {};
     const cards = (paper.results || [])
         .map(row => card(row, packMap.get(`${row.symbol}|${row.date}`)))
         .join('\n');
@@ -192,6 +203,8 @@ function html(paper, packMap) {
     <div class="metric"><b>${summary.runners ?? '-'}</b><span>runners</span></div>
     <div class="metric"><b>${pct(summary.winRate)}</b><span>win rate</span></div>
     <div class="metric"><b>${pct(summary.avgPnlPct)}</b><span>avg gross</span></div>
+    <div class="metric"><b>${pct(controlSummary.winRate)}</b><span>raw sniper WR</span></div>
+    <div class="metric"><b>${pct(controlSummary.avgPnlPct)}</b><span>raw avg</span></div>
   </section>
   ${cards}
 </main>

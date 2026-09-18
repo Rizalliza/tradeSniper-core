@@ -1,0 +1,3891 @@
+{
+  "generated_at": "2026-09-18T07:00:11.322Z",
+  "input": "data/pressure-pilot-2026-09-09_2026-09-15.json",
+  "note": "Research-only WAIT confirmation comparison. No local bias guard is applied here; this isolates execution decisiveness after retest.",
+  "config": {
+    "zonePct": 0.0015,
+    "retestZonePct": 0.00025,
+    "retestCloseZoneMultiplier": 2,
+    "scalpTargetPct": 0.001,
+    "hardStopPct": 0.001,
+    "runnerTriggerPct": 0.0015,
+    "runnerTrailPct": 0.001,
+    "reclaimFlipBars": 2
+  },
+  "scenarios": [
+    {
+      "policy": "IMMEDIATE",
+      "summary": {
+        "sessions": 20,
+        "entries": 20,
+        "cancelled": 0,
+        "wins": 14,
+        "losses": 6,
+        "winRate": 0.7,
+        "avgPnlPct": 0.0008165500000000001,
+        "totalPnlPct": 0.016331000000000002,
+        "hardStops": 6,
+        "runners": 4,
+        "exitReasons": {
+          "HARD_STOP": 6,
+          "SCALP_TARGET": 10,
+          "RUNNER_TRAIL": 4
+        }
+      },
+      "results": [
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-09",
+            "direction": "SELL",
+            "entryPrice": 315.69,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 315.2,
+            "trailingStop": null,
+            "exitPrice": 316.00569,
+            "exitTime": "09:30:06",
+            "exitReason": "HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 315.69,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 315.605
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-10",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-10",
+            "direction": "BUY",
+            "entryPrice": 317.15,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 318.51,
+            "trailingStop": null,
+            "exitPrice": 317.46715,
+            "exitTime": "09:30:06",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 317.15,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 317.9922
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 327.8,
+            "entryTime": "09:30:12",
+            "entryIndex": 6,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 328.13,
+            "trailingStop": null,
+            "exitPrice": 328.1278,
+            "exitTime": "09:30:18",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 327.49,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 327.8,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:12",
+              "close": 327.89
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-14",
+            "direction": "SELL",
+            "entryPrice": 334.42,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": false,
+            "bestPrice": 333.36,
+            "trailingStop": null,
+            "exitPrice": 334.08558,
+            "exitTime": "09:30:06",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 334.41999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 334.085
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 329.79,
+            "entryTime": "09:30:16",
+            "entryIndex": 8,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 330.2,
+            "trailingStop": null,
+            "exitPrice": 330.11979,
+            "exitTime": "09:30:18",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 329.21,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 328.36,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 329.79,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:16",
+              "close": 329.85
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-09",
+            "direction": "SELL",
+            "entryPrice": 493.75,
+            "entryTime": "09:30:42",
+            "entryIndex": 21,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 493.2,
+            "trailingStop": null,
+            "exitPrice": 493.25625,
+            "exitTime": "09:30:56",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 493.75,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:42",
+              "close": 493.66
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-10",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-10",
+            "direction": "BUY",
+            "entryPrice": 488.655,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 489.7,
+            "trailingStop": null,
+            "exitPrice": 488.166345,
+            "exitTime": "09:30:06",
+            "exitReason": "HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 488.655,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 488.985
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 495.535,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:04",
+            "crossLevel": "F2-M",
+            "runner": false,
+            "bestPrice": 495.96,
+            "trailingStop": null,
+            "exitPrice": 495.039465,
+            "exitTime": "09:30:16",
+            "exitReason": "HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 495.53499999999997,
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 495.63
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-14",
+            "direction": "SELL",
+            "entryPrice": 497.73,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 497.03,
+            "trailingStop": null,
+            "exitPrice": 498.22773,
+            "exitTime": "09:30:06",
+            "exitReason": "HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 497.73,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 497.72
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 501.6,
+            "entryTime": "09:30:14",
+            "entryIndex": 7,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:08",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 502.31,
+            "trailingStop": null,
+            "exitPrice": 502.1016,
+            "exitTime": "09:30:16",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 500.475,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 501.6,
+              "time": "09:30:08"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:14",
+              "close": 501.7925
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-09",
+            "direction": "BUY",
+            "entryPrice": 224.7121,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-L",
+            "runner": true,
+            "bestPrice": 225.35,
+            "trailingStop": 225.12465,
+            "exitPrice": 225.12465,
+            "exitTime": "09:30:08",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.001836,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 224.7121,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 225.18
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-10",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-10",
+            "direction": "SELL",
+            "entryPrice": 220.575,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": false,
+            "bestPrice": 219.77,
+            "trailingStop": null,
+            "exitPrice": 220.354425,
+            "exitTime": "09:30:06",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 220.575,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 220.06
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 220.6,
+            "entryTime": "09:30:24",
+            "entryIndex": 12,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:22",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 220.8,
+            "trailingStop": null,
+            "exitPrice": 220.3794,
+            "exitTime": "09:30:30",
+            "exitReason": "HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 220.98399999999998,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.5,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.85,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.535,
+              "time": "09:30:14"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:16"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:20"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.6,
+              "time": "09:30:22"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:24",
+              "close": 220.63
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-14",
+            "direction": "BUY",
+            "entryPrice": 211,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-L",
+            "runner": false,
+            "bestPrice": 211.425,
+            "trailingStop": null,
+            "exitPrice": 211.211,
+            "exitTime": "09:30:06",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 211,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 211.2
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 213.055,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": false,
+            "bestPrice": 213.415,
+            "trailingStop": null,
+            "exitPrice": 213.268055,
+            "exitTime": "09:30:08",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 213.055,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 213.358
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-09",
+            "direction": "BUY",
+            "entryPrice": 369.4,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": true,
+            "bestPrice": 371.5,
+            "trailingStop": 371.1285,
+            "exitPrice": 371.1285,
+            "exitTime": "09:30:08",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.004679,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 369.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 371.42
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-10",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-10",
+            "direction": "SELL",
+            "entryPrice": 361.4,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 360.38,
+            "trailingStop": null,
+            "exitPrice": 361.0386,
+            "exitTime": "09:30:06",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 361.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 360.87
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 362.92,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 364.34,
+            "trailingStop": 363.97565999999995,
+            "exitPrice": 363.97566,
+            "exitTime": "09:30:08",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.002909,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 362.91999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 364.31
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-14",
+            "direction": "BUY",
+            "entryPrice": 359.785,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": false,
+            "bestPrice": 360.07,
+            "trailingStop": null,
+            "exitPrice": 359.425215,
+            "exitTime": "09:30:06",
+            "exitReason": "HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 359.78499999999997,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.87
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 358.225,
+            "entryTime": "09:30:04",
+            "entryIndex": 2,
+            "entryReason": "IMMEDIATE_RETEST",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 359.6259,
+            "trailingStop": 359.2662741,
+            "exitPrice": 359.266274,
+            "exitTime": "09:30:08",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.002907,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 358.225,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.49
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "policy": "WAIT_1_CLOSE_THROUGH",
+      "summary": {
+        "sessions": 20,
+        "entries": 3,
+        "cancelled": 17,
+        "wins": 2,
+        "losses": 1,
+        "winRate": 0.6666666666666666,
+        "avgPnlPct": 0.0003333333333333333,
+        "totalPnlPct": 0.001,
+        "hardStops": 0,
+        "runners": 1,
+        "exitReasons": {
+          "SCALP_TARGET": 2,
+          "RUNNER_HARD_STOP": 1
+        }
+      },
+      "results": [
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 315.69,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 315.605
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 317.15,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 317.9922
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 327.8,
+            "entryTime": "09:30:14",
+            "entryIndex": 7,
+            "entryReason": "WAIT_WAIT_1_CLOSE_THROUGH",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 328.13,
+            "trailingStop": null,
+            "exitPrice": 328.1278,
+            "exitTime": "09:30:18",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 327.49,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 327.8,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:12",
+              "close": 327.89
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 334.41999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 334.085
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 329.79,
+            "entryTime": "09:30:18",
+            "entryIndex": 9,
+            "entryReason": "WAIT_WAIT_1_CLOSE_THROUGH",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 330.21,
+            "trailingStop": null,
+            "exitPrice": 330.11979,
+            "exitTime": "09:30:20",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 329.21,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 328.36,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 329.79,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:16",
+              "close": 329.85
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 493.75,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:42",
+              "close": 493.66
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 488.655,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 488.985
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 495.53499999999997,
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 495.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 497.73,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 497.72
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-15",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 500.475,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 501.6,
+              "time": "09:30:08"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:14",
+              "close": 501.7925
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 224.7121,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 225.18
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 220.575,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 220.06
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 220.98399999999998,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.5,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.85,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.535,
+              "time": "09:30:14"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:16"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:20"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.6,
+              "time": "09:30:22"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:24",
+              "close": 220.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 211,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 211.2
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-15",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 213.055,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 213.358
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 369.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 371.42
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 361.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 360.87
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 362.91999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 364.31
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-14",
+            "direction": "BUY",
+            "entryPrice": 359.785,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_1_CLOSE_THROUGH",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 360.51,
+            "trailingStop": 360.14949,
+            "exitPrice": 359.425215,
+            "exitTime": "09:30:10",
+            "exitReason": "RUNNER_HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 359.78499999999997,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.87
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-15",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 358.225,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.49
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_CLOSE_THROUGH"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "policy": "WAIT_2_CLOSE_THROUGH",
+      "summary": {
+        "sessions": 20,
+        "entries": 5,
+        "cancelled": 15,
+        "wins": 4,
+        "losses": 1,
+        "winRate": 0.8,
+        "avgPnlPct": 0.0011557999999999998,
+        "totalPnlPct": 0.005778999999999999,
+        "hardStops": 0,
+        "runners": 3,
+        "exitReasons": {
+          "SCALP_TARGET": 2,
+          "RUNNER_TRAIL": 2,
+          "RUNNER_HARD_STOP": 1
+        }
+      },
+      "results": [
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 315.69,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 315.605
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 317.15,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 317.9922
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 327.8,
+            "entryTime": "09:30:14",
+            "entryIndex": 7,
+            "entryReason": "WAIT_WAIT_2_CLOSE_THROUGH",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 328.13,
+            "trailingStop": null,
+            "exitPrice": 328.1278,
+            "exitTime": "09:30:18",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 327.49,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 327.8,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:12",
+              "close": 327.89
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-14",
+            "direction": "SELL",
+            "entryPrice": 334.42,
+            "entryTime": "09:30:08",
+            "entryIndex": 4,
+            "entryReason": "WAIT_WAIT_2_CLOSE_THROUGH",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 333.12,
+            "trailingStop": 333.45311999999996,
+            "exitPrice": 333.45312,
+            "exitTime": "09:30:12",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.002891,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 334.41999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 334.085
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 329.79,
+            "entryTime": "09:30:18",
+            "entryIndex": 9,
+            "entryReason": "WAIT_WAIT_2_CLOSE_THROUGH",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 330.21,
+            "trailingStop": null,
+            "exitPrice": 330.11979,
+            "exitTime": "09:30:20",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 329.21,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 328.36,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 329.79,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:16",
+              "close": 329.85
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 493.75,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:42",
+              "close": 493.66
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 488.655,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 488.985
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 495.53499999999997,
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 495.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 497.73,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 497.72
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 501.6,
+            "entryTime": "09:30:18",
+            "entryIndex": 9,
+            "entryReason": "WAIT_WAIT_2_CLOSE_THROUGH",
+            "crossTime": "09:30:08",
+            "crossLevel": "RECLAIM-H",
+            "runner": true,
+            "bestPrice": 503.05,
+            "trailingStop": 502.54695000000004,
+            "exitPrice": 502.54695,
+            "exitTime": "09:30:22",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.001888,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 500.475,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 501.6,
+              "time": "09:30:08"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:14",
+              "close": 501.7925
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 224.7121,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 225.18
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 220.575,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 220.06
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 220.98399999999998,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.5,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.85,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.535,
+              "time": "09:30:14"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:16"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:20"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.6,
+              "time": "09:30:22"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:24",
+              "close": 220.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 211,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 211.2
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-15",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 213.055,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 213.358
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 369.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 371.42
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 361.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 360.87
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 362.91999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 364.31
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-14",
+            "direction": "BUY",
+            "entryPrice": 359.785,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_2_CLOSE_THROUGH",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 360.51,
+            "trailingStop": 360.14949,
+            "exitPrice": 359.425215,
+            "exitTime": "09:30:10",
+            "exitReason": "RUNNER_HARD_STOP",
+            "pnlPct": -0.001,
+            "outcome": "LOST"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 359.78499999999997,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.87
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-15",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 358.225,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.49
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_CLOSE_THROUGH"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "policy": "WAIT_1_HOLD_LEVEL",
+      "summary": {
+        "sessions": 20,
+        "entries": 9,
+        "cancelled": 11,
+        "wins": 9,
+        "losses": 0,
+        "winRate": 1,
+        "avgPnlPct": 0.001636222222222222,
+        "totalPnlPct": 0.014726,
+        "hardStops": 0,
+        "runners": 4,
+        "exitReasons": {
+          "SCALP_TARGET": 5,
+          "RUNNER_TRAIL": 4
+        }
+      },
+      "results": [
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 315.69,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 315.605
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 317.15,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 317.9922
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 327.8,
+            "entryTime": "09:30:14",
+            "entryIndex": 7,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 328.13,
+            "trailingStop": null,
+            "exitPrice": 328.1278,
+            "exitTime": "09:30:18",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 327.49,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 327.8,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:12",
+              "close": 327.89
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 334.41999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 334.085
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 329.79,
+            "entryTime": "09:30:18",
+            "entryIndex": 9,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 330.21,
+            "trailingStop": null,
+            "exitPrice": 330.11979,
+            "exitTime": "09:30:20",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 329.21,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 328.36,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 329.79,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:16",
+              "close": 329.85
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-09",
+            "direction": "SELL",
+            "entryPrice": 493.75,
+            "entryTime": "09:30:44",
+            "entryIndex": 22,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 493.2,
+            "trailingStop": null,
+            "exitPrice": 493.25625,
+            "exitTime": "09:30:56",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 493.75,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:42",
+              "close": 493.66
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 488.655,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 488.985
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 495.53499999999997,
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 495.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 497.73,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 497.72
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 501.6,
+            "entryTime": "09:30:16",
+            "entryIndex": 8,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:08",
+            "crossLevel": "RECLAIM-H",
+            "runner": true,
+            "bestPrice": 503.05,
+            "trailingStop": 502.54695000000004,
+            "exitPrice": 502.54695,
+            "exitTime": "09:30:22",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.001888,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 500.475,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 501.6,
+              "time": "09:30:08"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:14",
+              "close": 501.7925
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-09",
+            "direction": "BUY",
+            "entryPrice": 224.7121,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-L",
+            "runner": true,
+            "bestPrice": 225.51,
+            "trailingStop": 225.28448999999998,
+            "exitPrice": 225.28449,
+            "exitTime": "09:30:12",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.002547,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 224.7121,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 225.18
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-10",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-10",
+            "direction": "SELL",
+            "entryPrice": 220.575,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": false,
+            "bestPrice": 220.055,
+            "trailingStop": null,
+            "exitPrice": 220.354425,
+            "exitTime": "09:30:08",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 220.575,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 220.06
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 220.98399999999998,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.5,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.85,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.535,
+              "time": "09:30:14"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:16"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:20"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.6,
+              "time": "09:30:22"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:24",
+              "close": 220.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-14",
+            "direction": "BUY",
+            "entryPrice": 211,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-L",
+            "runner": false,
+            "bestPrice": 211.425,
+            "trailingStop": null,
+            "exitPrice": 211.211,
+            "exitTime": "09:30:08",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 211,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 211.2
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-15",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 213.055,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 213.358
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 369.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 371.42
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 361.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 360.87
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 362.92,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 364.3299,
+            "trailingStop": 363.96557010000004,
+            "exitPrice": 363.96557,
+            "exitTime": "09:30:10",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.002881,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 362.91999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 364.31
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 359.78499999999997,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.87
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_1_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 358.225,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_1_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 359.4478,
+            "trailingStop": 359.0883522,
+            "exitPrice": 359.088352,
+            "exitTime": "09:30:10",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.00241,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 358.225,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.49
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "policy": "WAIT_2_HOLD_LEVEL",
+      "summary": {
+        "sessions": 20,
+        "entries": 11,
+        "cancelled": 9,
+        "wins": 11,
+        "losses": 0,
+        "winRate": 1,
+        "avgPnlPct": 0.0021615454545454546,
+        "totalPnlPct": 0.023777000000000003,
+        "hardStops": 0,
+        "runners": 6,
+        "exitReasons": {
+          "RUNNER_TRAIL": 6,
+          "SCALP_TARGET": 5
+        }
+      },
+      "results": [
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-09",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 315.69,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 315.605
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-10",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-10",
+            "direction": "BUY",
+            "entryPrice": 317.15,
+            "entryTime": "09:30:08",
+            "entryIndex": 4,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": true,
+            "bestPrice": 319.07,
+            "trailingStop": 318.75093,
+            "exitPrice": 318.75093,
+            "exitTime": "09:30:16",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.005048,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 317.15,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 317.9922
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 327.8,
+            "entryTime": "09:30:14",
+            "entryIndex": 7,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 328.13,
+            "trailingStop": null,
+            "exitPrice": 328.1278,
+            "exitTime": "09:30:18",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 327.49,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 327.8,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:12",
+              "close": 327.89
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 334.41999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 334.085
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "AAPL",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 329.79,
+            "entryTime": "09:30:18",
+            "entryIndex": 9,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:10",
+            "crossLevel": "RECLAIM-H",
+            "runner": false,
+            "bestPrice": 330.21,
+            "trailingStop": null,
+            "exitPrice": 330.11979,
+            "exitTime": "09:30:20",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 329.21,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 328.36,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 329.79,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:16",
+              "close": 329.85
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-09",
+            "direction": "SELL",
+            "entryPrice": 493.75,
+            "entryTime": "09:30:44",
+            "entryIndex": 22,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": false,
+            "bestPrice": 493.2,
+            "trailingStop": null,
+            "exitPrice": 493.25625,
+            "exitTime": "09:30:56",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 493.75,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:42",
+              "close": 493.66
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 488.655,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 488.985
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 495.53499999999997,
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 495.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 497.73,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 497.72
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "MSFT",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 501.6,
+            "entryTime": "09:30:16",
+            "entryIndex": 8,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:08",
+            "crossLevel": "RECLAIM-H",
+            "runner": true,
+            "bestPrice": 503.05,
+            "trailingStop": 502.54695000000004,
+            "exitPrice": 502.54695,
+            "exitTime": "09:30:22",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.001888,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 500.475,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 501.6,
+              "time": "09:30:08"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:14",
+              "close": 501.7925
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-09",
+            "direction": "BUY",
+            "entryPrice": 224.7121,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-L",
+            "runner": true,
+            "bestPrice": 225.51,
+            "trailingStop": 225.28448999999998,
+            "exitPrice": 225.28449,
+            "exitTime": "09:30:12",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.002547,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 224.7121,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 225.18
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-10",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-10",
+            "direction": "SELL",
+            "entryPrice": 220.575,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": false,
+            "bestPrice": 220.055,
+            "trailingStop": null,
+            "exitPrice": 220.354425,
+            "exitTime": "09:30:08",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-M",
+              "levelValue": 220.575,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 220.06
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-11",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 220.98399999999998,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.5,
+              "time": "09:30:06"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:08"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.85,
+              "time": "09:30:10"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:12"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "BUY",
+              "direction": "SELL",
+              "level": "RECLAIM-L",
+              "levelValue": 220.535,
+              "time": "09:30:14"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:16"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "SELL",
+              "time": "09:30:20"
+            },
+            {
+              "type": "RECLAIM_FLIP",
+              "from": "SELL",
+              "direction": "BUY",
+              "level": "RECLAIM-H",
+              "levelValue": 220.6,
+              "time": "09:30:22"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:24",
+              "close": 220.63
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-14",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "NVDA",
+            "date": "2026-09-14",
+            "direction": "BUY",
+            "entryPrice": 211,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-L",
+            "runner": false,
+            "bestPrice": 211.425,
+            "trailingStop": null,
+            "exitPrice": 211.211,
+            "exitTime": "09:30:08",
+            "exitReason": "SCALP_TARGET",
+            "pnlPct": 0.001,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-L",
+              "levelValue": 211,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 211.2
+            }
+          ]
+        },
+        {
+          "symbol": "NVDA",
+          "date": "2026-09-15",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 213.055,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RECLAIM_WAIT",
+              "direction": "BUY",
+              "time": "09:30:04"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:06",
+              "close": 213.358
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-09",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-09",
+            "direction": "BUY",
+            "entryPrice": 369.4,
+            "entryTime": "09:30:08",
+            "entryIndex": 4,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-H",
+            "runner": true,
+            "bestPrice": 371.2499,
+            "trailingStop": 370.8786501,
+            "exitPrice": 370.87865,
+            "exitTime": "09:30:12",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.004003,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-H",
+              "levelValue": 369.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 371.42
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-10",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_DOWN",
+              "direction": "SELL",
+              "level": "F2-H",
+              "levelValue": 361.4,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "SELL",
+              "time": "09:30:04",
+              "close": 360.87
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-11",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-11",
+            "direction": "BUY",
+            "entryPrice": 362.92,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 364.3299,
+            "trailingStop": 363.96557010000004,
+            "exitPrice": 363.96557,
+            "exitTime": "09:30:10",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.002881,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 362.91999999999996,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 364.31
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-14",
+          "phase": "WAIT_CANCELLED",
+          "trade": null,
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 359.78499999999997,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.87
+            },
+            {
+              "type": "WAIT_CANCELLED",
+              "policy": "WAIT_2_HOLD_LEVEL"
+            }
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "date": "2026-09-15",
+          "phase": "CLOSED",
+          "trade": {
+            "symbol": "TSLA",
+            "date": "2026-09-15",
+            "direction": "BUY",
+            "entryPrice": 358.225,
+            "entryTime": "09:30:06",
+            "entryIndex": 3,
+            "entryReason": "WAIT_WAIT_2_HOLD_LEVEL",
+            "crossTime": "09:30:02",
+            "crossLevel": "F2-M",
+            "runner": true,
+            "bestPrice": 359.4478,
+            "trailingStop": 359.0883522,
+            "exitPrice": 359.088352,
+            "exitTime": "09:30:10",
+            "exitReason": "RUNNER_TRAIL",
+            "pnlPct": 0.00241,
+            "outcome": "WON"
+          },
+          "events": [
+            {
+              "type": "CROSS_UP",
+              "direction": "BUY",
+              "level": "F2-M",
+              "levelValue": 358.225,
+              "time": "09:30:02"
+            },
+            {
+              "type": "RETEST_CANDIDATE",
+              "direction": "BUY",
+              "time": "09:30:04",
+              "close": 359.49
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

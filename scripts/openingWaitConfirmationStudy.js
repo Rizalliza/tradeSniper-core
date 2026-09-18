@@ -24,6 +24,9 @@ function parseArgs() {
         runnerTrailPct: 0.001,
         reclaimFlipBars: 2,
         limitExpirySeconds: 60,
+        exitConfirmMode: 'touch',
+        exitConfirmBars: 1,
+        exitConfirmPenetrationPct: 0,
     };
 
     for (let i = 0; i < args.length; i++) {
@@ -39,6 +42,9 @@ function parseArgs() {
             case '--runner-trail-pct': opts.runnerTrailPct = Number(args[++i]); break;
             case '--reclaim-flip-bars': opts.reclaimFlipBars = Number(args[++i]); break;
             case '--limit-expiry-seconds': opts.limitExpirySeconds = Number(args[++i]); break;
+            case '--exit-confirm-mode': opts.exitConfirmMode = args[++i]; break;
+            case '--exit-confirm-bars': opts.exitConfirmBars = Number(args[++i]); break;
+            case '--exit-confirm-penetration-pct': opts.exitConfirmPenetrationPct = Number(args[++i]); break;
         }
     }
     return opts;
@@ -280,6 +286,7 @@ function simulatePolicy({ candidate, first2Bars, validationBars, policy, fillMod
         runner: false,
         bestPrice: candidate.direction === 'BUY' ? entryBar.high : entryBar.low,
         trailingStop: null,
+        pendingExit: null,
         exitPrice: null,
         exitTime: null,
         exitReason: null,
@@ -483,12 +490,14 @@ function violated(candidate, bar) {
 }
 
 function manageTrade(trade, bar, config, allowRunner) {
+    if (trade.pendingExit && updatePendingExit(trade, bar, config)) return;
+
     const stopPrice = trade.direction === 'BUY'
         ? trade.entryPrice * (1 - config.hardStopPct)
         : trade.entryPrice * (1 + config.hardStopPct);
     const stopHit = trade.direction === 'BUY' ? bar.low <= stopPrice : bar.high >= stopPrice;
     if (stopHit) {
-        closeTrade(trade, stopPrice, trade.runner ? 'RUNNER_HARD_STOP' : 'HARD_STOP', bar.time);
+        handleExitTouch(trade, stopPrice, trade.runner ? 'RUNNER_HARD_STOP' : 'HARD_STOP', bar, config);
         return;
     }
 
@@ -498,7 +507,7 @@ function manageTrade(trade, bar, config, allowRunner) {
         const trailHit = trade.direction === 'BUY'
             ? bar.low <= trade.trailingStop
             : bar.high >= trade.trailingStop;
-        if (trailHit) closeTrade(trade, trade.trailingStop, 'RUNNER_TRAIL', bar.time);
+        if (trailHit) handleExitTouch(trade, trade.trailingStop, 'RUNNER_TRAIL', bar, config);
         return;
     }
 
@@ -535,6 +544,88 @@ function closeTrade(trade, price, reason, time) {
     trade.exitReason = reason;
     trade.pnlPct = round(pnlPct(trade, price), 6);
     trade.outcome = trade.pnlPct > 0 ? 'WON' : trade.pnlPct < 0 ? 'LOST' : 'BREAKEVEN';
+    trade.pendingExit = null;
+}
+
+function handleExitTouch(trade, price, reason, bar, config) {
+    if (config.exitConfirmMode === 'touch') {
+        closeTrade(trade, price, reason, bar.time);
+        return;
+    }
+
+    const touch = exitTouchState(trade, price, bar, config);
+    if (exitConfirmed(touch, 1, config)) {
+        closeTrade(trade, price, `${reason}_CONFIRMED`, bar.time);
+        trade.exitConfirmation = {
+            mode: config.exitConfirmMode,
+            touchTime: bar.time,
+            confirmTime: bar.time,
+            penetrated: touch.penetrated,
+            adverseClose: touch.adverseClose,
+            touchCount: 1,
+        };
+        return;
+    }
+
+    trade.pendingExit = {
+        reason,
+        price: round(price),
+        firstTouchTime: bar.time,
+        lastTouchTime: bar.time,
+        touchCount: 1,
+        mode: config.exitConfirmMode,
+    };
+}
+
+function updatePendingExit(trade, bar, config) {
+    const touch = exitTouchState(trade, trade.pendingExit.price, bar, config);
+    if (touch.touched) {
+        trade.pendingExit.touchCount += 1;
+        trade.pendingExit.lastTouchTime = bar.time;
+        if (exitConfirmed(touch, trade.pendingExit.touchCount, config)) {
+            const pending = trade.pendingExit;
+            closeTrade(trade, pending.price, `${pending.reason}_CONFIRMED`, bar.time);
+            trade.exitConfirmation = {
+                mode: pending.mode,
+                touchTime: pending.firstTouchTime,
+                confirmTime: bar.time,
+                penetrated: touch.penetrated,
+                adverseClose: touch.adverseClose,
+                touchCount: pending.touchCount,
+            };
+        }
+        return true;
+    }
+    if (touch.recovered) {
+        trade.pendingExit = null;
+        return false;
+    }
+    return true;
+}
+
+function exitConfirmed(touch, touchCount, config) {
+    if (config.exitConfirmPenetrationPct > 0 && touch.penetrated) return true;
+    if (config.exitConfirmMode === 'close-through') return touch.adverseClose && touchCount >= config.exitConfirmBars;
+    if (config.exitConfirmMode === 'penetration') return false;
+    return touch.adverseClose && touchCount >= config.exitConfirmBars;
+}
+
+function exitTouchState(trade, price, bar, config) {
+    const penetration = price * config.exitConfirmPenetrationPct;
+    if (trade.direction === 'BUY') {
+        return {
+            touched: bar.low <= price,
+            penetrated: bar.low <= price - penetration,
+            adverseClose: bar.close <= price,
+            recovered: bar.close > price,
+        };
+    }
+    return {
+        touched: bar.high >= price,
+        penetrated: bar.high >= price + penetration,
+        adverseClose: bar.close >= price,
+        recovered: bar.close < price,
+    };
 }
 
 function pnlPct(trade, price) {
@@ -567,7 +658,7 @@ function summarize(results) {
         avgPnlPct: trades.length ? totalPnlPct / trades.length : 0,
         avgPnlPctPerCandidate: results.length ? totalPnlPct / results.length : 0,
         totalPnlPct,
-        hardStops: trades.filter(row => row.trade.exitReason === 'HARD_STOP').length,
+        hardStops: trades.filter(row => row.trade.exitReason?.startsWith('HARD_STOP')).length,
         runners: trades.filter(row => row.trade.runner).length,
         missedRunners: noTradeWithOpportunity.filter(row => row.opportunityCost.wouldHaveRunner).length,
         missedScalps: noTradeWithOpportunity.filter(row => row.opportunityCost.wouldHaveScalped).length,
@@ -627,6 +718,9 @@ async function main() {
         runnerTrailPct: opts.runnerTrailPct,
         reclaimFlipBars: opts.reclaimFlipBars,
         limitExpirySeconds: opts.limitExpirySeconds,
+        exitConfirmMode: opts.exitConfirmMode,
+        exitConfirmBars: opts.exitConfirmBars,
+        exitConfirmPenetrationPct: opts.exitConfirmPenetrationPct,
     };
     const policies = [
         { name: 'IMMEDIATE', confirmBars: 0, type: 'immediate' },

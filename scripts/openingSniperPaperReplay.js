@@ -30,6 +30,9 @@ function parseArgs() {
         runnerTrailPct: 0.001,
         reclaimFlipBars: 2,
         wrongSideGuard: true,
+        exitConfirmMode: 'touch',
+        exitConfirmBars: 1,
+        exitConfirmPenetrationPct: 0,
     };
 
     for (let i = 0; i < args.length; i++) {
@@ -44,6 +47,9 @@ function parseArgs() {
             case '--runner-trigger-pct': opts.runnerTriggerPct = Number(args[++i]); break;
             case '--runner-trail-pct': opts.runnerTrailPct = Number(args[++i]); break;
             case '--reclaim-flip-bars': opts.reclaimFlipBars = Number(args[++i]); break;
+            case '--exit-confirm-mode': opts.exitConfirmMode = args[++i]; break;
+            case '--exit-confirm-bars': opts.exitConfirmBars = Number(args[++i]); break;
+            case '--exit-confirm-penetration-pct': opts.exitConfirmPenetrationPct = Number(args[++i]); break;
             case '--no-wrong-side-guard': opts.wrongSideGuard = false; break;
         }
     }
@@ -123,6 +129,9 @@ async function main() {
         runnerTrailPct: opts.runnerTrailPct,
         reclaimFlipBars: opts.reclaimFlipBars,
         wrongSideGuard: opts.wrongSideGuard,
+        exitConfirmMode: opts.exitConfirmMode,
+        exitConfirmBars: opts.exitConfirmBars,
+        exitConfirmPenetrationPct: opts.exitConfirmPenetrationPct,
     };
     const controlConfig = { ...config, wrongSideGuard: false };
     const results = [];

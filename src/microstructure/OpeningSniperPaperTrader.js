@@ -12,6 +12,9 @@ export class OpeningSniperPaperTrader {
         entryWindowEnd = '09:32:00',
         wrongSideGuard = true,
         reclaimFlipBars = 2,
+        exitConfirmMode = 'touch',
+        exitConfirmBars = 1,
+        exitConfirmPenetrationPct = 0,
     } = {}) {
         if (!symbol) throw new Error('OpeningSniperPaperTrader requires symbol');
         if (!date) throw new Error('OpeningSniperPaperTrader requires date');
@@ -27,6 +30,9 @@ export class OpeningSniperPaperTrader {
         this.entryWindowEnd = entryWindowEnd;
         this.wrongSideGuard = wrongSideGuard;
         this.reclaimFlipBars = reclaimFlipBars;
+        this.exitConfirmMode = exitConfirmMode;
+        this.exitConfirmBars = exitConfirmBars;
+        this.exitConfirmPenetrationPct = exitConfirmPenetrationPct;
         this.reset();
     }
 
@@ -42,6 +48,7 @@ export class OpeningSniperPaperTrader {
         this.localBias = 'NEUTRAL';
         this.upPressureRun = 0;
         this.downPressureRun = 0;
+        this.pendingExit = null;
     }
 
     processOpeningBar(inputBar) {
@@ -107,6 +114,7 @@ export class OpeningSniperPaperTrader {
             phase: this.phase,
             pending: this.pending ? { ...this.pending } : null,
             trade: this.trade ? cloneTrade(this.trade) : null,
+            pendingExit: this.pendingExit ? { ...this.pendingExit } : null,
             events: this.events.map(event => ({ ...event })),
             openingRange: this.high == null ? null : {
                 high: round(this.high),
@@ -159,6 +167,7 @@ export class OpeningSniperPaperTrader {
     _manageTrade(bar, allowRunner) {
         if (!this.trade || this.trade.exitReason) return;
         if (bar.index === this.trade.entryIndex) return;
+        if (this.pendingExit && this._updatePendingExit(bar)) return;
         this._updateBestPrice(bar);
 
         const stopPrice = this.trade.direction === 'BUY'
@@ -166,7 +175,7 @@ export class OpeningSniperPaperTrader {
             : this.trade.entryPrice * (1 + this.hardStopPct);
         const stopHit = this.trade.direction === 'BUY' ? bar.low <= stopPrice : bar.high >= stopPrice;
         if (stopHit) {
-            this._closeTrade(stopPrice, this.trade.runner ? 'RUNNER_HARD_STOP' : 'HARD_STOP', bar.time);
+            this._handleExitTouch(stopPrice, this.trade.runner ? 'RUNNER_HARD_STOP' : 'HARD_STOP', bar);
             return;
         }
 
@@ -175,7 +184,7 @@ export class OpeningSniperPaperTrader {
             const trailHit = this.trade.direction === 'BUY'
                 ? bar.low <= this.trade.trailingStop
                 : bar.high >= this.trade.trailingStop;
-            if (trailHit) this._closeTrade(this.trade.trailingStop, 'RUNNER_TRAIL', bar.time);
+            if (trailHit) this._handleExitTouch(this.trade.trailingStop, 'RUNNER_TRAIL', bar);
             return;
         }
 
@@ -348,6 +357,119 @@ export class OpeningSniperPaperTrader {
             pnlPct: this.trade.pnlPct,
             outcome: this.trade.outcome,
         });
+        this.pendingExit = null;
+    }
+
+    _handleExitTouch(price, reason, bar) {
+        if (this.exitConfirmMode === 'touch') {
+            this._closeTrade(price, reason, bar.time);
+            return;
+        }
+
+        const touch = this._exitTouchState(price, bar);
+        const confirmed = this._exitConfirmed(touch, 1);
+        if (confirmed) {
+            this._closeTrade(price, `${reason}_CONFIRMED`, bar.time);
+            this.trade.exitConfirmation = {
+                mode: this.exitConfirmMode,
+                touchTime: bar.time,
+                confirmTime: bar.time,
+                penetrated: touch.penetrated,
+                adverseClose: touch.adverseClose,
+                touchCount: 1,
+            };
+            return;
+        }
+
+        this.pendingExit = {
+            reason,
+            price: round(price),
+            firstTouchTime: bar.time,
+            lastTouchTime: bar.time,
+            touchCount: 1,
+            mode: this.exitConfirmMode,
+        };
+        this.events.push({
+            type: 'EXIT_TOUCH',
+            direction: this.trade.direction,
+            reason,
+            time: bar.time,
+            exitPrice: round(price),
+            mode: this.exitConfirmMode,
+            penetrated: touch.penetrated,
+            adverseClose: touch.adverseClose,
+        });
+    }
+
+    _updatePendingExit(bar) {
+        const touch = this._exitTouchState(this.pendingExit.price, bar);
+        if (touch.touched) {
+            this.pendingExit.touchCount += 1;
+            this.pendingExit.lastTouchTime = bar.time;
+            if (this._exitConfirmed(touch, this.pendingExit.touchCount)) {
+                const pending = this.pendingExit;
+                this._closeTrade(pending.price, `${pending.reason}_CONFIRMED`, bar.time);
+                this.trade.exitConfirmation = {
+                    mode: pending.mode,
+                    touchTime: pending.firstTouchTime,
+                    confirmTime: bar.time,
+                    penetrated: touch.penetrated,
+                    adverseClose: touch.adverseClose,
+                    touchCount: pending.touchCount,
+                };
+                return true;
+            }
+            this.events.push({
+                type: 'EXIT_TOUCH_WAIT',
+                direction: this.trade.direction,
+                reason: this.pendingExit.reason,
+                time: bar.time,
+                exitPrice: this.pendingExit.price,
+                touchCount: this.pendingExit.touchCount,
+            });
+            return true;
+        }
+
+        if (touch.recovered) {
+            this.events.push({
+                type: 'EXIT_TOUCH_CANCELLED',
+                direction: this.trade.direction,
+                reason: this.pendingExit.reason,
+                time: bar.time,
+                exitPrice: this.pendingExit.price,
+                touchCount: this.pendingExit.touchCount,
+            });
+            this.pendingExit = null;
+            return false;
+        }
+        return true;
+    }
+
+    _exitConfirmed(touch, touchCount) {
+        if (this.exitConfirmPenetrationPct > 0 && touch.penetrated) return true;
+        if (this.exitConfirmMode === 'close-through') {
+            return touch.adverseClose && touchCount >= this.exitConfirmBars;
+        }
+        if (this.exitConfirmMode === 'penetration') return false;
+        return touch.adverseClose && touchCount >= this.exitConfirmBars;
+    }
+
+    _exitTouchState(price, bar) {
+        const penetration = price * this.exitConfirmPenetrationPct;
+        if (this.trade.direction === 'BUY') {
+            return {
+                touched: bar.low <= price,
+                penetrated: bar.low <= price - penetration,
+                adverseClose: bar.close <= price,
+                recovered: bar.close > price,
+            };
+        }
+        return {
+            touched: bar.high >= price,
+            penetrated: bar.high >= price + penetration,
+            adverseClose: bar.close >= price,
+            recovered: bar.close < price,
+        };
     }
 
     _levels() {

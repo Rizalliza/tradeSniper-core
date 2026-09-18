@@ -12,7 +12,9 @@ function parseArgs() {
         pressure: 'data/pressure-pilot-2026-09-09_2026-09-15.json',
         study: 'data/opening-wait-confirmation-study-2026-09-09_2026-09-15.json',
         policy: 'WAIT_2_HOLD_LEVEL',
+        fillModel: 'WAIT_LIMIT_RETEST_WITH_EXPIRY',
         baseline: 'IMMEDIATE',
+        baselineFillModel: 'IMMEDIATE',
         out: 'webapp/opening-wait-review.html',
     };
     for (let i = 0; i < args.length; i++) {
@@ -20,7 +22,9 @@ function parseArgs() {
             case '--pressure': opts.pressure = args[++i]; break;
             case '--study': opts.study = args[++i]; break;
             case '--policy': opts.policy = args[++i]; break;
+            case '--fill-model': opts.fillModel = args[++i]; break;
             case '--baseline': opts.baseline = args[++i]; break;
+            case '--baseline-fill-model': opts.baselineFillModel = args[++i]; break;
             case '--out': opts.out = args[++i]; break;
         }
     }
@@ -141,11 +145,12 @@ function chart({ waitRow, immediateRow, pack }) {
         const entryIndex = findBarIndex(bars, waitRow.trade.entryTime);
         const exitIndex = findBarIndex(bars, waitRow.trade.exitTime);
         const entryColor = waitRow.trade.direction === 'BUY' ? '#54d990' : '#ff6b6b';
-        parts.push(marker(x(entryIndex), y(waitRow.trade.entryPrice), entryColor, `WAIT ${waitRow.trade.direction}`, 'solid'));
+        parts.push(marker(x(entryIndex), y(waitRow.trade.entryPrice), entryColor, `FILL ${waitRow.trade.direction}`, 'solid'));
         parts.push(marker(x(exitIndex), y(waitRow.trade.exitPrice), '#67b7ff', shortExit(waitRow.trade.exitReason), 'solid'));
     } else {
         const textY = pad.top + 22;
-        parts.push(`<text x="${pad.left + 10}" y="${textY}" fill="#ffcc66" font-size="13" font-weight="700">WAIT CANCELLED</text>`);
+        const label = waitRow.phase === 'NO_FILL' ? 'NO FILL' : waitRow.phase === 'EXPIRED' ? 'EXPIRED' : 'WAIT CANCELLED';
+        parts.push(`<text x="${pad.left + 10}" y="${textY}" fill="#ffcc66" font-size="13" font-weight="700">${label}</text>`);
     }
 
     parts.push(`<text x="${pad.left}" y="${height - 11}" fill="#b8c6d8" font-size="11">${num(min)} - ${num(max)}</text>`);
@@ -176,8 +181,8 @@ function card({ waitRow, immediateRow, pack }) {
         ? `Immediate: ${immediate.direction} ${immediate.entryTime}->${immediate.exitTime} ${shortExit(immediate.exitReason)} ${pct(immediate.pnlPct)}`
         : 'Immediate: no trade';
     const waitText = wait
-        ? `Wait: ${wait.direction} ${wait.entryTime}->${wait.exitTime} ${shortExit(wait.exitReason)} ${pct(wait.pnlPct)}`
-        : `Wait: ${waitRow.phase}`;
+        ? `Fill: ${wait.direction} ${wait.entryTime}->${wait.exitTime} ${shortExit(wait.exitReason)} ${pct(wait.pnlPct)}`
+        : `${waitRow.phase}: ${waitRow.fill?.reason || waitRow.confirmation?.reason || ''} | MFE ${pct(waitRow.opportunityCost?.mfePct)}`;
 
     return `
       <article class="card ${tone}">
@@ -196,7 +201,7 @@ function metric(label, value) {
     return `<div class="metric"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;
 }
 
-function html({ study, waitScenario, immediateScenario, packMap, policy, baseline }) {
+function html({ study, waitScenario, immediateScenario, packMap, policy, fillModel, baseline, baselineFillModel }) {
     const waitMap = byKey(waitScenario.results);
     const immediateMap = byKey(immediateScenario.results);
     const rows = [...waitMap.values()];
@@ -238,14 +243,22 @@ function html({ study, waitScenario, immediateScenario, packMap, policy, baselin
 <body>
 <main>
   <h1>Opening WAIT Confirmation Review</h1>
-  <p class="sub">${esc(policy)} vs ${esc(baseline)} · ${esc(study.input)} · generated ${esc(study.generated_at)}</p>
+  <p class="sub">${esc(policy)}:${esc(fillModel)} vs ${esc(baseline)}:${esc(baselineFillModel)} · ${esc(study.input)} · generated ${esc(study.generated_at)}</p>
   <section class="summary">
     ${metric('wait entries', s.entries ?? '-')}
+    ${metric('confirmed', s.confirmed ?? '-')}
+    ${metric('filled', s.filled ?? '-')}
+    ${metric('no fill', s.noFill ?? '-')}
     ${metric('wait cancelled', s.cancelled ?? '-')}
     ${metric('wait WR', pct(s.winRate))}
+    ${metric('fill rate', pct(s.fillRate))}
     ${metric('wait avg', pct(s.avgPnlPct))}
+    ${metric('avg / candidate', pct(s.avgPnlPctPerCandidate))}
     ${metric('wait total', pct(s.totalPnlPct))}
     ${metric('wait stops', s.hardStops ?? '-')}
+    ${metric('missed runners', s.missedRunners ?? '-')}
+    ${metric('missed scalps', s.missedScalps ?? '-')}
+    ${metric('no-trade MFE', pct(s.avgNoTradeMfePct))}
     ${metric('baseline total', pct(b.totalPnlPct))}
   </section>
   ${cards}
@@ -258,17 +271,19 @@ async function main() {
     const opts = parseArgs();
     const pressure = JSON.parse(await fs.readFile(opts.pressure, 'utf8'));
     const study = JSON.parse(await fs.readFile(opts.study, 'utf8'));
-    const waitScenario = study.scenarios?.find(row => row.policy === opts.policy);
-    const immediateScenario = study.scenarios?.find(row => row.policy === opts.baseline);
-    if (!waitScenario) throw new Error(`Policy not found: ${opts.policy}`);
-    if (!immediateScenario) throw new Error(`Baseline not found: ${opts.baseline}`);
+    const waitScenario = study.scenarios?.find(row => row.policy === opts.policy && row.fillModel === opts.fillModel);
+    const immediateScenario = study.scenarios?.find(row => row.policy === opts.baseline && row.fillModel === opts.baselineFillModel);
+    if (!waitScenario) throw new Error(`Scenario not found: ${opts.policy}:${opts.fillModel}`);
+    if (!immediateScenario) throw new Error(`Baseline not found: ${opts.baseline}:${opts.baselineFillModel}`);
     const output = html({
         study,
         waitScenario,
         immediateScenario,
         packMap: buildPackMap(pressure),
         policy: opts.policy,
+        fillModel: opts.fillModel,
         baseline: opts.baseline,
+        baselineFillModel: opts.baselineFillModel,
     });
     await fs.mkdir(path.dirname(opts.out), { recursive: true });
     await fs.writeFile(opts.out, output);

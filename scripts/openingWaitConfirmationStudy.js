@@ -23,6 +23,7 @@ function parseArgs() {
         runnerTriggerPct: 0.0015,
         runnerTrailPct: 0.001,
         reclaimFlipBars: 2,
+        limitExpirySeconds: 60,
     };
 
     for (let i = 0; i < args.length; i++) {
@@ -37,6 +38,7 @@ function parseArgs() {
             case '--runner-trigger-pct': opts.runnerTriggerPct = Number(args[++i]); break;
             case '--runner-trail-pct': opts.runnerTrailPct = Number(args[++i]); break;
             case '--reclaim-flip-bars': opts.reclaimFlipBars = Number(args[++i]); break;
+            case '--limit-expiry-seconds': opts.limitExpirySeconds = Number(args[++i]); break;
         }
     }
     return opts;
@@ -112,6 +114,13 @@ function findCandidate({ symbol, date, first2Bars, config }) {
                         entryCandidateClose: bar.close,
                         fromReclaim: pending.fromReclaim,
                         localBias,
+                        dataQuality: {
+                            source: 'BAR',
+                            resolutionMs: 2000,
+                            hasTrades: false,
+                            hasQuotes: false,
+                            executionCertainty: 'BAR_RESOLVED',
+                        },
                         events: [...events, { type: 'RETEST_CANDIDATE', direction: pending.direction, time: bar.time, close: bar.close }],
                     };
                 }
@@ -193,29 +202,79 @@ function detectRetest(pending, bar, config) {
         (!pending.fromReclaim || bar.close >= pending.levelValue - closeZone);
 }
 
-function simulatePolicy({ candidate, first2Bars, validationBars, policy, config }) {
-    if (!candidate.direction) return { symbol: candidate.symbol, date: candidate.date, phase: candidate.phase, trade: null, events: candidate.events || [] };
+function simulatePolicy({ candidate, first2Bars, validationBars, policy, fillModel, config }) {
+    if (!candidate.direction) {
+        return {
+            symbol: candidate.symbol,
+            date: candidate.date,
+            phase: candidate.phase,
+            confirmation: null,
+            order: null,
+            fill: null,
+            trade: null,
+            events: candidate.events || [],
+            dataQuality: candidate.dataQuality || null,
+        };
+    }
     const allBars = [...first2Bars, ...validationBars].map((bar, index) => ({ ...bar, index }));
-    const entryIndex = resolveEntryIndex(candidate, allBars, policy);
-    if (entryIndex == null) {
+    const confirmationIndex = resolveConfirmationIndex(candidate, allBars, policy);
+    if (confirmationIndex == null) {
         return {
             symbol: candidate.symbol,
             date: candidate.date,
             phase: 'WAIT_CANCELLED',
+            confirmation: {
+                policy: policy.name,
+                status: 'REJECTED',
+                candidateTime: candidate.entryCandidateTime,
+                reason: 'NO_CONFIRMATION_OR_LEVEL_VIOLATION',
+            },
+            order: null,
+            fill: null,
             trade: null,
             events: [...candidate.events, { type: 'WAIT_CANCELLED', policy: policy.name }],
+            dataQuality: candidate.dataQuality,
+            opportunityCost: measureOpportunity({ candidate, allBars, config, startIndex: candidate.entryCandidateIndex + 1 }),
         };
     }
 
-    const entryBar = allBars[entryIndex];
+    const confirmationBar = allBars[confirmationIndex];
+    const confirmation = {
+        policy: policy.name,
+        status: 'CONFIRMED',
+        confirmationTime: confirmationBar.time,
+        confirmationIndex,
+        confirmationPrice: round(confirmationPrice(candidate, confirmationBar, policy)),
+        barsWaited: confirmationIndex - candidate.entryCandidateIndex,
+        levelAtConfirmation: round(candidate.levelValue),
+        reason: policy.confirmBars === 0 ? 'IMMEDIATE_RETEST' : policy.type,
+    };
+    const order = createOrder({ candidate, confirmation, fillModel, config });
+    const fill = simulateFill({ candidate, order, allBars, confirmationIndex, fillModel, config });
+    if (fill.status !== 'FILLED') {
+        return {
+            symbol: candidate.symbol,
+            date: candidate.date,
+            phase: fill.status,
+            confirmation,
+            order,
+            fill,
+            trade: null,
+            events: [...candidate.events, { type: fill.status, policy: policy.name, fillModel: fillModel.name, time: fill.statusTime }],
+            dataQuality: candidate.dataQuality,
+            opportunityCost: measureOpportunity({ candidate, allBars, config, startIndex: confirmationIndex + 1 }),
+        };
+    }
+
+    const entryBar = allBars[fill.fillIndex];
     const trade = {
         symbol: candidate.symbol,
         date: candidate.date,
         direction: candidate.direction,
-        entryPrice: round(candidate.levelValue),
+        entryPrice: round(fill.fillPrice),
         entryTime: entryBar.time,
-        entryIndex,
-        entryReason: entryIndex === candidate.entryCandidateIndex ? 'IMMEDIATE_RETEST' : `WAIT_${policy.name}`,
+        entryIndex: fill.fillIndex,
+        entryReason: `${policy.name}_${fillModel.name}`,
         crossTime: candidate.crossTime,
         crossLevel: candidate.level,
         runner: false,
@@ -228,7 +287,7 @@ function simulatePolicy({ candidate, first2Bars, validationBars, policy, config 
         outcome: null,
     };
 
-    for (let i = entryIndex + 1; i < allBars.length; i++) {
+    for (let i = fill.fillIndex + 1; i < allBars.length; i++) {
         manageTrade(trade, allBars[i], config, i >= first2Bars.length);
         if (trade.exitReason) break;
     }
@@ -237,10 +296,21 @@ function simulatePolicy({ candidate, first2Bars, validationBars, policy, config 
         const last = allBars.at(-1) || entryBar;
         closeTrade(trade, last.close, trade.runner ? 'RUNNER_HELD_TO_END' : 'UNRESOLVED_WINDOW_END', last.time);
     }
-    return { symbol: candidate.symbol, date: candidate.date, phase: 'CLOSED', trade, events: candidate.events };
+    trade.excursion = measureOpportunity({ candidate, allBars, config, startIndex: fill.fillIndex, referencePrice: fill.fillPrice });
+    return {
+        symbol: candidate.symbol,
+        date: candidate.date,
+        phase: 'CLOSED',
+        confirmation,
+        order,
+        fill,
+        trade,
+        events: candidate.events,
+        dataQuality: candidate.dataQuality,
+    };
 }
 
-function resolveEntryIndex(candidate, bars, policy) {
+function resolveConfirmationIndex(candidate, bars, policy) {
     if (policy.confirmBars === 0) return candidate.entryCandidateIndex;
     const start = candidate.entryCandidateIndex;
     const max = Math.min(bars.length - 1, start + policy.confirmBars);
@@ -250,6 +320,149 @@ function resolveEntryIndex(candidate, bars, policy) {
         if (confirmed(candidate, bar, policy)) return i;
     }
     return null;
+}
+
+function createOrder({ candidate, confirmation, fillModel, config }) {
+    const orderCreatedIndex = confirmation.confirmationIndex;
+    const requestedPrice = fillModel.name === 'WAIT_MARKET'
+        ? confirmation.confirmationPrice
+        : fillModel.name === 'WAIT_STOP_CONFIRM'
+            ? (candidate.direction === 'BUY' ? candidate.entryCandidateHigh : candidate.entryCandidateLow)
+            : candidate.levelValue;
+    return {
+        orderId: `${candidate.symbol}-${candidate.date}-${confirmation.policy}-${fillModel.name}`,
+        confirmationPolicy: confirmation.policy,
+        fillModel: fillModel.name,
+        symbol: candidate.symbol,
+        direction: candidate.direction,
+        signalTime: candidate.entryCandidateTime,
+        confirmationTime: confirmation.confirmationTime,
+        orderCreatedTime: confirmation.confirmationTime,
+        orderCreatedIndex,
+        requestedPrice: round(requestedPrice),
+        expirySeconds: fillModel.expirySeconds ?? null,
+        status: 'PENDING',
+    };
+}
+
+function simulateFill({ candidate, order, allBars, confirmationIndex, fillModel, config }) {
+    if (fillModel.name === 'IMMEDIATE') {
+        return fillAt({
+            status: 'FILLED',
+            fillIndex: candidate.entryCandidateIndex,
+            fillPrice: candidate.levelValue,
+            reason: 'IMMEDIATE_RETEST_LEVEL',
+            certainty: 'BAR_RESOLVED',
+            allBars,
+        });
+    }
+
+    if (fillModel.name === 'WAIT_MARKET') {
+        const bar = allBars[confirmationIndex];
+        return fillAt({
+            status: 'FILLED',
+            fillIndex: confirmationIndex,
+            fillPrice: confirmationPrice(candidate, bar, { type: 'market' }),
+            reason: 'CONFIRMATION_MARKET_ESTIMATE',
+            certainty: bar.time >= '09:32:00' ? 'AMBIGUOUS' : 'BAR_RESOLVED',
+            allBars,
+        });
+    }
+
+    const expirySeconds = fillModel.expirySeconds ?? null;
+    const expiryTime = Number.isFinite(expirySeconds)
+        ? addSeconds(allBars[confirmationIndex].time, expirySeconds)
+        : null;
+    const startIndex = confirmationIndex + 1;
+    for (let i = startIndex; i < allBars.length; i++) {
+        const bar = allBars[i];
+        if (expiryTime && bar.time > expiryTime) break;
+        if (fillModel.name === 'WAIT_LIMIT_RETEST' || fillModel.name === 'WAIT_LIMIT_RETEST_WITH_EXPIRY') {
+            const touched = candidate.direction === 'BUY'
+                ? bar.low <= order.requestedPrice
+                : bar.high >= order.requestedPrice;
+            if (touched) {
+                return fillAt({
+                    status: 'FILLED',
+                    fillIndex: i,
+                    fillPrice: order.requestedPrice,
+                    reason: 'POST_CONFIRMATION_LIMIT_RETEST',
+                    certainty: bar.time >= '09:32:00' ? 'AMBIGUOUS' : 'BAR_RESOLVED',
+                    allBars,
+                });
+            }
+        }
+        if (fillModel.name === 'WAIT_STOP_CONFIRM') {
+            const triggered = candidate.direction === 'BUY'
+                ? bar.high >= order.requestedPrice
+                : bar.low <= order.requestedPrice;
+            if (triggered) {
+                return fillAt({
+                    status: 'FILLED',
+                    fillIndex: i,
+                    fillPrice: order.requestedPrice,
+                    reason: 'POST_CONFIRMATION_STOP_TRIGGER',
+                    certainty: bar.time >= '09:32:00' ? 'AMBIGUOUS' : 'BAR_RESOLVED',
+                    allBars,
+                });
+            }
+        }
+    }
+
+    return {
+        status: expiryTime ? 'EXPIRED' : 'NO_FILL',
+        statusTime: expiryTime || allBars.at(-1)?.time || order.orderCreatedTime,
+        fillIndex: null,
+        fillTime: null,
+        fillPrice: null,
+        reason: expiryTime ? 'ORDER_EXPIRED_BEFORE_PRICE_AVAILABLE' : 'POST_CONFIRMATION_PRICE_NOT_AVAILABLE',
+        executionCertainty: 'BAR_RESOLVED',
+    };
+}
+
+function measureOpportunity({ candidate, allBars, config, startIndex, referencePrice = candidate.levelValue }) {
+    if (!candidate?.direction || !Number.isFinite(Number(referencePrice))) return null;
+    let bestMove = 0;
+    let worstMove = 0;
+    for (let i = Math.max(0, startIndex); i < allBars.length; i++) {
+        const bar = allBars[i];
+        const favorablePrice = candidate.direction === 'BUY' ? bar.high : bar.low;
+        const adversePrice = candidate.direction === 'BUY' ? bar.low : bar.high;
+        bestMove = Math.max(bestMove, directionalPct(candidate.direction, referencePrice, favorablePrice));
+        worstMove = Math.min(worstMove, directionalPct(candidate.direction, referencePrice, adversePrice));
+    }
+    return {
+        referencePrice: round(referencePrice),
+        fromIndex: startIndex,
+        mfePct: round(bestMove, 6),
+        maePct: round(worstMove, 6),
+        wouldHaveScalped: bestMove >= config.scalpTargetPct,
+        wouldHaveRunner: bestMove >= config.runnerTriggerPct,
+        wouldHaveHardStopped: Math.abs(worstMove) >= config.hardStopPct,
+    };
+}
+
+function directionalPct(direction, entryPrice, price) {
+    const dir = direction === 'BUY' ? 1 : -1;
+    return ((price - entryPrice) / entryPrice) * dir;
+}
+
+function fillAt({ status, fillIndex, fillPrice, reason, certainty, allBars }) {
+    const bar = allBars[fillIndex];
+    return {
+        status,
+        fillIndex,
+        fillTime: bar.time,
+        fillPrice: round(fillPrice),
+        reason,
+        executionCertainty: certainty,
+        barResolutionMs: bar.time >= '09:32:00' ? 60000 : 2000,
+    };
+}
+
+function confirmationPrice(candidate, bar, policy) {
+    if (policy.type === 'close-through' || policy.type === 'hold-level' || policy.type === 'market') return bar.close;
+    return candidate.levelValue;
 }
 
 function confirmed(candidate, bar, policy) {
@@ -325,28 +538,52 @@ function closeTrade(trade, price, reason, time) {
 }
 
 function pnlPct(trade, price) {
-    const dir = trade.direction === 'BUY' ? 1 : -1;
-    return ((price - trade.entryPrice) / trade.entryPrice) * dir;
+    return directionalPct(trade.direction, trade.entryPrice, price);
 }
 
 function summarize(results) {
     const trades = results.filter(row => row.trade);
+    const noTradeWithOpportunity = results.filter(row => !row.trade && row.opportunityCost);
     const wins = trades.filter(row => row.trade.outcome === 'WON').length;
     const losses = trades.filter(row => row.trade.outcome === 'LOST').length;
     const totalPnlPct = trades.reduce((sum, row) => sum + (row.trade.pnlPct || 0), 0);
+    const avgNoTradeMfePct = average(noTradeWithOpportunity, row => row.opportunityCost.mfePct);
+    const avgNoTradeMaePct = average(noTradeWithOpportunity, row => row.opportunityCost.maePct);
+    const confirmed = results.filter(row => row.confirmation?.status === 'CONFIRMED').length;
+    const filled = results.filter(row => row.fill?.status === 'FILLED').length;
     return {
         sessions: results.length,
+        candidates: results.filter(row => row.phase !== 'NO_CROSS' && row.phase !== 'NO_RETEST').length,
+        confirmed,
+        filled,
         entries: trades.length,
         cancelled: results.filter(row => row.phase === 'WAIT_CANCELLED').length,
+        noFill: results.filter(row => row.phase === 'NO_FILL').length,
+        expired: results.filter(row => row.phase === 'EXPIRED').length,
         wins,
         losses,
         winRate: wins + losses ? wins / (wins + losses) : null,
+        fillRate: confirmed ? filled / confirmed : null,
         avgPnlPct: trades.length ? totalPnlPct / trades.length : 0,
+        avgPnlPctPerCandidate: results.length ? totalPnlPct / results.length : 0,
         totalPnlPct,
         hardStops: trades.filter(row => row.trade.exitReason === 'HARD_STOP').length,
         runners: trades.filter(row => row.trade.runner).length,
+        missedRunners: noTradeWithOpportunity.filter(row => row.opportunityCost.wouldHaveRunner).length,
+        missedScalps: noTradeWithOpportunity.filter(row => row.opportunityCost.wouldHaveScalped).length,
+        avgNoTradeMfePct,
+        avgNoTradeMaePct,
+        avgTradeMfePct: average(trades, row => row.trade.excursion?.mfePct),
+        avgTradeMaePct: average(trades, row => row.trade.excursion?.maePct),
         exitReasons: countBy(trades, row => row.trade.exitReason),
+        fillStatuses: countBy(results, row => row.fill?.status || row.phase),
+        executionCertainty: countBy(results, row => row.fill?.executionCertainty || row.dataQuality?.executionCertainty || 'UNKNOWN'),
     };
+}
+
+function average(rows, fn) {
+    const values = rows.map(fn).filter(value => Number.isFinite(Number(value)));
+    return values.length ? values.reduce((sum, value) => sum + Number(value), 0) / values.length : null;
 }
 
 function countBy(rows, fn) {
@@ -369,6 +606,15 @@ function round(value, digits = 6) {
     return Number.isFinite(value) ? Number(value.toFixed(digits)) : null;
 }
 
+function addSeconds(time, seconds) {
+    const [hh = 0, mm = 0, ss = 0] = String(time).split(':').map(Number);
+    const total = hh * 3600 + mm * 60 + ss + seconds;
+    const h = String(Math.floor(total / 3600)).padStart(2, '0');
+    const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+    const s = String(total % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+}
+
 async function main() {
     const opts = parseArgs();
     const config = {
@@ -380,6 +626,7 @@ async function main() {
         runnerTriggerPct: opts.runnerTriggerPct,
         runnerTrailPct: opts.runnerTrailPct,
         reclaimFlipBars: opts.reclaimFlipBars,
+        limitExpirySeconds: opts.limitExpirySeconds,
     };
     const policies = [
         { name: 'IMMEDIATE', confirmBars: 0, type: 'immediate' },
@@ -387,6 +634,13 @@ async function main() {
         { name: 'WAIT_2_CLOSE_THROUGH', confirmBars: 2, type: 'close-through' },
         { name: 'WAIT_1_HOLD_LEVEL', confirmBars: 1, type: 'hold-level' },
         { name: 'WAIT_2_HOLD_LEVEL', confirmBars: 2, type: 'hold-level' },
+    ];
+    const fillModels = [
+        { name: 'IMMEDIATE', appliesTo: policy => policy.name === 'IMMEDIATE' },
+        { name: 'WAIT_MARKET', appliesTo: policy => policy.name !== 'IMMEDIATE' },
+        { name: 'WAIT_LIMIT_RETEST', appliesTo: policy => policy.name !== 'IMMEDIATE' },
+        { name: 'WAIT_LIMIT_RETEST_WITH_EXPIRY', expirySeconds: opts.limitExpirySeconds, appliesTo: policy => policy.name !== 'IMMEDIATE' },
+        { name: 'WAIT_STOP_CONFIRM', expirySeconds: opts.limitExpirySeconds, appliesTo: policy => policy.name !== 'IMMEDIATE' },
     ];
 
     const payload = JSON.parse(await fs.readFile(opts.input, 'utf8'));
@@ -405,15 +659,24 @@ async function main() {
         }
     }
 
-    const scenarios = policies.map(policy => {
-        const results = packs.map(pack => simulatePolicy({ ...pack, policy, config }));
-        return { policy: policy.name, summary: summarize(results), results };
-    });
+    const scenarios = [];
+    for (const policy of policies) {
+        for (const fillModel of fillModels.filter(model => model.appliesTo(policy))) {
+            const results = packs.map(pack => simulatePolicy({ ...pack, policy, fillModel, config }));
+            scenarios.push({
+                policy: policy.name,
+                fillModel: fillModel.name,
+                scenario: `${policy.name}:${fillModel.name}`,
+                summary: summarize(results),
+                results,
+            });
+        }
+    }
 
     const output = {
         generated_at: new Date().toISOString(),
         input: opts.input,
-        note: 'Research-only WAIT confirmation comparison. No local bias guard is applied here; this isolates execution decisiveness after retest.',
+        note: 'Research-only WAIT confirmation and fill-model comparison. No local bias guard is applied here. Confirmation, order, fill, and position are separate; NO_FILL/EXPIRED are not losses.',
         config,
         scenarios,
     };
@@ -424,7 +687,7 @@ async function main() {
     console.log(`Wait confirmation study: ${opts.input}`);
     for (const scenario of scenarios) {
         const s = scenario.summary;
-        console.log(`${scenario.policy.padEnd(22)} entries=${String(s.entries).padStart(2)} cancelled=${String(s.cancelled).padStart(2)} W/L=${s.wins}/${s.losses} WR=${pct(s.winRate)} avg=${pct(s.avgPnlPct)} total=${pct(s.totalPnlPct)} stops=${s.hardStops}`);
+        console.log(`${scenario.scenario.padEnd(54)} confirmed=${String(s.confirmed).padStart(2)} filled=${String(s.filled).padStart(2)} noFill=${String(s.noFill).padStart(2)} expired=${String(s.expired).padStart(2)} cancelled=${String(s.cancelled).padStart(2)} W/L=${s.wins}/${s.losses} WR=${pct(s.winRate)} fill=${pct(s.fillRate)} avgFill=${pct(s.avgPnlPct)} avgCand=${pct(s.avgPnlPctPerCandidate)} missedRun=${s.missedRunners} total=${pct(s.totalPnlPct)} stops=${s.hardStops}`);
     }
     console.log(`Wrote ${opts.out}`);
 }

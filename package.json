@@ -19,6 +19,8 @@
     "opening:wait:review": "node scripts/openingWaitReviewDeck.js",
     "opening:wait-study:confirmed-exit": "node scripts/openingWaitConfirmationStudy.js --exit-confirm-mode close-through --out data/opening-wait-confirmed-exit-study-2026-09-09_2026-09-15.json",
     "opening:wait:confirmed-exit:review": "node scripts/openingWaitReviewDeck.js --study data/opening-wait-confirmed-exit-study-2026-09-09_2026-09-15.json --out webapp/opening-wait-confirmed-exit-review.html",
+    "opening:wait-study:separation": "node scripts/openingWaitConfirmationStudy.js --exit-confirm-mode close-through --retest-min-separation-bars 2 --out data/opening-wait-separation-study-2026-09-09_2026-09-15.json",
+    "opening:wait:separation:review": "node scripts/openingWaitReviewDeck.js --study data/opening-wait-separation-study-2026-09-09_2026-09-15.json --out webapp/opening-wait-separation-review.html",
     "opening:multi-event": "node scripts/openingMultiEventScanner.js",
     "opening:multi-event:review": "node scripts/openingMultiEventReviewDeck.js",
     "opening:multi-event:assess": "node scripts/openingMultiEventAssessment.js",

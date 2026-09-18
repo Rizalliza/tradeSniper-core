@@ -24,6 +24,8 @@ function parseArgs() {
         runnerTrailPct: 0.001,
         reclaimFlipBars: 2,
         limitExpirySeconds: 60,
+        retestMinSeparationBars: 0,
+        retestSeparationPct: 0,
         exitConfirmMode: 'touch',
         exitConfirmBars: 1,
         exitConfirmPenetrationPct: 0,
@@ -42,6 +44,8 @@ function parseArgs() {
             case '--runner-trail-pct': opts.runnerTrailPct = Number(args[++i]); break;
             case '--reclaim-flip-bars': opts.reclaimFlipBars = Number(args[++i]); break;
             case '--limit-expiry-seconds': opts.limitExpirySeconds = Number(args[++i]); break;
+            case '--retest-min-separation-bars': opts.retestMinSeparationBars = Number(args[++i]); break;
+            case '--retest-separation-pct': opts.retestSeparationPct = Number(args[++i]); break;
             case '--exit-confirm-mode': opts.exitConfirmMode = args[++i]; break;
             case '--exit-confirm-bars': opts.exitConfirmBars = Number(args[++i]); break;
             case '--exit-confirm-penetration-pct': opts.exitConfirmPenetrationPct = Number(args[++i]); break;
@@ -118,6 +122,7 @@ function findCandidate({ symbol, date, first2Bars, config }) {
                         entryCandidateHigh: bar.high,
                         entryCandidateLow: bar.low,
                         entryCandidateClose: bar.close,
+                        retestSeparation: retest.separation,
                         fromReclaim: pending.fromReclaim,
                         localBias,
                         dataQuality: {
@@ -127,9 +132,16 @@ function findCandidate({ symbol, date, first2Bars, config }) {
                             hasQuotes: false,
                             executionCertainty: 'BAR_RESOLVED',
                         },
-                        events: [...events, { type: 'RETEST_CANDIDATE', direction: pending.direction, time: bar.time, close: bar.close }],
+                        events: [...events, {
+                            type: 'RETEST_CANDIDATE',
+                            direction: pending.direction,
+                            time: bar.time,
+                            close: bar.close,
+                            separation: retest.separation,
+                        }],
                     };
                 }
+                updateRetestSeparation(pending, bar, config);
             }
         }
 
@@ -159,6 +171,8 @@ function detectCross({ prevBar, bar, high, low, index, config }) {
             crossIndex: index,
             reclaimCount: 0,
             fromReclaim: false,
+            separated: false,
+            maxSeparationPct: 0,
         };
         if (crossedDown) return {
             ...level,
@@ -168,6 +182,8 @@ function detectCross({ prevBar, bar, high, low, index, config }) {
             crossIndex: index,
             reclaimCount: 0,
             fromReclaim: false,
+            separated: false,
+            maxSeparationPct: 0,
         };
     }
     return null;
@@ -192,20 +208,45 @@ function maybeFlipReclaim(pending, bar, index, config) {
     pending.crossIndex = index;
     pending.reclaimCount = 0;
     pending.fromReclaim = true;
+    pending.separated = false;
+    pending.maxSeparationPct = 0;
     return { type: 'RECLAIM_FLIP', from: oldDirection, direction: pending.direction, level: pending.level, levelValue: round(pending.levelValue), time: bar.time };
+}
+
+function updateRetestSeparation(pending, bar, config) {
+    const favorablePrice = pending.direction === 'BUY' ? bar.high : bar.low;
+    const separationPct = directionalPct(pending.direction, pending.levelValue, favorablePrice);
+    pending.maxSeparationPct = Math.max(pending.maxSeparationPct || 0, separationPct);
+
+    const required = Number(config.retestSeparationPct) || 0;
+    if (required <= 0 || separationPct >= required) pending.separated = true;
 }
 
 function detectRetest(pending, bar, config) {
     const zone = pending.levelValue * config.retestZonePct;
     const closeZone = zone * config.retestCloseZoneMultiplier;
+    const barsSinceCross = bar.index - pending.crossIndex;
+    const separation = {
+        barsSinceCross,
+        minBarsRequired: config.retestMinSeparationBars,
+        maxSeparationPct: round(pending.maxSeparationPct || 0, 6),
+        requiredSeparationPct: config.retestSeparationPct,
+        separated: pending.separated || false,
+    };
+    if (barsSinceCross < config.retestMinSeparationBars) return null;
+    if (config.retestSeparationPct > 0 && !pending.separated) return null;
     if (pending.direction === 'BUY') {
         return bar.low <= pending.levelValue + zone &&
             bar.close > pending.levelValue &&
-            (!pending.fromReclaim || bar.close <= pending.levelValue + closeZone);
+            (!pending.fromReclaim || bar.close <= pending.levelValue + closeZone)
+            ? { separation }
+            : null;
     }
     return bar.high >= pending.levelValue - zone &&
         bar.close < pending.levelValue &&
-        (!pending.fromReclaim || bar.close >= pending.levelValue - closeZone);
+        (!pending.fromReclaim || bar.close >= pending.levelValue - closeZone)
+        ? { separation }
+        : null;
 }
 
 function simulatePolicy({ candidate, first2Bars, validationBars, policy, fillModel, config }) {
@@ -718,6 +759,8 @@ async function main() {
         runnerTrailPct: opts.runnerTrailPct,
         reclaimFlipBars: opts.reclaimFlipBars,
         limitExpirySeconds: opts.limitExpirySeconds,
+        retestMinSeparationBars: opts.retestMinSeparationBars,
+        retestSeparationPct: opts.retestSeparationPct,
         exitConfirmMode: opts.exitConfirmMode,
         exitConfirmBars: opts.exitConfirmBars,
         exitConfirmPenetrationPct: opts.exitConfirmPenetrationPct,

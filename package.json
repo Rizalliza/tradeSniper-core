@@ -19,6 +19,8 @@
     "opening:wait:review": "node scripts/openingWaitReviewDeck.js",
     "opening:multi-event": "node scripts/openingMultiEventScanner.js",
     "opening:multi-event:review": "node scripts/openingMultiEventReviewDeck.js",
+    "opening:multi-event:assess": "node scripts/openingMultiEventAssessment.js",
+    "opening:multi-event:assess:review": "node scripts/openingMultiEventAssessmentDeck.js",
     "opening:shadow": "node -r dotenv/config scripts/openingSniperLiveShadow.js",
     "webapp:dev": "node scripts/serve.js --port 3000",
     "start": "node scripts/serve.js",

@@ -26,6 +26,7 @@ function parseArgs() {
         limitExpirySeconds: 60,
         retestMinSeparationBars: 0,
         retestSeparationPct: 0,
+        retestRequireMarkerCross: false,
         exitConfirmMode: 'touch',
         exitConfirmBars: 1,
         exitConfirmPenetrationPct: 0,
@@ -46,6 +47,7 @@ function parseArgs() {
             case '--limit-expiry-seconds': opts.limitExpirySeconds = Number(args[++i]); break;
             case '--retest-min-separation-bars': opts.retestMinSeparationBars = Number(args[++i]); break;
             case '--retest-separation-pct': opts.retestSeparationPct = Number(args[++i]); break;
+            case '--retest-require-marker-cross': opts.retestRequireMarkerCross = true; break;
             case '--exit-confirm-mode': opts.exitConfirmMode = args[++i]; break;
             case '--exit-confirm-bars': opts.exitConfirmBars = Number(args[++i]); break;
             case '--exit-confirm-penetration-pct': opts.exitConfirmPenetrationPct = Number(args[++i]); break;
@@ -70,7 +72,7 @@ function normalizeBars(bars = []) {
         .sort((a, b) => a.time.localeCompare(b.time));
 }
 
-function findCandidate({ symbol, date, first2Bars, config }) {
+function findCandidate({ symbol, date, first2Bars, markerList = [], config }) {
     let high = null;
     let low = null;
     let prevBar = null;
@@ -100,7 +102,7 @@ function findCandidate({ symbol, date, first2Bars, config }) {
         if (downPressureRun >= 2) localBias = 'BEARISH';
 
         if (!pending) {
-            pending = detectCross({ prevBar, bar, high, low, index, config });
+            pending = detectCross({ prevBar, bar, high, low, index, markerList, config });
             if (pending) events.push({ type: pending.eventType, direction: pending.direction, level: pending.level, levelValue: pending.levelValue, time: bar.time });
         } else if (index !== pending.crossIndex) {
             const flip = maybeFlipReclaim(pending, bar, index, config);
@@ -152,7 +154,7 @@ function findCandidate({ symbol, date, first2Bars, config }) {
     return { symbol, date, phase: pending ? 'NO_RETEST' : 'NO_CROSS', events };
 }
 
-function detectCross({ prevBar, bar, high, low, index, config }) {
+function detectCross({ prevBar, bar, high, low, index, markerList, config }) {
     const levels = [
         { level: 'F2-H', levelValue: high },
         { level: 'F2-M', levelValue: (high + low) / 2 },
@@ -173,6 +175,8 @@ function detectCross({ prevBar, bar, high, low, index, config }) {
             fromReclaim: false,
             separated: false,
             maxSeparationPct: 0,
+            validationMarker: nextFavorableMarker(markerList, level.levelValue, 'BUY'),
+            markerCrossed: !config.retestRequireMarkerCross,
         };
         if (crossedDown) return {
             ...level,
@@ -184,6 +188,8 @@ function detectCross({ prevBar, bar, high, low, index, config }) {
             fromReclaim: false,
             separated: false,
             maxSeparationPct: 0,
+            validationMarker: nextFavorableMarker(markerList, level.levelValue, 'SELL'),
+            markerCrossed: !config.retestRequireMarkerCross,
         };
     }
     return null;
@@ -210,6 +216,8 @@ function maybeFlipReclaim(pending, bar, index, config) {
     pending.fromReclaim = true;
     pending.separated = false;
     pending.maxSeparationPct = 0;
+    pending.validationMarker = null;
+    pending.markerCrossed = !config.retestRequireMarkerCross;
     return { type: 'RECLAIM_FLIP', from: oldDirection, direction: pending.direction, level: pending.level, levelValue: round(pending.levelValue), time: bar.time };
 }
 
@@ -220,6 +228,13 @@ function updateRetestSeparation(pending, bar, config) {
 
     const required = Number(config.retestSeparationPct) || 0;
     if (required <= 0 || separationPct >= required) pending.separated = true;
+
+    if (pending.validationMarker) {
+        const crossed = pending.direction === 'BUY'
+            ? bar.high >= pending.validationMarker.value
+            : bar.low <= pending.validationMarker.value;
+        pending.markerCrossed = pending.markerCrossed || crossed;
+    }
 }
 
 function detectRetest(pending, bar, config) {
@@ -232,9 +247,12 @@ function detectRetest(pending, bar, config) {
         maxSeparationPct: round(pending.maxSeparationPct || 0, 6),
         requiredSeparationPct: config.retestSeparationPct,
         separated: pending.separated || false,
+        validationMarker: pending.validationMarker || null,
+        markerCrossed: pending.markerCrossed || false,
     };
     if (barsSinceCross < config.retestMinSeparationBars) return null;
     if (config.retestSeparationPct > 0 && !pending.separated) return null;
+    if (config.retestRequireMarkerCross && !pending.markerCrossed) return null;
     if (pending.direction === 'BUY') {
         return bar.low <= pending.levelValue + zone &&
             bar.close > pending.levelValue &&
@@ -247,6 +265,20 @@ function detectRetest(pending, bar, config) {
         (!pending.fromReclaim || bar.close >= pending.levelValue - closeZone)
         ? { separation }
         : null;
+}
+
+function nextFavorableMarker(markerList, levelValue, direction) {
+    const markers = (markerList || [])
+        .filter(marker => finite(marker.value))
+        .filter(marker => Math.abs(Number(marker.value) - Number(levelValue)) > Number(levelValue) * 0.0001);
+    if (direction === 'BUY') {
+        return markers
+            .filter(marker => Number(marker.value) > Number(levelValue))
+            .sort((a, b) => Number(a.value) - Number(b.value))[0] || null;
+    }
+    return markers
+        .filter(marker => Number(marker.value) < Number(levelValue))
+        .sort((a, b) => Number(b.value) - Number(a.value))[0] || null;
 }
 
 function simulatePolicy({ candidate, first2Bars, validationBars, policy, fillModel, config }) {
@@ -761,6 +793,7 @@ async function main() {
         limitExpirySeconds: opts.limitExpirySeconds,
         retestMinSeparationBars: opts.retestMinSeparationBars,
         retestSeparationPct: opts.retestSeparationPct,
+        retestRequireMarkerCross: opts.retestRequireMarkerCross,
         exitConfirmMode: opts.exitConfirmMode,
         exitConfirmBars: opts.exitConfirmBars,
         exitConfirmPenetrationPct: opts.exitConfirmPenetrationPct,
@@ -791,7 +824,7 @@ async function main() {
                 date: pack.date,
                 first2Bars,
                 validationBars,
-                candidate: findCandidate({ symbol: pack.symbol, date: pack.date, first2Bars, config }),
+                candidate: findCandidate({ symbol: pack.symbol, date: pack.date, first2Bars, markerList: pack.marker_list || [], config }),
             });
         }
     }

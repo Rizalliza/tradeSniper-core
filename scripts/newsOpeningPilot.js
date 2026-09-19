@@ -16,7 +16,12 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const opts = {
     symbol: 'MSFT',
+    symbols: null,
     date: '2026-01-02',
+    dates: null,
+    from: '2026-01-01',
+    to: '2026-09-19',
+    firstFridays: false,
     minutes: 5,
     impulseSeconds: 20,
     leapPct: 0.003,
@@ -26,7 +31,12 @@ function parseArgs() {
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
       case '--symbol': opts.symbol = args[++i].toUpperCase(); break;
+      case '--symbols': opts.symbols = args[++i].split(',').map(s => s.trim().toUpperCase()).filter(Boolean); break;
       case '--date': opts.date = args[++i]; break;
+      case '--dates': opts.dates = args[++i].split(',').map(s => s.trim()).filter(Boolean); break;
+      case '--from': opts.from = args[++i]; break;
+      case '--to': opts.to = args[++i]; break;
+      case '--first-fridays': opts.firstFridays = true; break;
       case '--minutes': opts.minutes = Number(args[++i]); break;
       case '--impulse-seconds': opts.impulseSeconds = Number(args[++i]); break;
       case '--leap-pct': opts.leapPct = Number(args[++i]); break;
@@ -34,6 +44,9 @@ function parseArgs() {
       case '--out-dir': opts.outDir = args[++i]; break;
     }
   }
+  if (!opts.symbols) opts.symbols = [opts.symbol];
+  if (opts.firstFridays) opts.dates = firstFridayDates(opts.from, opts.to);
+  if (!opts.dates) opts.dates = [opts.date];
   return opts;
 }
 
@@ -57,6 +70,30 @@ function addSeconds(time, seconds) {
   const [hour, minute, second = '00'] = time.split(':').map(Number);
   const date = new Date(Date.UTC(2000, 0, 1, hour, minute, second + seconds));
   return date.toISOString().slice(11, 19);
+}
+
+function parseDateUTC(dateStr) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+function firstFridayDates(from, to) {
+  const start = parseDateUTC(from);
+  const end = parseDateUTC(to);
+  const dates = [];
+  const cursor = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), 1));
+  while (cursor <= end) {
+    const year = cursor.getUTCFullYear();
+    const month = cursor.getUTCMonth();
+    const first = new Date(Date.UTC(year, month, 1));
+    const daysUntilFriday = (5 - first.getUTCDay() + 7) % 7;
+    const firstFriday = new Date(Date.UTC(year, month, 1 + daysUntilFriday));
+    if (firstFriday >= start && firstFriday <= end) {
+      dates.push(firstFriday.toISOString().slice(0, 10));
+    }
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1, 1);
+  }
+  return dates;
 }
 
 function inWindow(bars, start, seconds) {
@@ -365,15 +402,105 @@ function metric(label, value) {
   return `<div class="metric"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;
 }
 
-async function main() {
-  const opts = parseArgs();
-  const apiKey = process.env.MASSIVE_API_KEY;
-  if (!apiKey) throw new Error('MASSIVE_API_KEY environment variable not set');
+function summarize(studies) {
+  const completed = studies.filter(study => !study.error);
+  const wideLeap = completed.filter(study => study.hasWideLeap);
+  const fakeFlip = wideLeap.filter(study => study.initialDirection !== study.releaseDirection);
+  const withRetest = fakeFlip.filter(study => study.quickRetest);
+  const exits = completed.filter(study => study.researchExit?.pnlPct != null);
+  const avgStudyExitPct = exits.length
+    ? exits.reduce((sum, study) => sum + study.researchExit.pnlPct, 0) / exits.length
+    : 0;
+  return {
+    cases: studies.length,
+    completed: completed.length,
+    errors: studies.length - completed.length,
+    wideLeap: wideLeap.length,
+    fakeFlip: fakeFlip.length,
+    fakeFlipWithQuickRetest: withRetest.length,
+    avgStudyExitPct,
+  };
+}
 
-  const massive = new MassiveData({ apiKey });
-  const bars = normalizeBars(await massive.fetchSecondBars(opts.symbol, opts.date, opts.date));
-  const study = classifyNewsOpening(bars, opts);
-  const stem = `${opts.symbol}-${opts.date}`;
+function slimStudy(study) {
+  if (study.error) return study;
+  const { bars, ...rest } = study;
+  return {
+    ...rest,
+    barCount: bars.length,
+  };
+}
+
+function renderGallery(studies, summary, opts) {
+  const cards = studies.map((study) => {
+    if (study.error) {
+      return `
+        <article class="card error">
+          <h2>${esc(study.symbol)} ${esc(study.date)}</h2>
+          <p>${esc(study.error)}</p>
+        </article>`;
+    }
+    const tone = study.hasWideLeap && study.initialDirection !== study.releaseDirection
+      ? 'flip'
+      : study.hasWideLeap ? 'wide' : 'normal';
+    return `
+      <article class="card ${tone}">
+        <header>
+          <div>
+            <h2>${esc(study.symbol)} ${esc(study.date)}</h2>
+            <p>initial ${esc(study.initialDirection)} ${pct(study.initialExtreme.pct)} · release ${esc(study.releaseDirection)} ${pct(study.netMovePct)} · reversal ${esc(study.reversalCandidate?.time || 'none')} · retest ${esc(study.quickRetest?.time || 'none')}</p>
+          </div>
+          <div class="badge">${study.initialDirection !== study.releaseDirection ? 'FAKE FLIP' : study.hasWideLeap ? 'WIDE SAME WAY' : 'NORMAL'}</div>
+        </header>
+        ${renderChart(study)}
+      </article>`;
+  }).join('\n');
+
+  return `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>News Opening Batch</title>
+  <style>
+    body{margin:0;background:#0b0f14;color:#d8e2ef;font-family:Inter,Arial,sans-serif}
+    main{max-width:1240px;margin:0 auto;padding:24px}
+    h1{font-size:24px;margin:0 0 6px}
+    h2{font-size:16px;margin:0 0 4px}
+    p{margin:0;color:#91a1b5}
+    .summary{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin:18px 0}
+    .metric{background:#121821;border:1px solid #223044;border-radius:8px;padding:12px}
+    .metric b{display:block;font-size:17px;color:#fff}
+    .metric span{font-size:12px;color:#91a1b5}
+    .card{background:#121821;border:1px solid #263244;border-radius:8px;margin:14px 0;padding:14px}
+    .card.flip{border-left:4px solid #67b7ff}.card.wide{border-left:4px solid #ffcc66}.card.error{border-left:4px solid #f26464}
+    header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+    .badge{font-size:11px;background:#1b2533;border:1px solid #344357;border-radius:999px;padding:6px 10px;color:#d8e2ef}
+    .chart{width:100%;height:auto;display:block}
+    @media(max-width:860px){main{padding:12px}.summary{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>News Opening Batch</h1>
+  <p>${esc(opts.symbols.join(', '))} · ${esc(opts.dates.join(', '))} · ${opts.minutes} minute second-candle review</p>
+  <section class="summary">
+    ${metric('cases', summary.cases)}
+    ${metric('completed', summary.completed)}
+    ${metric('wide leap', summary.wideLeap)}
+    ${metric('fake flip', summary.fakeFlip)}
+    ${metric('flip + retest', summary.fakeFlipWithQuickRetest)}
+    ${metric('avg study exit', pct(summary.avgStudyExitPct))}
+    ${metric('errors', summary.errors)}
+  </section>
+  ${cards}
+</main>
+</body>
+</html>`;
+}
+
+async function writeStudyArtifacts(study, opts) {
+  const stem = `${study.symbol}-${study.date}`;
   const dataDir = path.join(opts.outDir, 'data');
   const chartDir = path.join(opts.outDir, 'charts');
   await fs.mkdir(dataDir, { recursive: true });
@@ -389,11 +516,59 @@ async function main() {
   }, null, 2) + '\n');
   await fs.writeFile(svgPath, renderChart(study));
   await fs.writeFile(htmlPath, renderHtml(study));
+  return { jsonPath, htmlPath, svgPath };
+}
 
-  console.log(`Wrote ${jsonPath}`);
-  console.log(`Wrote ${svgPath}`);
-  console.log(`Wrote ${htmlPath}`);
-  console.log(`${opts.symbol} ${opts.date}: initial=${study.initialDirection} ${pct(study.initialExtreme.pct)}, release=${study.releaseDirection} ${pct(study.netMovePct)}, reversal=${study.reversalCandidate?.time || 'NONE'}, retest=${study.quickRetest?.time || 'NONE'}, studyExit=${study.researchExit ? `${study.researchExit.time} ${pct(study.researchExit.pnlPct)}` : 'NONE'}`);
+async function main() {
+  const opts = parseArgs();
+  const apiKey = process.env.MASSIVE_API_KEY;
+  if (!apiKey) throw new Error('MASSIVE_API_KEY environment variable not set');
+
+  const massive = new MassiveData({ apiKey });
+  const studies = [];
+  for (const symbol of opts.symbols) {
+    for (const date of opts.dates) {
+      const runOpts = { ...opts, symbol, date };
+      try {
+        const bars = normalizeBars(await massive.fetchSecondBars(symbol, date, date));
+        const study = classifyNewsOpening(bars, runOpts);
+        await writeStudyArtifacts(study, opts);
+        studies.push(study);
+        console.log(`${symbol} ${date}: initial=${study.initialDirection} ${pct(study.initialExtreme.pct)}, release=${study.releaseDirection} ${pct(study.netMovePct)}, reversal=${study.reversalCandidate?.time || 'NONE'}, retest=${study.quickRetest?.time || 'NONE'}, studyExit=${study.researchExit ? `${study.researchExit.time} ${pct(study.researchExit.pnlPct)}` : 'NONE'}`);
+      } catch (err) {
+        const failed = { symbol, date, error: err.message };
+        studies.push(failed);
+        console.log(`${symbol} ${date}: ERROR ${err.message}`);
+      }
+    }
+  }
+
+  const summary = summarize(studies);
+  await fs.mkdir(opts.outDir, { recursive: true });
+  const batchStem = opts.firstFridays
+    ? `first-friday-${opts.from}_${opts.to}`
+    : `${opts.symbols.join('-')}-${opts.dates[0]}${opts.dates.length > 1 ? `_${opts.dates.at(-1)}` : ''}`;
+  const summaryPath = path.join(opts.outDir, `${batchStem}.json`);
+  const galleryPath = path.join(opts.outDir, `${batchStem}.html`);
+  await fs.writeFile(summaryPath, JSON.stringify({
+    generated_at: new Date().toISOString(),
+    source: 'Massive second aggregates',
+    config: {
+      symbols: opts.symbols,
+      dates: opts.dates,
+      minutes: opts.minutes,
+      impulseSeconds: opts.impulseSeconds,
+      leapPct: opts.leapPct,
+      retestBufferPct: opts.retestBufferPct,
+      firstFridays: opts.firstFridays,
+    },
+    summary,
+    results: studies.map(slimStudy),
+  }, null, 2) + '\n');
+  await fs.writeFile(galleryPath, renderGallery(studies, summary, opts));
+  console.log(`Wrote ${summaryPath}`);
+  console.log(`Wrote ${galleryPath}`);
+  console.log(`Summary: completed=${summary.completed}/${summary.cases}, wide=${summary.wideLeap}, fakeFlip=${summary.fakeFlip}, flipRetest=${summary.fakeFlipWithQuickRetest}, avgStudyExit=${pct(summary.avgStudyExitPct)}`);
 }
 
 main().catch(err => {

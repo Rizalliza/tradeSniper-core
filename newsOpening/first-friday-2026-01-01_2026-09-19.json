@@ -1,0 +1,2139 @@
+{
+  "generated_at": "2026-09-19T02:25:08.187Z",
+  "source": "Massive second aggregates",
+  "config": {
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "dates": [
+      "2026-01-02",
+      "2026-02-06",
+      "2026-03-06",
+      "2026-04-03",
+      "2026-05-01",
+      "2026-06-05",
+      "2026-07-03",
+      "2026-08-07",
+      "2026-09-04"
+    ],
+    "minutes": 5,
+    "impulseSeconds": 20,
+    "leapPct": 0.003,
+    "retestBufferPct": 0.0008,
+    "firstFridays": true
+  },
+  "summary": {
+    "cases": 36,
+    "completed": 28,
+    "errors": 8,
+    "wideLeap": 20,
+    "fakeFlip": 7,
+    "fakeFlipWithQuickRetest": 7,
+    "avgStudyExitPct": 0.005160575719718788
+  },
+  "results": [
+    {
+      "symbol": "AAPL",
+      "date": "2026-01-02",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 272.255,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:16",
+        "price": 273.3,
+        "pct": 0.0038383133459441183
+      },
+      "netMovePct": 0.003434280362160483,
+      "reversalCandidate": {
+        "time": "09:30:17",
+        "price": 273.18,
+        "direction": "BUY",
+        "secondsFromOpen": 17
+      },
+      "quickRetest": {
+        "time": "09:33:00",
+        "price": 272.47,
+        "direction": "BUY",
+        "secondsFromOpen": 180
+      },
+      "researchExit": {
+        "time": "09:34:43",
+        "price": 273.39,
+        "pnlPct": 0.0007687239182955543,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 272.255,
+          "label": "OPEN 272.25"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:16",
+          "price": 273.3,
+          "pct": 0.0038383133459441183,
+          "label": "LEAP BUY 0.38%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:17",
+          "price": 273.18,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:33:00",
+          "price": 272.47,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:34:43",
+          "price": 273.39,
+          "pnlPct": 0.0007687239182955543,
+          "label": "EXIT STUDY 0.08%"
+        }
+      ],
+      "barCount": 291
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-02-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 277.12,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:19",
+        "price": 278.45,
+        "pct": 0.004799364896073846
+      },
+      "netMovePct": 0.0050880484988451505,
+      "reversalCandidate": {
+        "time": "09:30:20",
+        "price": 278.52,
+        "direction": "BUY",
+        "secondsFromOpen": 20
+      },
+      "quickRetest": {
+        "time": "09:31:57",
+        "price": 277.25,
+        "direction": "BUY",
+        "secondsFromOpen": 117
+      },
+      "researchExit": {
+        "time": "09:33:50",
+        "price": 279.47,
+        "pnlPct": 0.0034108861123080766,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 277.12,
+          "label": "OPEN 277.12"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:19",
+          "price": 278.45,
+          "pct": 0.004799364896073846,
+          "label": "LEAP BUY 0.48%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:20",
+          "price": 278.52,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:31:57",
+          "price": 277.25,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:33:50",
+          "price": 279.47,
+          "pnlPct": 0.0034108861123080766,
+          "label": "EXIT STUDY 0.34%"
+        }
+      ],
+      "barCount": 297
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-03-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 258.63,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:18",
+        "price": 257.2,
+        "pct": 0.005529134284499118
+      },
+      "netMovePct": -0.012717395507095042,
+      "reversalCandidate": {
+        "time": "09:30:19",
+        "price": 257.38,
+        "direction": "SELL",
+        "secondsFromOpen": 19
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:33:49",
+        "price": 255.16,
+        "pnlPct": 0.008625378817312918,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 258.63,
+          "label": "OPEN 258.63"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:18",
+          "price": 257.2,
+          "pct": 0.005529134284499118,
+          "label": "LEAP SELL 0.55%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:19",
+          "price": 257.38,
+          "label": "REV SELL"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:33:49",
+          "price": 255.16,
+          "pnlPct": 0.008625378817312918,
+          "label": "EXIT STUDY 0.86%"
+        }
+      ],
+      "barCount": 297
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-04-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-05-01",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 278.855,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:12",
+        "price": 280.48,
+        "pct": 0.0058274013376127375
+      },
+      "netMovePct": 0.0067956464829390965,
+      "reversalCandidate": {
+        "time": "09:30:13",
+        "price": 280.025,
+        "direction": "BUY",
+        "secondsFromOpen": 13
+      },
+      "quickRetest": {
+        "time": "09:30:18",
+        "price": 278.8,
+        "direction": "BUY",
+        "secondsFromOpen": 18
+      },
+      "researchExit": {
+        "time": "09:33:09",
+        "price": 283.75,
+        "pnlPct": 0.013302383715739748,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 278.855,
+          "label": "OPEN 278.86"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:12",
+          "price": 280.48,
+          "pct": 0.0058274013376127375,
+          "label": "LEAP BUY 0.58%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:13",
+          "price": 280.025,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:30:18",
+          "price": 278.8,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:33:09",
+          "price": 283.75,
+          "pnlPct": 0.013302383715739748,
+          "label": "EXIT STUDY 1.33%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-06-05",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 312.86,
+      "hasWideLeap": false,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:03",
+        "price": 313.33,
+        "pct": 0.0015022693856676162
+      },
+      "netMovePct": 0.0014703062072491833,
+      "reversalCandidate": {
+        "time": "09:30:04",
+        "price": 312.94,
+        "direction": "BUY",
+        "secondsFromOpen": 4
+      },
+      "quickRetest": {
+        "time": "09:30:05",
+        "price": 312.78,
+        "direction": "BUY",
+        "secondsFromOpen": 5
+      },
+      "researchExit": {
+        "time": "09:33:05",
+        "price": 314.25,
+        "pnlPct": 0.004186105962804379,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 312.86,
+          "label": "OPEN 312.86"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:03",
+          "price": 313.33,
+          "pct": 0.0015022693856676162,
+          "label": "LEAP BUY 0.15%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:04",
+          "price": 312.94,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:30:05",
+          "price": 312.78,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:33:05",
+          "price": 314.25,
+          "pnlPct": 0.004186105962804379,
+          "label": "EXIT STUDY 0.42%"
+        }
+      ],
+      "barCount": 297
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-07-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-08-07",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 311.45,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:09",
+        "price": 312.49,
+        "pct": 0.0033392197784556767
+      },
+      "netMovePct": 0.005619200513726222,
+      "reversalCandidate": {
+        "time": "09:30:10",
+        "price": 312.35,
+        "direction": "BUY",
+        "secondsFromOpen": 10
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:31:44",
+        "price": 313.81,
+        "pnlPct": 0.004674243636945668,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 311.45,
+          "label": "OPEN 311.45"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:09",
+          "price": 312.49,
+          "pct": 0.0033392197784556767,
+          "label": "LEAP BUY 0.33%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:10",
+          "price": 312.35,
+          "label": "REV BUY"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:31:44",
+          "price": 313.81,
+          "pnlPct": 0.004674243636945668,
+          "label": "EXIT STUDY 0.47%"
+        }
+      ],
+      "barCount": 298
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-04",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 328.305,
+      "hasWideLeap": false,
+      "initialDirection": "BUY",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:17",
+        "price": 328.9,
+        "pct": 0.001812339135864426
+      },
+      "netMovePct": -0.0034266916434413123,
+      "reversalCandidate": {
+        "time": "09:30:23",
+        "price": 328.1674,
+        "direction": "SELL",
+        "secondsFromOpen": 23
+      },
+      "quickRetest": {
+        "time": "09:30:24",
+        "price": 328.22,
+        "direction": "SELL",
+        "secondsFromOpen": 24
+      },
+      "researchExit": {
+        "time": "09:34:49",
+        "price": 327.02,
+        "pnlPct": 0.003496386295530893,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 328.305,
+          "label": "OPEN 328.31"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:17",
+          "price": 328.9,
+          "pct": 0.001812339135864426,
+          "label": "LEAP BUY 0.18%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:23",
+          "price": 328.1674,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:30:24",
+          "price": 328.22,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:34:49",
+          "price": 327.02,
+          "pnlPct": 0.003496386295530893,
+          "label": "EXIT STUDY 0.35%"
+        }
+      ],
+      "barCount": 299
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-01-02",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 484.385,
+      "hasWideLeap": false,
+      "initialDirection": "SELL",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:07",
+        "price": 483.47,
+        "pct": 0.0018889932594939225
+      },
+      "netMovePct": -0.0021646004727644127,
+      "reversalCandidate": {
+        "time": "09:30:08",
+        "price": 483.625,
+        "direction": "SELL",
+        "secondsFromOpen": 8
+      },
+      "quickRetest": {
+        "time": "09:30:09",
+        "price": 484.345,
+        "direction": "SELL",
+        "secondsFromOpen": 9
+      },
+      "researchExit": {
+        "time": "09:34:10",
+        "price": 482.38,
+        "pnlPct": 0.0025743086068751708,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 484.385,
+          "label": "OPEN 484.38"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:07",
+          "price": 483.47,
+          "pct": 0.0018889932594939225,
+          "label": "LEAP SELL 0.19%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:08",
+          "price": 483.625,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:30:09",
+          "price": 484.345,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:34:10",
+          "price": 482.38,
+          "pnlPct": 0.0025743086068751708,
+          "label": "EXIT STUDY 0.26%"
+        }
+      ],
+      "barCount": 290
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-02-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 399.165,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:19",
+        "price": 395.31,
+        "pct": 0.0096576603660141
+      },
+      "netMovePct": -0.005298560745556372,
+      "reversalCandidate": {
+        "time": "09:30:20",
+        "price": 395.48,
+        "direction": "SELL",
+        "secondsFromOpen": 20
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:32:21",
+        "price": 393.75,
+        "pnlPct": 0.004374431071103515,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 399.165,
+          "label": "OPEN 399.17"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:19",
+          "price": 395.31,
+          "pct": 0.0096576603660141,
+          "label": "LEAP SELL 0.97%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:20",
+          "price": 395.48,
+          "label": "REV SELL"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:32:21",
+          "price": 393.75,
+          "pnlPct": 0.004374431071103515,
+          "label": "EXIT STUDY 0.44%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-03-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 409.2,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:10",
+        "price": 411.52,
+        "pct": 0.005669599217986298
+      },
+      "netMovePct": 0.006109481915933529,
+      "reversalCandidate": {
+        "time": "09:30:11",
+        "price": 411.08,
+        "direction": "BUY",
+        "secondsFromOpen": 11
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:30:27",
+        "price": 412.8999,
+        "pnlPct": 0.004427118808990996,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 409.2,
+          "label": "OPEN 409.20"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:10",
+          "price": 411.52,
+          "pct": 0.005669599217986298,
+          "label": "LEAP BUY 0.57%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:11",
+          "price": 411.08,
+          "label": "REV BUY"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:30:27",
+          "price": 412.8999,
+          "pnlPct": 0.004427118808990996,
+          "label": "EXIT STUDY 0.44%"
+        }
+      ],
+      "barCount": 299
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-04-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-05-01",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 412.8,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:03",
+        "price": 410.57,
+        "pct": 0.00540213178294578
+      },
+      "netMovePct": 0.0044331395348836825,
+      "reversalCandidate": {
+        "time": "09:30:36",
+        "price": 412.88,
+        "direction": "BUY",
+        "secondsFromOpen": 36
+      },
+      "quickRetest": {
+        "time": "09:30:37",
+        "price": 412.86,
+        "direction": "BUY",
+        "secondsFromOpen": 37
+      },
+      "researchExit": {
+        "time": "09:32:11",
+        "price": 414.95,
+        "pnlPct": 0.0050135632629335234,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 412.8,
+          "label": "OPEN 412.80"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:03",
+          "price": 410.57,
+          "pct": 0.00540213178294578,
+          "label": "LEAP SELL 0.54%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:36",
+          "price": 412.88,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:30:37",
+          "price": 412.86,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:32:11",
+          "price": 414.95,
+          "pnlPct": 0.0050135632629335234,
+          "label": "EXIT STUDY 0.50%"
+        }
+      ],
+      "barCount": 299
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-06-05",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 428.34,
+      "hasWideLeap": false,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:06",
+        "price": 429.47,
+        "pct": 0.002638091235934193
+      },
+      "netMovePct": 0.00017509455105767726,
+      "reversalCandidate": {
+        "time": "09:30:07",
+        "price": 428.955,
+        "direction": "BUY",
+        "secondsFromOpen": 7
+      },
+      "quickRetest": {
+        "time": "09:30:08",
+        "price": 428.472,
+        "direction": "BUY",
+        "secondsFromOpen": 8
+      },
+      "researchExit": {
+        "time": "09:30:09",
+        "price": 429.43,
+        "pnlPct": 0.0011073422620088884,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 428.34,
+          "label": "OPEN 428.34"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:06",
+          "price": 429.47,
+          "pct": 0.002638091235934193,
+          "label": "LEAP BUY 0.26%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:07",
+          "price": 428.955,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:30:08",
+          "price": 428.472,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:30:09",
+          "price": 429.43,
+          "pnlPct": 0.0011073422620088884,
+          "label": "EXIT STUDY 0.11%"
+        }
+      ],
+      "barCount": 289
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-07-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-08-07",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 499.21,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:13",
+        "price": 502.76,
+        "pct": 0.007111235752488955
+      },
+      "netMovePct": 0.008072754952825523,
+      "reversalCandidate": {
+        "time": "09:30:14",
+        "price": 501.875,
+        "direction": "BUY",
+        "secondsFromOpen": 14
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:33:54",
+        "price": 504.97,
+        "pnlPct": 0.006166874221668796,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 499.21,
+          "label": "OPEN 499.21"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:13",
+          "price": 502.76,
+          "pct": 0.007111235752488955,
+          "label": "LEAP BUY 0.71%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:14",
+          "price": 501.875,
+          "label": "REV BUY"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:33:54",
+          "price": 504.97,
+          "pnlPct": 0.006166874221668796,
+          "label": "EXIT STUDY 0.62%"
+        }
+      ],
+      "barCount": 298
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-09-04",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 510,
+      "hasWideLeap": false,
+      "initialDirection": "BUY",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:02",
+        "price": 511,
+        "pct": 0.00196078431372549
+      },
+      "netMovePct": -0.00726470588235291,
+      "reversalCandidate": {
+        "time": "09:30:05",
+        "price": 509.6912,
+        "direction": "SELL",
+        "secondsFromOpen": 5
+      },
+      "quickRetest": {
+        "time": "09:30:06",
+        "price": 510,
+        "direction": "SELL",
+        "secondsFromOpen": 6
+      },
+      "researchExit": {
+        "time": "09:34:05",
+        "price": 505.8,
+        "pnlPct": 0.007634426491962132,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 510,
+          "label": "OPEN 510.00"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:02",
+          "price": 511,
+          "pct": 0.00196078431372549,
+          "label": "LEAP BUY 0.20%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:05",
+          "price": 509.6912,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:30:06",
+          "price": 510,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:34:05",
+          "price": 505.8,
+          "pnlPct": 0.007634426491962132,
+          "label": "EXIT STUDY 0.76%"
+        }
+      ],
+      "barCount": 263
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-01-02",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 189.835,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:16",
+        "price": 190.47,
+        "pct": 0.0033450101403850233
+      },
+      "netMovePct": 0.006769036268338275,
+      "reversalCandidate": {
+        "time": "09:30:17",
+        "price": 190.3,
+        "direction": "BUY",
+        "secondsFromOpen": 17
+      },
+      "quickRetest": {
+        "time": "09:30:23",
+        "price": 189.93,
+        "direction": "BUY",
+        "secondsFromOpen": 23
+      },
+      "researchExit": {
+        "time": "09:34:43",
+        "price": 191.22,
+        "pnlPct": 0.004834471886494942,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 189.835,
+          "label": "OPEN 189.84"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:16",
+          "price": 190.47,
+          "pct": 0.0033450101403850233,
+          "label": "LEAP BUY 0.33%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:17",
+          "price": 190.3,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:30:23",
+          "price": 189.93,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:34:43",
+          "price": 191.22,
+          "pnlPct": 0.004834471886494942,
+          "label": "EXIT STUDY 0.48%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-02-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 176.69,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:06",
+        "price": 175.25,
+        "pct": 0.008149866998698272
+      },
+      "netMovePct": 0.004471673552549637,
+      "reversalCandidate": {
+        "time": "09:33:02",
+        "price": 176.71,
+        "direction": "BUY",
+        "secondsFromOpen": 182
+      },
+      "quickRetest": {
+        "time": "09:33:03",
+        "price": 176.69,
+        "direction": "BUY",
+        "secondsFromOpen": 183
+      },
+      "researchExit": {
+        "time": "09:34:39",
+        "price": 177.67,
+        "pnlPct": 0.0054326297323296895,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 176.69,
+          "label": "OPEN 176.69"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:06",
+          "price": 175.25,
+          "pct": 0.008149866998698272,
+          "label": "LEAP SELL 0.81%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:33:02",
+          "price": 176.71,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:33:03",
+          "price": 176.69,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:34:39",
+          "price": 177.67,
+          "pnlPct": 0.0054326297323296895,
+          "label": "EXIT STUDY 0.54%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-03-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 179.84,
+      "hasWideLeap": false,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:19",
+        "price": 180.23,
+        "pct": 0.002168594306049746
+      },
+      "netMovePct": 0.006227758007117463,
+      "reversalCandidate": {
+        "time": "09:30:20",
+        "price": 180.305,
+        "direction": "BUY",
+        "secondsFromOpen": 20
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:33:04",
+        "price": 181.44,
+        "pnlPct": 0.006294889215495914,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 179.84,
+          "label": "OPEN 179.84"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:19",
+          "price": 180.23,
+          "pct": 0.002168594306049746,
+          "label": "LEAP BUY 0.22%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:20",
+          "price": 180.305,
+          "label": "REV BUY"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:33:04",
+          "price": 181.44,
+          "pnlPct": 0.006294889215495914,
+          "label": "EXIT STUDY 0.63%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-04-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-05-01",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 201.28,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:03",
+        "price": 200.19,
+        "pct": 0.0054153418124006526
+      },
+      "netMovePct": 0.0017388712241653136,
+      "reversalCandidate": {
+        "time": "09:30:42",
+        "price": 201.32,
+        "direction": "BUY",
+        "secondsFromOpen": 42
+      },
+      "quickRetest": {
+        "time": "09:30:43",
+        "price": 201.3201,
+        "direction": "BUY",
+        "secondsFromOpen": 43
+      },
+      "researchExit": {
+        "time": "09:32:15",
+        "price": 203,
+        "pnlPct": 0.008344923504867907,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 201.28,
+          "label": "OPEN 201.28"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:03",
+          "price": 200.19,
+          "pct": 0.0054153418124006526,
+          "label": "LEAP SELL 0.54%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:42",
+          "price": 201.32,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:30:43",
+          "price": 201.3201,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:32:15",
+          "price": 203,
+          "pnlPct": 0.008344923504867907,
+          "label": "EXIT STUDY 0.83%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-06-05",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 214.53,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:19",
+        "price": 213.74,
+        "pct": 0.0036824686524028903
+      },
+      "netMovePct": -0.0003029879270964328,
+      "reversalCandidate": {
+        "time": "09:30:20",
+        "price": 213.6462,
+        "direction": "SELL",
+        "secondsFromOpen": 20
+      },
+      "quickRetest": {
+        "time": "09:32:01",
+        "price": 214.42,
+        "direction": "SELL",
+        "secondsFromOpen": 121
+      },
+      "researchExit": {
+        "time": "09:30:48",
+        "price": 212.86,
+        "pnlPct": 0.0036799156736697382,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 214.53,
+          "label": "OPEN 214.53"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:19",
+          "price": 213.74,
+          "pct": 0.0036824686524028903,
+          "label": "LEAP SELL 0.37%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:20",
+          "price": 213.6462,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:32:01",
+          "price": 214.42,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:30:48",
+          "price": 212.86,
+          "pnlPct": 0.0036799156736697382,
+          "label": "EXIT STUDY 0.37%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-07-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-08-07",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 221.54,
+      "hasWideLeap": false,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:01",
+        "price": 222.17,
+        "pct": 0.0028437302518732306
+      },
+      "netMovePct": 0.006409677710571526,
+      "reversalCandidate": {
+        "time": "09:30:02",
+        "price": 221.85,
+        "direction": "BUY",
+        "secondsFromOpen": 2
+      },
+      "quickRetest": {
+        "time": "09:30:03",
+        "price": 221.46,
+        "direction": "BUY",
+        "secondsFromOpen": 3
+      },
+      "researchExit": {
+        "time": "09:34:57",
+        "price": 222.99,
+        "pnlPct": 0.0051386071670048,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 221.54,
+          "label": "OPEN 221.54"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:01",
+          "price": 222.17,
+          "pct": 0.0028437302518732306,
+          "label": "LEAP BUY 0.28%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:02",
+          "price": 221.85,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:30:03",
+          "price": 221.46,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:34:57",
+          "price": 222.99,
+          "pnlPct": 0.0051386071670048,
+          "label": "EXIT STUDY 0.51%"
+        }
+      ],
+      "barCount": 299
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-04",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 231.09,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:13",
+        "price": 229.82,
+        "pct": 0.005495694318231037
+      },
+      "netMovePct": 0.0057553334198796316,
+      "reversalCandidate": {
+        "time": "09:31:46",
+        "price": 231.105,
+        "direction": "BUY",
+        "secondsFromOpen": 106
+      },
+      "quickRetest": {
+        "time": "09:31:51",
+        "price": 231.0248,
+        "direction": "BUY",
+        "secondsFromOpen": 111
+      },
+      "researchExit": {
+        "time": "09:34:48",
+        "price": 232.57,
+        "pnlPct": 0.006339109928387545,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 231.09,
+          "label": "OPEN 231.09"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:13",
+          "price": 229.82,
+          "pct": 0.005495694318231037,
+          "label": "LEAP SELL 0.55%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:31:46",
+          "price": 231.105,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:31:51",
+          "price": 231.0248,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:34:48",
+          "price": 232.57,
+          "pnlPct": 0.006339109928387545,
+          "label": "EXIT STUDY 0.63%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-01-02",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 457.8,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:04",
+        "price": 456,
+        "pct": 0.003931847968545241
+      },
+      "netMovePct": -0.008529925731760658,
+      "reversalCandidate": {
+        "time": "09:30:05",
+        "price": 456.75,
+        "direction": "SELL",
+        "secondsFromOpen": 5
+      },
+      "quickRetest": {
+        "time": "09:30:06",
+        "price": 457.6956,
+        "direction": "SELL",
+        "secondsFromOpen": 6
+      },
+      "researchExit": {
+        "time": "09:34:10",
+        "price": 453.32,
+        "pnlPct": 0.007509578544061318,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 457.8,
+          "label": "OPEN 457.80"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:04",
+          "price": 456,
+          "pct": 0.003931847968545241,
+          "label": "LEAP SELL 0.39%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:05",
+          "price": 456.75,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:30:06",
+          "price": 457.6956,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:34:10",
+          "price": 453.32,
+          "pnlPct": 0.007509578544061318,
+          "label": "EXIT STUDY 0.75%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-02-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 400.87,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:09",
+        "price": 398.15,
+        "pct": 0.00678524209843597
+      },
+      "netMovePct": 0.004939506573203266,
+      "reversalCandidate": {
+        "time": "09:32:57",
+        "price": 400.95,
+        "direction": "BUY",
+        "secondsFromOpen": 177
+      },
+      "quickRetest": {
+        "time": "09:32:58",
+        "price": 400.8392,
+        "direction": "BUY",
+        "secondsFromOpen": 178
+      },
+      "researchExit": {
+        "time": "09:34:59",
+        "price": 402.97,
+        "pnlPct": 0.005038034667664394,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 400.87,
+          "label": "OPEN 400.87"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:09",
+          "price": 398.15,
+          "pct": 0.00678524209843597,
+          "label": "LEAP SELL 0.68%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:32:57",
+          "price": 400.95,
+          "label": "REV BUY"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "BUY",
+          "time": "09:32:58",
+          "price": 400.8392,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:34:59",
+          "price": 402.97,
+          "pnlPct": 0.005038034667664394,
+          "label": "EXIT STUDY 0.50%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-03-06",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 398.09,
+      "hasWideLeap": true,
+      "initialDirection": "SELL",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:19",
+        "price": 396.02,
+        "pct": 0.00519982918435528
+      },
+      "netMovePct": -0.003943831796829846,
+      "reversalCandidate": {
+        "time": "09:30:20",
+        "price": 396.25,
+        "direction": "SELL",
+        "secondsFromOpen": 20
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:32:22",
+        "price": 395.39,
+        "pnlPct": 0.0021703470031546085,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 398.09,
+          "label": "OPEN 398.09"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "SELL",
+          "time": "09:30:19",
+          "price": 396.02,
+          "pct": 0.00519982918435528,
+          "label": "LEAP SELL 0.52%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:20",
+          "price": 396.25,
+          "label": "REV SELL"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:32:22",
+          "price": 395.39,
+          "pnlPct": 0.0021703470031546085,
+          "label": "EXIT STUDY 0.22%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-04-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-05-01",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 382.485,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "BUY",
+      "initialExtreme": {
+        "time": "09:30:18",
+        "price": 385.31,
+        "pct": 0.007385910558583967
+      },
+      "netMovePct": 0.0047740434265395116,
+      "reversalCandidate": {
+        "time": "09:30:19",
+        "price": 384.9451,
+        "direction": "BUY",
+        "secondsFromOpen": 19
+      },
+      "quickRetest": null,
+      "researchExit": {
+        "time": "09:32:05",
+        "price": 387.3999,
+        "pnlPct": 0.006377013241628423,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 382.485,
+          "label": "OPEN 382.49"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:18",
+          "price": 385.31,
+          "pct": 0.007385910558583967,
+          "label": "LEAP BUY 0.74%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "BUY",
+          "time": "09:30:19",
+          "price": 384.9451,
+          "label": "REV BUY"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "BUY",
+          "time": "09:32:05",
+          "price": 387.3999,
+          "pnlPct": 0.006377013241628423,
+          "label": "EXIT STUDY 0.64%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-06-05",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 420.5,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:14",
+        "price": 423.34,
+        "pct": 0.006753864447086742
+      },
+      "netMovePct": -0.0025448275862069557,
+      "reversalCandidate": {
+        "time": "09:34:41",
+        "price": 420.5,
+        "direction": "SELL",
+        "secondsFromOpen": 281
+      },
+      "quickRetest": {
+        "time": "09:34:44",
+        "price": 420.755,
+        "direction": "SELL",
+        "secondsFromOpen": 284
+      },
+      "researchExit": {
+        "time": "09:34:59",
+        "price": 419.2701,
+        "pnlPct": 0.0029248513674197062,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 420.5,
+          "label": "OPEN 420.50"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:14",
+          "price": 423.34,
+          "pct": 0.006753864447086742,
+          "label": "LEAP BUY 0.68%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:34:41",
+          "price": 420.5,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:34:44",
+          "price": 420.755,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:34:59",
+          "price": 419.2701,
+          "pnlPct": 0.0029248513674197062,
+          "label": "EXIT STUDY 0.29%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-07-03",
+      "error": "No opening price available"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-08-07",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 322.34,
+      "hasWideLeap": false,
+      "initialDirection": "BUY",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:19",
+        "price": 323.3,
+        "pct": 0.0029782217534281706
+      },
+      "netMovePct": -0.0015514673946763508,
+      "reversalCandidate": {
+        "time": "09:33:28",
+        "price": 322.15,
+        "direction": "SELL",
+        "secondsFromOpen": 208
+      },
+      "quickRetest": {
+        "time": "09:33:29",
+        "price": 322.3599,
+        "direction": "SELL",
+        "secondsFromOpen": 209
+      },
+      "researchExit": {
+        "time": "09:34:08",
+        "price": 321.2508,
+        "pnlPct": 0.0027912463138288087,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 322.34,
+          "label": "OPEN 322.34"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:19",
+          "price": 323.3,
+          "pct": 0.0029782217534281706,
+          "label": "LEAP BUY 0.30%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:33:28",
+          "price": 322.15,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:33:29",
+          "price": 322.3599,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:34:08",
+          "price": 321.2508,
+          "pnlPct": 0.0027912463138288087,
+          "label": "EXIT STUDY 0.28%"
+        }
+      ],
+      "barCount": 300
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-04",
+      "config": {
+        "minutes": 5,
+        "impulseSeconds": 20,
+        "leapPct": 0.003,
+        "retestBufferPct": 0.0008
+      },
+      "openingPrice": 362.07,
+      "hasWideLeap": true,
+      "initialDirection": "BUY",
+      "releaseDirection": "SELL",
+      "initialExtreme": {
+        "time": "09:30:07",
+        "price": 364.68,
+        "pct": 0.007208550832711945
+      },
+      "netMovePct": -0.0072472173889026065,
+      "reversalCandidate": {
+        "time": "09:30:17",
+        "price": 361.4,
+        "direction": "SELL",
+        "secondsFromOpen": 17
+      },
+      "quickRetest": {
+        "time": "09:30:18",
+        "price": 364.2949,
+        "direction": "SELL",
+        "secondsFromOpen": 18
+      },
+      "researchExit": {
+        "time": "09:33:55",
+        "price": 358.56,
+        "pnlPct": 0.007858328721638006,
+        "reason": "FAVORABLE_LEAP_EXTREME_WITH_LOOKAHEAD_FOR_REVIEW"
+      },
+      "events": [
+        {
+          "type": "OPEN",
+          "time": "09:30:00",
+          "price": 362.07,
+          "label": "OPEN 362.07"
+        },
+        {
+          "type": "INITIAL_LEAP",
+          "direction": "BUY",
+          "time": "09:30:07",
+          "price": 364.68,
+          "pct": 0.007208550832711945,
+          "label": "LEAP BUY 0.72%"
+        },
+        {
+          "type": "REVERSAL_ENTRY_CANDIDATE",
+          "direction": "SELL",
+          "time": "09:30:17",
+          "price": 361.4,
+          "label": "REV SELL"
+        },
+        {
+          "type": "QUICK_RETEST",
+          "direction": "SELL",
+          "time": "09:30:18",
+          "price": 364.2949,
+          "label": "QUICK RETEST"
+        },
+        {
+          "type": "FAVORABLE_LEAP_EXIT_STUDY",
+          "direction": "SELL",
+          "time": "09:33:55",
+          "price": 358.56,
+          "pnlPct": 0.007858328721638006,
+          "label": "EXIT STUDY 0.79%"
+        }
+      ],
+      "barCount": 300
+    }
+  ]
+}

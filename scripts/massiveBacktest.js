@@ -9,6 +9,7 @@
  *   node scripts/massiveBacktest.js --symbols AAPL,TSLA,NVDA --from 2026-02-02 --to 2026-02-27
  *   node scripts/massiveBacktest.js --symbols AAPL --from 2026-02-02 --to 2026-02-02 --timespan minute
  *   node scripts/massiveBacktest.js --symbols NVDA --from 2026-02-02 --to 2026-02-27 --risk mid --buffer 0.002
+ *   node scripts/massiveBacktest.js --symbols AAPL,MSFT,NVDA,TSLA --from 2026-01-01 --to 2026-09-19 --first-fridays
  *
  * Environment variables:
  *   MASSIVE_API_KEY - your Massive API key
@@ -43,6 +44,8 @@ function parseArgs() {
         runnerMinForwardCrosses: 0,
         runnerMinProfit: 0,
         lookbackDays: 45,      // daily bars before --from for marker computation
+        dates: null,
+        firstFridays: false,
         jsonOut: null,
     };
     for (let i = 0; i < args.length; i++) {
@@ -66,9 +69,14 @@ function parseArgs() {
             case '--runner-min-forward-crosses': opts.runnerMinForwardCrosses = parseInt(args[++i], 10); break;
             case '--runner-min-profit': opts.runnerMinProfit = parseFloat(args[++i]); break;
             case '--lookback-days': opts.lookbackDays = parseInt(args[++i], 10); break;
+            case '--dates':
+                opts.dates = args[++i].split(',').map(date => date.trim()).filter(Boolean);
+                break;
+            case '--first-fridays': opts.firstFridays = true; break;
             case '--json-out': opts.jsonOut = args[++i]; break;
         }
     }
+    if (opts.firstFridays) opts.dates = firstFridayDates(opts.from, opts.to);
     return opts;
 }
 
@@ -86,6 +94,30 @@ function addMinutes(time, minutes) {
 
 function isTimeInRange(time, start, end) {
     return time >= start && time < end;
+}
+
+function parseDateUTC(dateStr) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(Date.UTC(year, month - 1, day));
+}
+
+function firstFridayDates(from, to) {
+    const start = parseDateUTC(from);
+    const end = parseDateUTC(to);
+    const dates = [];
+    const cursor = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), 1));
+    while (cursor <= end) {
+        const year = cursor.getUTCFullYear();
+        const month = cursor.getUTCMonth();
+        const first = new Date(Date.UTC(year, month, 1));
+        const daysUntilFriday = (5 - first.getUTCDay() + 7) % 7;
+        const firstFriday = new Date(Date.UTC(year, month, 1 + daysUntilFriday));
+        if (firstFriday >= start && firstFriday <= end) {
+            dates.push(firstFriday.toISOString().slice(0, 10));
+        }
+        cursor.setUTCMonth(cursor.getUTCMonth() + 1, 1);
+    }
+    return dates;
 }
 
 function groupBarsByDate(bars) {
@@ -119,6 +151,8 @@ async function writeJsonSnapshot(outputPath, opts, stats, setups) {
             runnerMinForwardCrosses: opts.runnerMinForwardCrosses,
             runnerMinProfit: opts.runnerMinProfit,
             lookbackDays: opts.lookbackDays,
+            dates: opts.dates,
+            firstFridays: opts.firstFridays,
         },
         stats: {
             ...stats,
@@ -153,11 +187,13 @@ async function runBacktest(opts) {
     console.log(`Breakeven: ${opts.breakevenAfter > 0 ? 'after ' + (opts.breakevenAfter * 100).toFixed(2) + '%' : 'OFF'}`);
     console.log(`Exit confirm: mode=${opts.exitConfirmMode}, bars=${opts.exitConfirmBars}, penetration=${(opts.exitConfirmPenetration * 100).toFixed(2)}%`);
     console.log(`Runner proof: forwardCrosses>=${opts.runnerMinForwardCrosses}, profit>=${(opts.runnerMinProfit * 100).toFixed(2)}%`);
+    if (opts.dates?.length) console.log(`Date filter: ${opts.dates.join(', ')}`);
     console.log(`Shares: ${opts.shares}`);
     console.log('');
 
     const allSetups = [];
     const dailyCache = {};
+    const dateFilter = opts.dates?.length ? new Set(opts.dates) : null;
     const markerFromDate = new Date(`${opts.from}T00:00:00Z`);
     markerFromDate.setUTCDate(markerFromDate.getUTCDate() - opts.lookbackDays);
     const markerFrom = markerFromDate.toISOString().slice(0, 10);
@@ -189,6 +225,7 @@ async function runBacktest(opts) {
         for (let di = 1; di < daily.length; di++) {
             const day = daily[di];
             const dateStr = day.date;
+            if (dateFilter && !dateFilter.has(dateStr)) continue;
             const intraday = intradayByDate.get(dateStr) || [];
 
             if (!intraday || intraday.length < 2) continue;

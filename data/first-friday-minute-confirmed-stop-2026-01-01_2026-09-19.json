@@ -1,0 +1,611 @@
+{
+  "source": "Massive",
+  "generated_at": "2026-09-19T01:48:34.605Z",
+  "period": {
+    "from": "2026-01-01",
+    "to": "2026-09-19"
+  },
+  "symbols": [
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "config": {
+    "timespan": "minute",
+    "windowMinutes": 30,
+    "risk": "low",
+    "buffer": 0.0015,
+    "shares": 100,
+    "trailingStop": true,
+    "trailingStep": 0.005,
+    "hardStop": 0.008,
+    "breakevenAfter": 0,
+    "exitConfirmMode": "close-through",
+    "exitConfirmBars": 1,
+    "exitConfirmPenetration": 0,
+    "runnerMinForwardCrosses": 0,
+    "runnerMinProfit": 0,
+    "lookbackDays": 45,
+    "dates": [
+      "2026-01-02",
+      "2026-02-06",
+      "2026-03-06",
+      "2026-04-03",
+      "2026-05-01",
+      "2026-06-05",
+      "2026-07-03",
+      "2026-08-07",
+      "2026-09-04"
+    ],
+    "firstFridays": true
+  },
+  "stats": {
+    "total_setups": 28,
+    "taken": 17,
+    "wins": 12,
+    "losses": 5,
+    "breakeven": 4,
+    "skipped": 7,
+    "closed": 21,
+    "win_rate": 70.58823529411765,
+    "profit_factor": 2.991550205601243,
+    "max_drawdown": 362.4439999999993,
+    "net_pnl": 2293.7559999999958,
+    "gross_profit": 3445.4999999999955,
+    "gross_loss": 1151.7439999999992,
+    "avg_rr": 1.246479252333851,
+    "avg_win": 287.1249999999996,
+    "avg_loss": 230.34879999999984,
+    "expectancy": 109.22647619047599,
+    "equity": [
+      {
+        "date": "2026-01-02",
+        "symbol": "AAPL",
+        "pnl": 62.000000000000455,
+        "cum": 62.000000000000455
+      },
+      {
+        "date": "2026-01-02",
+        "symbol": "MSFT",
+        "pnl": 1037.0000000000005,
+        "cum": 1099.000000000001
+      },
+      {
+        "date": "2026-01-02",
+        "symbol": "NVDA",
+        "pnl": 212.99999999999955,
+        "cum": 1312.0000000000005
+      },
+      {
+        "date": "2026-01-02",
+        "symbol": "TSLA",
+        "pnl": -359.7759999999994,
+        "cum": 952.2240000000011
+      },
+      {
+        "date": "2026-02-06",
+        "symbol": "TSLA",
+        "pnl": 892.999999999995,
+        "cum": 1845.223999999996
+      },
+      {
+        "date": "2026-02-06",
+        "symbol": "AAPL",
+        "pnl": -222.50399999999786,
+        "cum": 1622.7199999999982
+      },
+      {
+        "date": "2026-02-06",
+        "symbol": "NVDA",
+        "pnl": -139.94000000000142,
+        "cum": 1482.7799999999968
+      },
+      {
+        "date": "2026-03-06",
+        "symbol": "MSFT",
+        "pnl": 0,
+        "cum": 1482.7799999999968
+      },
+      {
+        "date": "2026-03-06",
+        "symbol": "NVDA",
+        "pnl": 0,
+        "cum": 1482.7799999999968
+      },
+      {
+        "date": "2026-05-01",
+        "symbol": "NVDA",
+        "pnl": 87.00000000000045,
+        "cum": 1569.7799999999972
+      },
+      {
+        "date": "2026-05-01",
+        "symbol": "TSLA",
+        "pnl": 312.00000000000045,
+        "cum": 1881.7799999999977
+      },
+      {
+        "date": "2026-05-01",
+        "symbol": "MSFT",
+        "pnl": 0,
+        "cum": 1881.7799999999977
+      },
+      {
+        "date": "2026-06-05",
+        "symbol": "AAPL",
+        "pnl": 31.000000000000227,
+        "cum": 1912.779999999998
+      },
+      {
+        "date": "2026-06-05",
+        "symbol": "MSFT",
+        "pnl": 216.0000000000025,
+        "cum": 2128.7800000000007
+      },
+      {
+        "date": "2026-06-05",
+        "symbol": "TSLA",
+        "pnl": 138.99999999999864,
+        "cum": 2267.7799999999993
+      },
+      {
+        "date": "2026-06-05",
+        "symbol": "NVDA",
+        "pnl": -171.12400000000036,
+        "cum": 2096.655999999999
+      },
+      {
+        "date": "2026-08-07",
+        "symbol": "MSFT",
+        "pnl": 169.49999999999932,
+        "cum": 2266.155999999998
+      },
+      {
+        "date": "2026-08-07",
+        "symbol": "NVDA",
+        "pnl": 209.99999999999943,
+        "cum": 2476.1559999999977
+      },
+      {
+        "date": "2026-08-07",
+        "symbol": "TSLA",
+        "pnl": -258.4000000000003,
+        "cum": 2217.7559999999976
+      },
+      {
+        "date": "2026-08-07",
+        "symbol": "AAPL",
+        "pnl": 0,
+        "cum": 2217.7559999999976
+      },
+      {
+        "date": "2026-09-04",
+        "symbol": "AAPL",
+        "pnl": 75.99999999999909,
+        "cum": 2293.7559999999967
+      }
+    ],
+    "perSymbol": [
+      {
+        "symbol": "AAPL",
+        "setups": 7,
+        "taken": 4,
+        "wins": 3,
+        "losses": 1,
+        "breakeven": 1,
+        "closed": 5,
+        "win_rate": 75,
+        "pnl": -53.503999999998086,
+        "avg_win": 56.33333333333326,
+        "avg_loss": 222.50399999999786
+      },
+      {
+        "symbol": "MSFT",
+        "setups": 7,
+        "taken": 3,
+        "wins": 3,
+        "losses": 0,
+        "breakeven": 2,
+        "closed": 5,
+        "win_rate": 100,
+        "pnl": 1422.5000000000023,
+        "avg_win": 474.1666666666674,
+        "avg_loss": 0
+      },
+      {
+        "symbol": "NVDA",
+        "setups": 7,
+        "taken": 5,
+        "wins": 3,
+        "losses": 2,
+        "breakeven": 1,
+        "closed": 6,
+        "win_rate": 60,
+        "pnl": 198.93599999999765,
+        "avg_win": 169.9999999999998,
+        "avg_loss": 155.5320000000009
+      },
+      {
+        "symbol": "TSLA",
+        "setups": 7,
+        "taken": 5,
+        "wins": 3,
+        "losses": 2,
+        "breakeven": 0,
+        "closed": 5,
+        "win_rate": 60,
+        "pnl": 725.8239999999944,
+        "avg_win": 447.999999999998,
+        "avg_loss": 309.08799999999985
+      }
+    ],
+    "profit_factor_display": "2.99"
+  },
+  "setups": [
+    {
+      "symbol": "AAPL",
+      "date": "2026-01-02",
+      "bias": "BUY",
+      "status": "WON",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "daily_high",
+      "entry_price": 273.06,
+      "exit_price": 273.68,
+      "pnl": 62.000000000000455,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-02-06",
+      "bias": "SELL",
+      "status": "LOST",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "prior_day_close",
+      "entry_price": 278.13,
+      "exit_price": 280.35504,
+      "pnl": -222.50399999999786,
+      "shares": 100,
+      "exit_reason": "HARD_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-03-06",
+      "bias": "NEUTRAL",
+      "status": "SKIPPED",
+      "confirm_marker": null,
+      "target_marker": null,
+      "entry_price": null,
+      "exit_price": null,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "NO_MARKER_CROSS"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-05-01",
+      "bias": "NEUTRAL",
+      "status": "SKIPPED",
+      "confirm_marker": null,
+      "target_marker": null,
+      "entry_price": null,
+      "exit_price": null,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "NO_MARKER_CROSS"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-06-05",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "daily_high",
+      "target_marker": "prior_day_open",
+      "entry_price": 313.54,
+      "exit_price": 313.23,
+      "pnl": 31.000000000000227,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-08-07",
+      "bias": "SELL",
+      "status": "BREAKEVEN",
+      "confirm_marker": "prior_day_close",
+      "target_marker": "daily_low",
+      "entry_price": 312.41,
+      "exit_price": 312.41,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "REVERSE_STOP"
+    },
+    {
+      "symbol": "AAPL",
+      "date": "2026-09-04",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "daily_low",
+      "entry_price": 324.87,
+      "exit_price": 324.11,
+      "pnl": 75.99999999999909,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-01-02",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "daily_low",
+      "target_marker": "monthly_low",
+      "entry_price": 483.3,
+      "exit_price": 472.93,
+      "pnl": 1037.0000000000005,
+      "shares": 100,
+      "exit_reason": "RUNNER"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-02-06",
+      "bias": "NEUTRAL",
+      "status": "SKIPPED",
+      "confirm_marker": null,
+      "target_marker": null,
+      "entry_price": null,
+      "exit_price": null,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "NO_MARKER_CROSS"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-03-06",
+      "bias": "SELL",
+      "status": "BREAKEVEN",
+      "confirm_marker": "prior_day_close",
+      "target_marker": "prior_day_open",
+      "entry_price": 410.68,
+      "exit_price": 410.68,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "TRAILING_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-05-01",
+      "bias": "BUY",
+      "status": "BREAKEVEN",
+      "confirm_marker": "daily_high",
+      "target_marker": "weekly_high",
+      "entry_price": 414.42,
+      "exit_price": 414.42,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "TRAILING_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-06-05",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "daily_low",
+      "target_marker": "weekly_low",
+      "entry_price": 426.41,
+      "exit_price": 424.25,
+      "pnl": 216.0000000000025,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-08-07",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "weekly_high",
+      "target_marker": "prior_day_close",
+      "entry_price": 501.555,
+      "exit_price": 499.86,
+      "pnl": 169.49999999999932,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "MSFT",
+      "date": "2026-09-04",
+      "bias": "NEUTRAL",
+      "status": "SKIPPED",
+      "confirm_marker": null,
+      "target_marker": null,
+      "entry_price": null,
+      "exit_price": null,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "NO_MARKER_CROSS"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-01-02",
+      "bias": "BUY",
+      "status": "WON",
+      "confirm_marker": "daily_high",
+      "target_marker": "weekly_high",
+      "entry_price": 190.56,
+      "exit_price": 192.69,
+      "pnl": 212.99999999999955,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-02-06",
+      "bias": "SELL",
+      "status": "LOST",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "prior_day_close",
+      "entry_price": 174.925,
+      "exit_price": 176.32440000000003,
+      "pnl": -139.94000000000142,
+      "shares": 100,
+      "exit_reason": "HARD_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-03-06",
+      "bias": "BUY",
+      "status": "BREAKEVEN",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "prior_day_close",
+      "entry_price": 181.17,
+      "exit_price": 181.17,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "TRAILING_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-05-01",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "prior_day_close",
+      "target_marker": "daily_low",
+      "entry_price": 199.57,
+      "exit_price": 198.7,
+      "pnl": 87.00000000000045,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-06-05",
+      "bias": "BUY",
+      "status": "LOST",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "prior_day_close",
+      "entry_price": 213.905,
+      "exit_price": 212.19376,
+      "pnl": -171.12400000000036,
+      "shares": 100,
+      "exit_reason": "HARD_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-08-07",
+      "bias": "BUY",
+      "status": "WON",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "weekly_high",
+      "entry_price": 221.53,
+      "exit_price": 223.63,
+      "pnl": 209.99999999999943,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "NVDA",
+      "date": "2026-09-04",
+      "bias": "NEUTRAL",
+      "status": "SKIPPED",
+      "confirm_marker": null,
+      "target_marker": null,
+      "entry_price": null,
+      "exit_price": null,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "NO_MARKER_CROSS"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-01-02",
+      "bias": "SELL",
+      "status": "LOST",
+      "confirm_marker": "prior_day_close",
+      "target_marker": "daily_low",
+      "entry_price": 449.72,
+      "exit_price": 453.31776,
+      "pnl": -359.7759999999994,
+      "shares": 100,
+      "exit_reason": "HARD_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-02-06",
+      "bias": "BUY",
+      "status": "WON",
+      "confirm_marker": "daily_high",
+      "target_marker": "weekly_high",
+      "entry_price": 402.1,
+      "exit_price": 411.03,
+      "pnl": 892.999999999995,
+      "shares": 100,
+      "exit_reason": "RUNNER"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-03-06",
+      "bias": "NEUTRAL",
+      "status": "SKIPPED",
+      "confirm_marker": null,
+      "target_marker": null,
+      "entry_price": null,
+      "exit_price": null,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "NO_MARKER_CROSS"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-05-01",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "weekly_high",
+      "target_marker": "prior_day_close",
+      "entry_price": 384.75,
+      "exit_price": 381.63,
+      "pnl": 312.00000000000045,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-06-05",
+      "bias": "SELL",
+      "status": "WON",
+      "confirm_marker": "prior_day_open",
+      "target_marker": "prior_day_close",
+      "entry_price": 419.84,
+      "exit_price": 418.45,
+      "pnl": 138.99999999999864,
+      "shares": 100,
+      "exit_reason": "MARKER_PROFIT"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-08-07",
+      "bias": "SELL",
+      "status": "LOST",
+      "confirm_marker": "daily_high",
+      "target_marker": "prior_day_close",
+      "entry_price": 323,
+      "exit_price": 325.584,
+      "pnl": -258.4000000000003,
+      "shares": 100,
+      "exit_reason": "HARD_STOP_CONFIRMED"
+    },
+    {
+      "symbol": "TSLA",
+      "date": "2026-09-04",
+      "bias": "NEUTRAL",
+      "status": "SKIPPED",
+      "confirm_marker": null,
+      "target_marker": null,
+      "entry_price": null,
+      "exit_price": null,
+      "pnl": 0,
+      "shares": 100,
+      "exit_reason": "NO_MARKER_CROSS"
+    }
+  ]
+}

@@ -160,6 +160,16 @@ Every report must include:
 - raw file references
 - limitations
 
+## Script Standard
+
+Use the repo's existing Node script pattern and naming conventions.
+
+Reference:
+
+- `agent/news-strategy-unit/SCRIPT_CONVENTIONS.md`
+
+Do not add scripts with vague or date-specific names. Dates, symbols, and event types belong in CLI flags and output folders.
+
 ## Hard Rules
 
 - No synthetic data.

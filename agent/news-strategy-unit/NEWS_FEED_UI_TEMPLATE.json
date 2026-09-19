@@ -1,0 +1,141 @@
+{
+  "schema": "tradesniper.newsFeed.v1",
+  "generated_at": "YYYY-MM-DDTHH:mm:ss.sssZ",
+  "source": {
+    "provider": "Massive",
+    "run_folder": "agent/news-strategy-unit/massive/YYYY-MM-DD",
+    "manifest": "agent/news-strategy-unit/massive/YYYY-MM-DD/manifest.json"
+  },
+  "event": {
+    "date": "YYYY-MM-DD",
+    "name": "CPI | FOMC | NFP | PPI | Retail Sales | Other",
+    "release_time_et": "08:30:00",
+    "session": "US_OPEN",
+    "importance": "HIGH",
+    "notes": "Short event-specific context for the UI."
+  },
+  "universe": {
+    "primary_candidates": ["MSFT", "TSLA"],
+    "benchmarks": ["AAPL"],
+    "research_only": ["NVDA"]
+  },
+  "market_context": {
+    "overall_bias": "BULLISH | BEARISH | MIXED | NEUTRAL | UNKNOWN",
+    "confidence": 0,
+    "news_weight": 0.0,
+    "price_action_first": true,
+    "drivers": [],
+    "risks": []
+  },
+  "symbols": [
+    {
+      "symbol": "MSFT",
+      "role": "NEWS_OPENING_CANDIDATE",
+      "news": {
+        "article_count": 0,
+        "sentiment_label": "BULLISH | BEARISH | MIXED | NEUTRAL | UNKNOWN",
+        "sentiment_score": 0,
+        "confidence": 0,
+        "main_topics": [],
+        "headline_digest": []
+      },
+      "strategy": {
+        "mode": "SNIPER",
+        "candidate_rank": 1,
+        "written_strategy_fit": "STRONG | ACCEPTABLE | WEAK | UNKNOWN",
+        "control_result": {
+          "sessions": 0,
+          "trades_taken": 0,
+          "wins": 0,
+          "losses": 0,
+          "breakeven": 0,
+          "win_rate": 0,
+          "net_pnl": 0,
+          "total_pnl_pct": 0,
+          "profit_factor": null,
+          "max_drawdown": 0,
+          "hard_stops": 0,
+          "runners": 0
+        },
+        "context_overlay": {
+          "aligned_trades": 0,
+          "against_bias_trades": 0,
+          "aligned_win_rate": null,
+          "against_bias_win_rate": null,
+          "bias_helped": "YES | NO | INCONCLUSIVE"
+        },
+        "failure_diagnosis": {
+          "primary_loss_reason": "NONE | WRONG_DIRECTION | WEAK_RETEST | LATE_ENTRY | EXIT_TOO_EARLY | EXIT_TOO_LATE | STOP_TOO_WIDE | UNKNOWN",
+          "notes": []
+        }
+      },
+      "ui": {
+        "badge": "Candidate",
+        "status": "TRADEABLE | WATCH | SKIP | RESEARCH_ONLY",
+        "summary": "One-line explanation for the UI.",
+        "review_priority": "HIGH | MEDIUM | LOW",
+        "chart_refs": []
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "role": "NEWS_OPENING_CANDIDATE",
+      "news": {
+        "article_count": 0,
+        "sentiment_label": "BULLISH | BEARISH | MIXED | NEUTRAL | UNKNOWN",
+        "sentiment_score": 0,
+        "confidence": 0,
+        "main_topics": [],
+        "headline_digest": []
+      },
+      "strategy": {
+        "mode": "SNIPER_WITH_STRICT_RISK",
+        "candidate_rank": 2,
+        "written_strategy_fit": "STRONG | ACCEPTABLE | WEAK | UNKNOWN",
+        "control_result": {
+          "sessions": 0,
+          "trades_taken": 0,
+          "wins": 0,
+          "losses": 0,
+          "breakeven": 0,
+          "win_rate": 0,
+          "net_pnl": 0,
+          "total_pnl_pct": 0,
+          "profit_factor": null,
+          "max_drawdown": 0,
+          "hard_stops": 0,
+          "runners": 0
+        },
+        "context_overlay": {
+          "aligned_trades": 0,
+          "against_bias_trades": 0,
+          "aligned_win_rate": null,
+          "against_bias_win_rate": null,
+          "bias_helped": "YES | NO | INCONCLUSIVE"
+        },
+        "failure_diagnosis": {
+          "primary_loss_reason": "NONE | WRONG_DIRECTION | WEAK_RETEST | LATE_ENTRY | EXIT_TOO_EARLY | EXIT_TOO_LATE | STOP_TOO_WIDE | UNKNOWN",
+          "notes": []
+        }
+      },
+      "ui": {
+        "badge": "Candidate",
+        "status": "TRADEABLE | WATCH | SKIP | RESEARCH_ONLY",
+        "summary": "One-line explanation for the UI.",
+        "review_priority": "HIGH | MEDIUM | LOW",
+        "chart_refs": []
+      }
+    }
+  ],
+  "ranking": {
+    "selected_symbols": ["MSFT", "TSLA"],
+    "selection_basis": "Backtest result only; visual culture is explanatory, not decisive.",
+    "capital_note": "Concentrate only after larger sample confirms repeatability."
+  },
+  "operator_summary": {
+    "headline": "Short UI headline.",
+    "details": [],
+    "next_review": []
+  },
+  "limitations": []
+}
